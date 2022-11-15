@@ -4,26 +4,26 @@ import "github.com/joho/godotenv"
 import "github.com/spf13/viper"
 
 type Config struct {
-	HttpPort string
+	HTTPPort string
 	Postgres PostgresConfig
 }
 
 type PostgresConfig struct {
-	Host     string
-	Port     string
-	User     string
+	Host   string
+	Port  string
+	User    string
 	Password string
 	DataBase string
 }
 
 func Load(path string) Config {
-	godotenv.Load(path + "/.env")
+	godotenv.Load(path + "/.env") // load .env file if it exists
 
 	conf := viper.New()
 	conf.AutomaticEnv()
 
 	cfg := Config{
-		HttpPort: conf.GetString("HTTP_PORT"),
+		HTTPPort: conf.GetString("HTTP_PORT"),
 		Postgres: PostgresConfig{
 			Host: conf.GetString("POSTGRES_HOST"),
 			Port: conf.GetString("POSTGRES_PORT"),

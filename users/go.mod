@@ -3,6 +3,8 @@ module github.com/barber_shop/users
 go 1.18
 
 require (
+	github.com/gofrs/uuid v4.3.1+incompatible
+	github.com/jmoiron/sqlx v1.3.5
 	github.com/joho/godotenv v1.4.0
 	github.com/lib/pq v1.10.7
 	github.com/spf13/viper v1.14.0
