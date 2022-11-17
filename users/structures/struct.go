@@ -35,17 +35,18 @@ type Staff struct {
 }
 
 type User struct {
-	ID          string
-	FirstName   string
-	LastName    string
-	PhoneNumber string
-	Email       string
-	Gender      string
-	Password    string
-	ImageURL    string
-	CreatedAT   time.Time
-	UpdatedAT   time.Time
-	DeletedAT   time.Time
+	ID          string     `db:"id"`
+	FirstName   string     `db:"first_name"`
+	LastName    string     `db:"last_name"`
+	PhoneNumber string     `db:"phone_number"`
+	Email       string     `db:"email"`
+	UserName    string     `db:"user_name"`
+	Password    string     `db:"passward"`
+	Gender      string     `db:"gender"`
+	ImageURL    string     `db:"image_url"`
+	CreatedAT   time.Time  `db:"created_at"`
+	UpdatedAT   *time.Time `db:"updated_at"`
+	DeletedAT   time.Time  `db:"deleted_at"`
 }
 
 type PersonalWorkImage struct {
@@ -54,4 +55,15 @@ type PersonalWorkImage struct {
 	ImageURl       string
 	SequenceNumber int8
 	CreatedAT      time.Time
+}
+
+type GetUsersParams struct {
+	Page   int
+	Limit  int
+	Search string
+}
+
+type AllUsers struct {
+	Users []User
+	Count int64
 }

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 
+	"github.com/barber_shop/users/api/v1"
 	"github.com/barber_shop/users/config"
 	"github.com/barber_shop/users/storage"
 	"github.com/jmoiron/sqlx"
@@ -12,9 +13,8 @@ import (
 )
 
 func main() {
-	cfg := config.Load("./..")
-
-	connStr := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
+	cfg := config.Load("./")
+	connStr := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s", 
 		cfg.Postgres.Host,
 		cfg.Postgres.Port,
 		cfg.Postgres.User,
@@ -25,7 +25,13 @@ func main() {
 	if err != nil {
 		log.Fatalf("failed to open connection %v:", err)
 	}
-	storage.NewStoragePg(db)
+	st := storage.NewStoragePg(db)
+	server := api.NewService(st)
+	err = server.Run(cfg.HTTPPort)
+	if err != nil {
+		log.Fatalf("failed to start server: %v", err)
+	}
+
 
 	
 

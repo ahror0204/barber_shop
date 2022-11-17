@@ -1,0 +1,5 @@
+DROP TABLE  "users"
+DROP TYPE  "gender"
+DROP TABLE  "staff"
+DROP TABLE  "salon"
+DROP TABLE  "personal_work_images"
