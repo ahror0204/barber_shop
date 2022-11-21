@@ -174,10 +174,39 @@ func (u *userRepo) GetAllUsers(params *pb.GetUserParams) (*pb.AllUsers, error) {
 	FROM users ` + filter + `
 	ORDER BY created_at DESC ` + limit
 
-	err := u.db.Select(&users, query)
-
+	rows, err := u.db.Query(query)
 	if err != nil {
 		return nil, err
+	}
+	defer rows.Close()
+
+	for rows.Next(){
+		var(
+			updateAT sql.NullTime
+			user pb.User
+		)
+		err = rows.Scan(
+			&user.Id,
+			&user.FirstName,
+			&user.LastName,
+			&user.PhoneNumber,
+			&user.Email,
+			&user.UserName,
+			&user.Gender,
+			&user.ImageUrl,
+			&user.CreatedAt,
+			&updateAT,
+		)
+
+		if err != nil {
+			return nil, err
+		}
+
+		if updateAT.Valid {
+			user.UpdatedAt = time.Time.String(updateAT.Time)
+		}
+
+		users = append(users, &user)
 	}
 
 	countQuery := `SELECT count(1) FROM users` + filter

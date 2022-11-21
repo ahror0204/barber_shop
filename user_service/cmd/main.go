@@ -1,38 +1,28 @@
 package main
 
 import (
-	"fmt"
 	"net"
 
 	c "github.com/barber_shop/user_service/service"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 
-	logger "github.com/barber_shop/user_service/pkg/logger"
 	"github.com/barber_shop/user_service/config"
 	pb "github.com/barber_shop/user_service/genproto"
-	"github.com/jmoiron/sqlx"
-
-	_ "github.com/lib/pq"
+	logger "github.com/barber_shop/user_service/pkg/logger"
+	"github.com/barber_shop/user_service/pkg/db"	
 )
 
 func main() {
 	cfg := config.Load("./")
 
 	log := logger.New(cfg.LogLevel, "template-service")
-    defer logger.Cleanup(log)
-
-	connStr := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s",
-		cfg.Postgres.Host,
-		cfg.Postgres.Port,
-		cfg.Postgres.User,
-		cfg.Postgres.Password,
-		cfg.Postgres.DataBase,
-	)
-	db, err := sqlx.Connect("postgres", connStr)
+	defer logger.Cleanup(log)
+	
+	db, err := db.ConnectToDB(cfg)
 	if err != nil {
-		log.Fatal("failed to open connection:", logger.Error(err))
-	}
+        log.Fatal("sqlx connection to postgres error", logger.Error(err))
+    }
 
 	userService := c.NewUserService(db)
 
