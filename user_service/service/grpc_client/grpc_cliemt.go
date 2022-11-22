@@ -9,12 +9,17 @@ package grpcclient
 // )
 
 // type grpcClientI interface{
-// 	OrderService() pb.OrderServiceClient
+// 	UserService() pb.UserServiceClient
+
 // }
 
 // type GrpcClient struct {
 // 	cfg config.Config
 // 	connections map[string]interface{}
+// }
+
+// func (g *GrpcClient) OrderService() pb.UserServiceClient {
+// 	return g.connections["user_service"].(pb.UserServiceClient)
 // }
 
 // func New(cfg config.Config) (*GrpcClient, error) {
@@ -27,10 +32,6 @@ package grpcclient
 // 	cfg.OrderServiceHost, cfg.OrderServicePort, err.Error())
 // 	}
 // 	return &GrpcClient{
-// 		"order_service": pb.NewOrderServiceClient(connpos),
+// 		"user_service": pb.NewUserServiceClient(connpos),
 // 	}, nil
-// }
-
-// func (g *GrpcClient) OrderService() pb.OrderServiceClient {
-// 	return g.connections["order_service"].(pb.OrderServiceClient)
 // }

@@ -16,7 +16,7 @@ type userRepo struct {
 }
 
 func NewUser(db *sqlx.DB) repo.UserStorageI {
-	return &userRepo{db: db}
+	return &userRepo{db}
 }
 
 func (u *userRepo) CreateUser(user *pb.User) (*pb.ID, error) {
@@ -139,7 +139,7 @@ func (u *userRepo) GetUserByID(ID *pb.ID) (*pb.User, error) {
 	}
 
 	if updateAT.Valid {
-		ruser.UpdatedAt = time.Time.String(updateAT.Time)
+		ruser.UpdatedAt = updateAT.Time.String()
 	}
 
 	return &ruser, nil
@@ -171,8 +171,7 @@ func (u *userRepo) GetAllUsers(params *pb.GetUserParams) (*pb.AllUsers, error) {
 		image_url,
 		created_at,
 		updated_at
-	FROM users ` + filter + `
-	ORDER BY created_at DESC ` + limit
+	FROM users ` + filter + `ORDER BY created_at DESC ` + limit
 
 	rows, err := u.db.Query(query)
 	if err != nil {
@@ -222,14 +221,21 @@ func (u *userRepo) GetAllUsers(params *pb.GetUserParams) (*pb.AllUsers, error) {
 }
 
 func (u *userRepo) DeleteUser(ID *pb.ID) error {
-	deleteAT := time.Now()
-	query := `UPDATE users SET
-		deleted_at=$1
-	WHERE id = $2`
+	deletedAT := time.Now()
+	query := `UPDATE users SET deleted_at=$1 WHERE id = $2`
 
-	_, err := u.db.Exec(query, deleteAT, ID.Id)
+	result, err := u.db.Exec(query, deletedAT, ID.Id)
 	if err != nil {
 		return err
+	}
+
+	rowsCount, err := result.RowsAffected()
+	if err != nil {
+		return err
+	}
+
+	if rowsCount == 0 {
+		return sql.ErrNoRows
 	}
 
 	return nil

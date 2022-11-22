@@ -16,6 +16,12 @@ type Salon struct {
 	DeletedAT   time.Time
 }
 
+type GetSalonsParams struct {
+	Page   int
+	Limit  int
+	Search string
+}
+
 type Staff struct {
 	ID                 string
 	Name               string

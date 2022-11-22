@@ -1,4 +1,3 @@
-CREATE TYPE gender AS ENUM ('male', 'female');
 
 CREATE TABLE "users"(
     "id" UUID PRIMARY KEY NOT NULL,

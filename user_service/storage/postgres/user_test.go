@@ -9,15 +9,15 @@ import (
 )
 
 func createUser(t *testing.T) *pb.ID {
-	id, err := repoI.CreateUser(&pb.User{
-		FirstName: faker.FirstName(),
-		LastName: faker.LastName(),
+	id, err := repoUser.CreateUser(&pb.User{
+		FirstName:   faker.FirstName(),
+		LastName:    faker.LastName(),
 		PhoneNumber: faker.Phonenumber(),
-		Email: faker.Email(),
-		UserName: faker.Username(),
-		Password: faker.Password(),
-		Gender: "male",
-		ImageUrl: faker.URL(),
+		Email:       faker.Email(),
+		UserName:    faker.Username(),
+		Password:    faker.Password(),
+		Gender:      "male",
+		ImageUrl:    faker.URL(),
 	})
 
 	require.NoError(t, err)
@@ -27,7 +27,7 @@ func createUser(t *testing.T) *pb.ID {
 }
 
 func deleteUser(id *pb.ID, t *testing.T) {
-	err := repoI.DeleteUser(id)
+	err := repoUser.DeleteUser(id)
 	require.NoError(t, err)
 }
 
@@ -38,17 +38,17 @@ func TestCreateUser(t *testing.T) {
 
 func TestUpdateUser(t *testing.T) {
 	id := createUser(t)
-	
-	user, err := repoI.UpdateUser(&pb.User{
-		Id: id.Id,
-		FirstName: faker.FirstName(),
-		LastName: faker.LastName(),
+
+	user, err := repoUser.UpdateUser(&pb.User{
+		Id:          id.Id,
+		FirstName:   faker.FirstName(),
+		LastName:    faker.LastName(),
 		PhoneNumber: faker.Phonenumber(),
-		Email: faker.Email(),
-		UserName: faker.Username(),
-		Password: faker.Password(),
-		Gender: "male",
-		ImageUrl: faker.URL(),
+		Email:       faker.Email(),
+		UserName:    faker.Username(),
+		Password:    faker.Password(),
+		Gender:      "male",
+		ImageUrl:    faker.URL(),
 	})
 
 	require.NoError(t, err)
@@ -59,7 +59,7 @@ func TestUpdateUser(t *testing.T) {
 func TestGetUserByID(t *testing.T) {
 	id := createUser(t)
 
-	user, err := repoI.GetUserByID(id)
+	user, err := repoUser.GetUserByID(id)
 
 	require.NoError(t, err)
 	require.NotEmpty(t, user)
@@ -68,9 +68,9 @@ func TestGetUserByID(t *testing.T) {
 
 func TestGetAllUsers(t *testing.T) {
 	id := createUser(t)
-	users, err := repoI.GetAllUsers(&pb.GetUserParams{
+	users, err := repoUser.GetAllUsers(&pb.GetUserParams{
 		Limit: 10,
-		Page: 1,
+		Page:  1,
 	})
 
 	require.NoError(t, err)

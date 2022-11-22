@@ -11,7 +11,10 @@ import (
 	"github.com/barber_shop/user_service/storage/repo"
 )
 
-var repoI repo.UserStorageI
+var (
+	repoUser repo.UserStorageI
+	repoSalon repo.SalonStorageI
+)
 
 func TestMain(m *testing.M) {
 	cfg := config.Load("./../..")
@@ -21,6 +24,7 @@ func TestMain(m *testing.M) {
 		log.Fatal("sqlx connection to postgres error", logger.Error(err))
 	}
 
-	repoI = NewUser(db)
+	repoUser = NewUser(db)
+	repoSalon = NewSalonRepo(db)
 	os.Exit(m.Run())
 }
