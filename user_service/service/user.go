@@ -2,19 +2,24 @@ package service
 
 import (
 	"context"
+
 	pb "github.com/barber_shop/user_service/genproto"
+	l "github.com/barber_shop/user_service/pkg/logger"
 	"github.com/barber_shop/user_service/storage"
 	"github.com/jmoiron/sqlx"
+
 )
 
 
 type UserService struct {
 	storage storage.StorageI
+	logger l.Logger
 }
 
-func NewUserService(db *sqlx.DB) *UserService{
+func NewUserService(db *sqlx.DB, log l.Logger) *UserService{
 	return &UserService{
 		storage: storage.NewStoragePg(db),
+		logger: log,
 	}
 }
 

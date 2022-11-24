@@ -6,6 +6,11 @@ import (
 	"github.com/barber_shop/api-gateway/pkg/logger"
 	services "github.com/barber_shop/api-gateway/services"
 	"github.com/gin-gonic/gin"
+
+	swaggerFiles "github.com/swaggo/files"     // swagger embed files
+	ginSwagger "github.com/swaggo/gin-swagger" // gin-swagger middleware
+
+	_ "github.com/barber_shop/api-gateway/api/docs" // for swagger
 )
 
 // Option ...
@@ -15,7 +20,9 @@ type Option struct {
 	ServiceManager services.IServiceManager
 }
 
-// New ...
+// @title           Swagger for barber shop api
+// @version         1.0
+// @host      localhost:8000
 func New(option Option) *gin.Engine {
 	router := gin.New()
 
@@ -30,10 +37,10 @@ func New(option Option) *gin.Engine {
 
 	api := router.Group("/v1")
 	api.POST("/users", handlerV1.CreateUser)
-	// api.GET("/users/:id", handlerV1.GetUser)
-	// api.GET("/users", handlerV1.ListUsers)
-	// api.PUT("/users/:id", handlerV1.UpdateUser)
-	// api.DELETE("/users/:id", handlerV1.DeleteUser)
+	
 
+	
+	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+	
 	return router
 }

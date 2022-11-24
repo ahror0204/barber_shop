@@ -24,7 +24,7 @@ func main() {
         log.Fatal("sqlx connection to postgres error", logger.Error(err))
     }
 
-	userService := c.NewUserService(db)
+	userService := c.NewUserService(db, log)
 
 	lis, err := net.Listen("tcp", cfg.RPCPort)
 	if err != nil {

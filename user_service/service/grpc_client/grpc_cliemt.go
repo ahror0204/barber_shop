@@ -8,10 +8,10 @@ package grpcclient
 // 	"google.golang.org/grpc"
 // )
 
-// type grpcClientI interface{
-// 	UserService() pb.UserServiceClient
+type GrpcClientI interface{
+	// UserService() pb.UserServiceClient
 
-// }
+}
 
 // type GrpcClient struct {
 // 	cfg config.Config
