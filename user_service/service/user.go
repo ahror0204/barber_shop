@@ -8,6 +8,9 @@ import (
 	"github.com/barber_shop/user_service/storage"
 	"github.com/jmoiron/sqlx"
 
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
+
 )
 
 
@@ -26,7 +29,8 @@ func NewUserService(db *sqlx.DB, log l.Logger) *UserService{
 func (u *UserService) CreateUser(ctx context.Context, req *pb.User) (*pb.ID, error){
 	id, err := u.storage.User().CreateUser(req)
 	if err != nil {
-		return nil, err
+		u.logger.Error("failed while creating user", l.Error(err))
+		return nil, status.Error(codes.Internal, "failed while creating user")
 	}
 
 	return id, nil

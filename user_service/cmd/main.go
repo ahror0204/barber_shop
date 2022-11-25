@@ -16,7 +16,7 @@ import (
 func main() {
 	cfg := config.Load("./")
 
-	log := logger.New(cfg.LogLevel, "template-service")
+	log := logger.New(cfg.LogLevel, "users-service")
 	defer logger.Cleanup(log)
 	
 	db, err := db.ConnectToDB(cfg)
