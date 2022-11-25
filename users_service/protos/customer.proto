@@ -1,0 +1,45 @@
+syntax = "proto3";
+
+package protos;
+
+service CustomerService {
+    rpc CreateCustomer(Customer) returns (ID);
+    rpc UpdateCustomer(Customer) returns (Customer);
+    rpc GetCustomerByID(ID) returns (Customer);
+    rpc GetListCustomers(GetCustomerParams) returns (AllCustomers);
+    rpc DeleteCustomer(ID) returns (Empty);
+}
+
+message AllCustomers {
+    repeated Customer customers = 1;
+    int64 count = 2;
+}
+
+message GetCustomerParams{
+    int64 page = 1;
+    int64 limit = 2;
+    string search =3;
+}
+
+message Empty {}
+
+message ID {
+    string id = 1;
+}
+
+message Customer {
+    string      id=1;
+    string      first_name=2;
+    string      last_name=3;
+    string      phone_number=4;
+    string      email=5;
+    string      user_name=6;
+    string      password=7;
+    string      gender=8;
+    string      image_url=9;
+    string      created_at=10;
+    string      updated_at=11;
+    string      deleted_at=12;
+}
+
+
