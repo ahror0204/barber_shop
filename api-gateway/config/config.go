@@ -1,7 +1,6 @@
 package config
 
 import (
-
 	"github.com/joho/godotenv"
 	"github.com/spf13/viper"
 )
@@ -26,17 +25,15 @@ func Load(path string) Config {
 
 	conf := viper.New()
 	conf.AutomaticEnv()
-	
+
 	cfg := Config{
-		Environment: conf.GetString("ENVIRONMENT"),
-		HTTPPort: conf.GetString("HTTP_PORT"),
+		Environment:     conf.GetString("ENVIRONMENT"),
+		HTTPPort:        conf.GetString("HTTP_PORT"),
 		UserServiceHost: conf.GetString("USER_SERVICE_HOST"),
 		UserServicePort: conf.GetInt("USER_SERVICE_PORT"),
-		CtxTimeout: conf.GetInt("CTX_TIMEOUT"),
-		LogLevel: conf.GetString("LOG_LEVEL"),
+		CtxTimeout:      conf.GetInt("CTX_TIMEOUT"),
+		LogLevel:        conf.GetString("LOG_LEVEL"),
 	}
 
 	return cfg
 }
-                                                                                       
-

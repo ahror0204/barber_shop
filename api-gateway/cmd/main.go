@@ -10,7 +10,7 @@ import (
 func main() {
 	cfg := config.Load("./")
 	log := logger.New(cfg.LogLevel, "api_gateway")
-
+	
 	serviceManager, err := services.NewServiceManager(&cfg)
 	if err != nil {
 		log.Error("gRPC dial error", logger.Error(err))

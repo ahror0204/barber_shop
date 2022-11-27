@@ -35,24 +35,37 @@ func (c *UsersService) CreateCustomer(ctx context.Context, req *pb.Customer) (*p
 }
 
 func (c *UsersService) UpdateCustomer(ctx context.Context, req *pb.Customer) (*pb.Customer, error) {
-	_, _ = c.storage.Customer().UpdateCustomer(req)
-	return nil, nil
+	customer, err := c.storage.Customer().UpdateCustomer(req)
+	if err != nil {
+		c.logger.Error("failed while updating customer", l.Error(err))
+		return nil, status.Error(codes.Internal, "failed while updating customer")
+	}
+	return customer, nil
 }
 
 func (c *UsersService) GetCustomerByID(ctx context.Context, req *pb.ID) (*pb.Customer, error) {
-	_, _ = c.storage.Customer().GetCustomerByID(req)
-	return nil, nil
+	customer, err := c.storage.Customer().GetCustomerByID(req)
+	if err != nil {
+		c.logger.Error("failed while getting customer by id", l.Error(err))
+		return nil, status.Error(codes.Internal, "failed while getting customer by id")
+	}
+	return customer, nil
 }
 
 func (c *UsersService) GetListCustomers(ctx context.Context, req *pb.GetCustomerParams) (*pb.AllCustomers, error) {
-	_, _ = c.storage.Customer().GetListCustomers(req)
-	return nil, nil
+	Customers, err := c.storage.Customer().GetListCustomers(req)
+	if err != nil {
+		c.logger.Error("failed while gting customers list", l.Error(err))
+		return nil, status.Error(codes.Internal, "failed while failed while gting customers list")
+	}
+	return Customers, nil
 }
 
 func (c *UsersService) DeleteCustomer(ctx context.Context, req *pb.ID) (*pb.Empty, error) {
 	err := c.storage.Customer().DeleteCustomer(req)
 	if err != nil {
-		return nil, err
+		c.logger.Error("failed while deleting customer", l.Error(err))
+		return nil, status.Error(codes.Internal, "failed while deleting customer")
 	}
 	return nil, nil
 }

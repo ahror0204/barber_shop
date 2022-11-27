@@ -22,7 +22,8 @@ type Option struct {
 
 // @title           Swagger for barber shop api
 // @version         1.0
-// @host      localhost:8000
+// @host      localhost:9090
+// @BasePath  /v1
 func New(option Option) *gin.Engine {
 	router := gin.New()
 
@@ -35,12 +36,16 @@ func New(option Option) *gin.Engine {
 		Cfg:            option.Conf,
 	})
 
-	api := router.Group("/v1")
-	api.POST("/users", handlerV1.CreateUser)
-	
+	router.Static("/media", "./media")
 
+	api := router.Group("/v1")
 	
+	api.POST("/customer/create", handlerV1.CreateCustomer)
+	api.PUT("/customer/update", handlerV1.UpdateCustomer)
+
+	api.POST("/file-upload", handlerV1.UploadFile)
+
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
-	
+
 	return router
 }

@@ -5,8 +5,12 @@ go 1.18
 require (
 	github.com/gin-gonic/gin v1.8.1
 	github.com/golang/protobuf v1.5.2
+	github.com/google/uuid v1.3.0
 	github.com/joho/godotenv v1.4.0
 	github.com/spf13/viper v1.14.0
+	github.com/swaggo/files v0.0.0-20220728132757-551d4a08d97a
+	github.com/swaggo/gin-swagger v1.5.3
+	github.com/swaggo/swag v1.8.1
 	go.uber.org/zap v1.23.0
 	google.golang.org/grpc v1.50.1
 )
@@ -42,9 +46,6 @@ require (
 	github.com/spf13/jwalterweatherman v1.1.0 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
 	github.com/subosito/gotenv v1.4.1 // indirect
-	github.com/swaggo/files v0.0.0-20220728132757-551d4a08d97a // indirect
-	github.com/swaggo/gin-swagger v1.5.3 // indirect
-	github.com/swaggo/swag v1.8.1 // indirect
 	github.com/ugorji/go/codec v1.2.7 // indirect
 	go.uber.org/atomic v1.9.0 // indirect
 	go.uber.org/multierr v1.8.0 // indirect

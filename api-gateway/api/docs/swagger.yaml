@@ -1,0 +1,152 @@
+basePath: /v1
+definitions:
+  models.CreateCustomerRespons:
+    properties:
+      id:
+        type: string
+    type: object
+  models.Customer:
+    properties:
+      created_at:
+        type: string
+      deleted_at:
+        type: string
+      email:
+        type: string
+      first_name:
+        type: string
+      gender:
+        type: string
+      id:
+        type: string
+      image_url:
+        type: string
+      last_name:
+        type: string
+      password:
+        type: string
+      phone_number:
+        type: string
+      updated_at:
+        type: string
+      user_name:
+        type: string
+    type: object
+  models.CustomerRequest:
+    properties:
+      email:
+        type: string
+      first_name:
+        type: string
+      gender:
+        type: string
+      image_url:
+        type: string
+      last_name:
+        type: string
+      passward:
+        type: string
+      phone_number:
+        type: string
+      user_name:
+        type: string
+    type: object
+  models.ErrorResponse:
+    properties:
+      error:
+        type: string
+    type: object
+  models.ResponseOK:
+    properties:
+      message:
+        type: string
+    type: object
+host: localhost:9090
+info:
+  contact: {}
+  title: Swagger for barber shop api
+  version: "1.0"
+paths:
+  /customer/create:
+    post:
+      consumes:
+      - application/json
+      description: This api for creating customer
+      parameters:
+      - description: Customer
+        in: body
+        name: customer
+        required: true
+        schema:
+          $ref: '#/definitions/models.CustomerRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.CreateCustomerRespons'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Create a customer
+      tags:
+      - customer
+  /customer/update:
+    put:
+      consumes:
+      - application/json
+      description: This api for updating customer
+      parameters:
+      - description: CustomerID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Customer
+        in: body
+        name: customer
+        required: true
+        schema:
+          $ref: '#/definitions/models.CustomerRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Customer'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Update a customer
+      tags:
+      - customer
+  /file-upload:
+    post:
+      consumes:
+      - application/json
+      description: This API for uploading file
+      parameters:
+      - description: File
+        in: formData
+        name: file
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.ResponseOK'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: File upload
+      tags:
+      - file-upload
+swagger: "2.0"

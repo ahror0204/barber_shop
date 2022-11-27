@@ -11,29 +11,27 @@ import (
 )
 
 type IServiceManager interface {
-	UserService() pb.UserServiceClient
+	UserService() pb.CustomerServiceClient
 }
 
 type serviceManager struct {
-	userService pb.UserServiceClient
+	userService pb.CustomerServiceClient
 }
 
-func (s *serviceManager) UserService() pb.UserServiceClient {
+func (s *serviceManager) UserService() pb.CustomerServiceClient {
 	return s.userService
 }
 
 func NewServiceManager(conf *config.Config) (IServiceManager, error) {
 	resolver.SetDefaultScheme("dns")
-
 	connUser, err := grpc.Dial(
 		fmt.Sprintf("%s:%d", conf.UserServiceHost, conf.UserServicePort),
 		grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		return nil, err
 	}
-
 	serviceManager := &serviceManager{
-		userService: pb.NewUserServiceClient(connUser),
+		userService: pb.NewCustomerServiceClient(connUser),
 	}
 
 	return serviceManager, nil
