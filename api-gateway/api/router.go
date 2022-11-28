@@ -41,7 +41,9 @@ func New(option Option) *gin.Engine {
 	api := router.Group("/v1")
 	
 	api.POST("/customer/create", handlerV1.CreateCustomer)
-	api.PUT("/customer/update", handlerV1.UpdateCustomer)
+	api.PUT("/customer/update/:id", handlerV1.UpdateCustomer)
+	api.GET("/customer/get/:id", handlerV1.GetCustomerByID)
+	api.GET("/customers/list", handlerV1.GetListCustomers)
 
 	api.POST("/file-upload", handlerV1.UploadFile)
 

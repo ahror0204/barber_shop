@@ -30,9 +30,14 @@ type CustomerRequest struct {
 	ImageURL    string `json:"image_url"`
 }
 
+type GetListCustomersResponse struct {
+	Customers []*Customer `json:"customers"`
+	Count     int64      `json:"count"`
+}
+
 type GetListParams struct {
-	Limit  int    `json:"limit" binding:"required" default:"10"`
-	Page   int    `json:"page" binding:"required" default:"1"`
+	Limit  int64  `json:"limit" binding:"required" default:"10"`
+	Page   int64  `json:"page" binding:"required" default:"1"`
 	Search string `json:"search"`
 }
 
@@ -67,4 +72,24 @@ func ParsCustomerFromProtoStruct(customer *pb.Customer) *Customer {
 		CreatedAT:   customer.CreatedAt,
 		UpdatedAT:   customer.UpdatedAt,
 	}
+}
+
+func ParsListCustomersFromProtoStruct(customers []*pb.Customer) (rCustomers []*Customer) {
+	for _, cust := range customers {
+		rCustomer := Customer{
+			ID:          cust.Id,
+			FirstName:   cust.FirstName,
+			LastName:    cust.LastName,
+			PhoneNumber: cust.PhoneNumber,
+			Email:       cust.Email,
+			UserName:    cust.UserName,
+			Password:    cust.Password,
+			Gender:      cust.Gender,
+			ImageURL:    cust.ImageUrl,
+			CreatedAT:   cust.CreatedAt,
+			UpdatedAT:   cust.UpdatedAt,
+		}
+		rCustomers = append(rCustomers, &rCustomer)
+	}
+	return
 }

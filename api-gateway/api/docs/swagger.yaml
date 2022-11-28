@@ -56,6 +56,15 @@ definitions:
       error:
         type: string
     type: object
+  models.GetListCustomersResponse:
+    properties:
+      count:
+        type: integer
+      customers:
+        items:
+          $ref: '#/definitions/models.Customer'
+        type: array
+    type: object
   models.ResponseOK:
     properties:
       message:
@@ -93,7 +102,32 @@ paths:
       summary: Create a customer
       tags:
       - customer
-  /customer/update:
+  /customer/get/{id}:
+    get:
+      consumes:
+      - application/json
+      description: This api for getting customer by id
+      parameters:
+      - description: CustomerID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Customer'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Get customer by id
+      tags:
+      - customer
+  /customer/update/{id}:
     put:
       consumes:
       - application/json
@@ -122,6 +156,39 @@ paths:
           schema:
             $ref: '#/definitions/models.ErrorResponse'
       summary: Update a customer
+      tags:
+      - customer
+  /customers/list:
+    get:
+      consumes:
+      - application/json
+      description: This api for getting list of customers
+      parameters:
+      - default: 10
+        in: query
+        name: limit
+        required: true
+        type: integer
+      - default: 1
+        in: query
+        name: page
+        required: true
+        type: integer
+      - in: query
+        name: search
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.GetListCustomersResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: get list customers
       tags:
       - customer
   /file-upload:

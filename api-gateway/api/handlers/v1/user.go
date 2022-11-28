@@ -2,11 +2,10 @@ package v1
 
 import (
 	"context"
-	"fmt"
 	"net/http"
 
 	"time"
-
+	pb "github.com/barber_shop/api-gateway/genproto"
 	"github.com/barber_shop/api-gateway/api/models"
 	"github.com/gin-gonic/gin"
 )
@@ -45,7 +44,7 @@ func (h *handlerV1) CreateCustomer(c *gin.Context) {
 	})
 }
 
-// @Router /customer/update [put]
+// @Router /customer/update/{id} [put]
 // @Summary Update a customer
 // @Description This api for updating customer
 // @Tags customer
@@ -69,7 +68,6 @@ func (h *handlerV1) UpdateCustomer(c *gin.Context) {
 
 	cstmr := models.ParsCustomerToProtoStruct(&customer)
 	cstmr.Id = id
-	fmt.Println(id, cstmr, "----------------------------------------")
 	rCustomer, err := h.serviceManager.UserService().UpdateCustomer(ctx, cstmr)
 	if err != nil {
 		errHandller(c, http.StatusInternalServerError, err)
@@ -81,33 +79,69 @@ func (h *handlerV1) UpdateCustomer(c *gin.Context) {
 	c.JSON(http.StatusOK, res)
 }
 
-// func (h *handlerV1) GetUser(c *gin.Context) {
-// 	id := c.Param("id")
-// 	ruser, err := h.serviceManager.UserService().GetUserByID(id)
-// 	if err != nil {
-// 		errHandller(c, http.StatusInternalServerError, err)
-// 		return
-// 	}
 
-// 	c.JSON(200, ruser)
+// @Router /customer/get/{id} [get]
+// @Summary Get customer by id
+// @Description This api for getting customer by id
+// @Tags customer
+// @Accept json
+// @Produce json
+// @Param id path string true "CustomerID"
+// @Success 200 {object} models.Customer
+// @Failure 500 {object} models.ErrorResponse
+func (h *handlerV1) GetCustomerByID(c *gin.Context) {
+	id := c.Param("id")
 
-// }
+	ctx, cencel := context.WithTimeout(context.Background(), time.Second*time.Duration(h.cfg.CtxTimeout))
+	defer cencel()
 
-// func (h *handlerV1) GetAllUsers(c *gin.Context) {
-// 	params, err := validateGetAllParams(c)
-// 	if err != nil {
-// 		errHandller(c, http.StatusBadRequest, err)
-// 		return
-// 	}
+	customer, err := h.serviceManager.UserService().GetCustomerByID(ctx, &pb.ID{Id: id})
+	if err != nil {
+		errHandller(c, http.StatusInternalServerError, err)
+		return
+	}
 
-// 	res, err := h.serviceManager.UserService().GetAllUsers(params)
-// 	if err != nil {
-// 		errHandller(c, http.StatusInternalServerError, err)
-// 		return
-// 	}
+	res := models.ParsCustomerFromProtoStruct(customer)
 
-// 	c.JSON(http.StatusOK, res)
-// }
+	c.JSON(http.StatusOK, res)
+}
+
+// @Router /customers/list [get]
+// @Summary get list customers
+// @Description This api for getting list of customers
+// @Tags customer
+// @Accept json
+// @Produce json
+// @Param filter query models.GetListParams false "Filter"
+// @Success 200 {object} models.GetListCustomersResponse
+// @Failure 500 {object} models.ErrorResponse
+func (h *handlerV1) GetListCustomers(c *gin.Context) {
+	req, err := validateGetAllParams(c)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, errorResponse(err))
+		return
+	}
+
+	ctx, cencel := context.WithTimeout(context.Background(), time.Second*time.Duration(h.cfg.CtxTimeout))
+	defer cencel()
+
+	res, err := h.serviceManager.UserService().GetListCustomers(ctx, &pb.GetCustomerParams{
+		Page: req.Page,
+		Limit: req.Limit,
+		Search: req.Search,
+	})
+	if err != nil {
+		errHandller(c, http.StatusInternalServerError, err)
+		return
+	}
+
+	customers := models.ParsListCustomersFromProtoStruct(res.Customers)
+
+	c.JSON(http.StatusOK, models.GetListCustomersResponse{
+		Customers: customers,
+		Count: res.Count,
+	})
+}
 
 // func (h *handlerV1) DeleteUser(c *gin.Context) {
 // 	id := c.Param("id")
