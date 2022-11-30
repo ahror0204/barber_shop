@@ -102,6 +102,31 @@ paths:
       summary: Create a customer
       tags:
       - customer
+  /customer/delete/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: This api for deleting customer by id
+      parameters:
+      - description: CustomerID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.ResponseOK'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Delete customer by id
+      tags:
+      - customer
   /customer/get/{id}:
     get:
       consumes:

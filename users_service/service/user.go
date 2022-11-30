@@ -69,3 +69,12 @@ func (c *UsersService) DeleteCustomer(ctx context.Context, req *pb.ID) (*pb.Empt
 	}
 	return nil, nil
 }
+
+func (c *UsersService) GetCustomerByEmail(ctx context.Context, req *pb.Email) (*pb.Customer, error) {
+	customer, err := c.storage.Customer().GetCustomerByEmail(req)
+	if err != nil {
+		c.logger.Error("failed while getting customer by email", l.Error(err))
+		return nil, status.Error(codes.Internal, "failed while getting customer by email")
+	}
+	return customer, nil
+}

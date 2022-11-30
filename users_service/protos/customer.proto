@@ -8,6 +8,11 @@ service CustomerService {
     rpc GetCustomerByID(ID) returns (Customer);
     rpc GetListCustomers(GetCustomerParams) returns (AllCustomers);
     rpc DeleteCustomer(ID) returns (Empty);
+    rpc GetCustomerByEmail(Email) returns (Customer);
+}
+
+message Email {
+    string email = 1;
 }
 
 message AllCustomers {

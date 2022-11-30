@@ -106,8 +106,10 @@ func (u *customerRepo) UpdateCustomer(customer *pb.Customer) (*pb.Customer, erro
 }
 
 func (u *customerRepo) GetCustomerByID(ID *pb.ID) (*pb.Customer, error) {
-	var updateAT sql.NullTime
-	var rCustomer pb.Customer
+	var (
+		updateAT sql.NullTime
+	 	rCustomer pb.Customer
+	)
 	query := `SELECT
 		id,
 		first_name,
@@ -239,4 +241,46 @@ func (u *customerRepo) DeleteCustomer(ID *pb.ID) error {
 	}
 
 	return nil
+}
+
+func (c *customerRepo) GetCustomerByEmail(email *pb.Email) (*pb.Customer, error)  {
+	var (
+		updateAT sql.NullTime
+	 	rCustomer pb.Customer
+	)
+	query := `SELECT
+			id,
+			first_name,
+			last_name,
+			phone_number,
+			email,
+			user_name,
+			gender,
+			image_url,
+			created_at,
+			updated_at
+		FROM customers
+		WHERE email = $1 AND deleted_at IS NULL`
+
+		err := c.db.QueryRow(query, email.Email).Scan(
+			&rCustomer.Id,
+			&rCustomer.FirstName,
+			&rCustomer.LastName,
+			&rCustomer.PhoneNumber,
+			&rCustomer.Email,
+			&rCustomer.UserName,
+			&rCustomer.Gender,
+			&rCustomer.ImageUrl,
+			&rCustomer.CreatedAt,
+			&updateAT,
+		)
+		if err != nil {
+			return nil, err
+		}
+	
+		if updateAT.Valid {
+			rCustomer.UpdatedAt = updateAT.Time.String()
+		}
+	
+		return &rCustomer, nil
 }

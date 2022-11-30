@@ -24,7 +24,7 @@ func (h *handlerV1) CreateCustomer(c *gin.Context) {
 	
 	err := c.ShouldBindJSON(&customer)
 	if err != nil {
-		errHandller(c, http.StatusBadRequest, err)
+		c.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
 
@@ -35,7 +35,7 @@ func (h *handlerV1) CreateCustomer(c *gin.Context) {
 
 	ID, err := h.serviceManager.UserService().CreateCustomer(ctx, cstmr)
 	if err != nil {
-		errHandller(c, http.StatusInternalServerError, err)
+		c.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
 
@@ -59,7 +59,7 @@ func (h *handlerV1) UpdateCustomer(c *gin.Context) {
 	id := c.Param("id")
 	err := c.ShouldBindJSON(&customer)
 	if err != nil {
-		errHandller(c, http.StatusBadRequest, err)
+		c.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
 
@@ -70,7 +70,7 @@ func (h *handlerV1) UpdateCustomer(c *gin.Context) {
 	cstmr.Id = id
 	rCustomer, err := h.serviceManager.UserService().UpdateCustomer(ctx, cstmr)
 	if err != nil {
-		errHandller(c, http.StatusInternalServerError, err)
+		c.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
 
@@ -97,7 +97,7 @@ func (h *handlerV1) GetCustomerByID(c *gin.Context) {
 
 	customer, err := h.serviceManager.UserService().GetCustomerByID(ctx, &pb.ID{Id: id})
 	if err != nil {
-		errHandller(c, http.StatusInternalServerError, err)
+		c.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
 
@@ -131,7 +131,7 @@ func (h *handlerV1) GetListCustomers(c *gin.Context) {
 		Search: req.Search,
 	})
 	if err != nil {
-		errHandller(c, http.StatusInternalServerError, err)
+		c.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
 
@@ -143,49 +143,29 @@ func (h *handlerV1) GetListCustomers(c *gin.Context) {
 	})
 }
 
-// func (h *handlerV1) DeleteUser(c *gin.Context) {
-// 	id := c.Param("id")
+// @Router /customer/delete/{id} [delete]
+// @Summary Delete customer by id
+// @Description This api for deleting customer by id
+// @Tags customer
+// @Accept json
+// @Produce json
+// @Param id path string true "CustomerID"
+// @Success 200 {object} models.ResponseOK
+// @Failure 500 {object} models.ErrorResponse
+func (h *handlerV1) DeleteCustomer(c *gin.Context) {
+	id := c.Param("id")
 
-// 	_, err := h.serviceManager.UserService().DeleteUser(id)
-// 	if err != nil {
-// 		errHandller(c, http.StatusInternalServerError, err)
-// 		return
-// 	}
+	ctx, cencel := context.WithTimeout(context.Background(), time.Second* time.Duration(h.cfg.CtxTimeout))
+	defer cencel()
 
-// 	c.JSON(200, "successful")
+	_, err := h.serviceManager.UserService().DeleteCustomer(ctx, &pb.ID{Id: id})
+	if err != nil {
+		c.JSON(http.StatusBadRequest, errorResponse(err))
+		return
+	}
 
-// }
-
-func errHandller(c *gin.Context, status int, err error) {
-	c.JSON(status, gin.H{
-		"error": err.Error(),
+	c.JSON(http.StatusOK, models.ResponseOK{
+		Message: "succesfuly deleted",
 	})
+
 }
-
-// func validateGetAllParams(c *gin.Context) (*models.GetUsersParams, error) {
-// 	var (
-// 		limit int = 10
-// 		page  int = 1
-// 		err   error
-// 	)
-
-// 	if c.Query("limit") != "" {
-// 		limit, err = strconv.Atoi(c.Query("limit"))
-// 		if err != nil {
-// 			return nil, err
-// 		}
-// 	}
-
-// 	if c.Query("page") != "" {
-// 		page, err = strconv.Atoi(c.Query("page"))
-// 		if err != nil {
-// 			return nil, err
-// 		}
-// 	}
-
-// 	return &models.GetUsersParams{
-// 		Page:   page,
-// 		Limit:  limit,
-// 		Search: c.Query("search"),
-// 	}, nil
-// }

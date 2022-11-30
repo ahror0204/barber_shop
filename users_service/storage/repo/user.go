@@ -8,4 +8,5 @@ type CustomerStorageI interface {
 	GetCustomerByID(*pb.ID) (*pb.Customer, error)
 	GetListCustomers(*pb.GetCustomerParams) (*pb.AllCustomers, error)
 	DeleteCustomer(*pb.ID) error
+	GetCustomerByEmail(*pb.Email) (*pb.Customer, error)
 }

@@ -56,6 +56,44 @@ const docTemplate = `{
                 }
             }
         },
+        "/customer/delete/{id}": {
+            "delete": {
+                "description": "This api for deleting customer by id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "customer"
+                ],
+                "summary": "Delete customer by id",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "CustomerID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseOK"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/customer/get/{id}": {
             "get": {
                 "description": "This api for getting customer by id",

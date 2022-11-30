@@ -7,11 +7,13 @@ import (
 	config "github.com/barber_shop/api-gateway/config"
 	"github.com/barber_shop/api-gateway/pkg/logger"
 	services "github.com/barber_shop/api-gateway/services"
+	repo "github.com/barber_shop/api-gateway/storage/repo"
 	"github.com/gin-gonic/gin"
 )
 
 type handlerV1 struct {
 	log            logger.Logger
+	redisStorage   repo.RedisRepositoryStorage
 	serviceManager services.IServiceManager
 	cfg            config.Config
 }
@@ -19,6 +21,7 @@ type handlerV1 struct {
 // HandlerV1Config ...
 type HandlerV1Config struct {
 	Logger         logger.Logger
+	Redis          repo.RedisRepositoryStorage
 	ServiceManager services.IServiceManager
 	Cfg            config.Config
 }
@@ -27,6 +30,7 @@ type HandlerV1Config struct {
 func New(c *HandlerV1Config) *handlerV1 {
 	return &handlerV1{
 		log:            c.Logger,
+		redisStorage:   c.Redis,
 		serviceManager: c.ServiceManager,
 		cfg:            c.Cfg,
 	}
