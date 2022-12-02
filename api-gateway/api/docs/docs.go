@@ -132,6 +132,83 @@ const docTemplate = `{
                 }
             }
         },
+        "/customer/login": {
+            "post": {
+                "description": "This api for login customer",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Login customer",
+                "parameters": [
+                    {
+                        "description": "Data",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.LogInCustomerRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/models.AuthResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/customer/register": {
+            "post": {
+                "description": "This api for registering a customer",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "auth"
+                ],
+                "summary": "register a customer",
+                "parameters": [
+                    {
+                        "description": "Data",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.CustomerRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseOK"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/customer/update/{id}": {
             "put": {
                 "description": "This api for updating customer",
@@ -168,6 +245,43 @@ const docTemplate = `{
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/models.Customer"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/customer/verify": {
+            "post": {
+                "description": "This api for verification customer",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Verify customer",
+                "parameters": [
+                    {
+                        "description": "Data",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.VerifyRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.CreateCustomerRespons"
                         }
                     },
                     "500": {
@@ -269,6 +383,41 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "models.AuthResponse": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "first_name": {
+                    "type": "string"
+                },
+                "gender": {
+                    "type": "string"
+                },
+                "image_url": {
+                    "type": "string"
+                },
+                "last_name": {
+                    "type": "string"
+                },
+                "passward": {
+                    "type": "string"
+                },
+                "phone_number": {
+                    "type": "string"
+                },
+                "token": {
+                    "type": "string"
+                },
+                "user_name": {
+                    "type": "string"
+                }
+            }
+        },
         "models.CreateCustomerRespons": {
             "type": "object",
             "properties": {
@@ -369,10 +518,32 @@ const docTemplate = `{
                 }
             }
         },
+        "models.LogInCustomerRequest": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "passward": {
+                    "type": "string"
+                }
+            }
+        },
         "models.ResponseOK": {
             "type": "object",
             "properties": {
                 "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.VerifyRequest": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "string"
+                },
+                "email": {
                     "type": "string"
                 }
             }

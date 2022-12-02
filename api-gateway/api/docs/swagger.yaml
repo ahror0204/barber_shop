@@ -1,5 +1,28 @@
 basePath: /v1
 definitions:
+  models.AuthResponse:
+    properties:
+      created_at:
+        type: string
+      email:
+        type: string
+      first_name:
+        type: string
+      gender:
+        type: string
+      image_url:
+        type: string
+      last_name:
+        type: string
+      passward:
+        type: string
+      phone_number:
+        type: string
+      token:
+        type: string
+      user_name:
+        type: string
+    type: object
   models.CreateCustomerRespons:
     properties:
       id:
@@ -65,9 +88,23 @@ definitions:
           $ref: '#/definitions/models.Customer'
         type: array
     type: object
+  models.LogInCustomerRequest:
+    properties:
+      email:
+        type: string
+      passward:
+        type: string
+    type: object
   models.ResponseOK:
     properties:
       message:
+        type: string
+    type: object
+  models.VerifyRequest:
+    properties:
+      code:
+        type: string
+      email:
         type: string
     type: object
 host: localhost:9090
@@ -152,6 +189,56 @@ paths:
       summary: Get customer by id
       tags:
       - customer
+  /customer/login:
+    post:
+      consumes:
+      - application/json
+      description: This api for login customer
+      parameters:
+      - description: Data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/models.LogInCustomerRequest'
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.AuthResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Login customer
+      tags:
+      - auth
+  /customer/register:
+    post:
+      consumes:
+      - application/json
+      description: This api for registering a customer
+      parameters:
+      - description: Data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/models.CustomerRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.ResponseOK'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: register a customer
+      tags:
+      - auth
   /customer/update/{id}:
     put:
       consumes:
@@ -183,6 +270,30 @@ paths:
       summary: Update a customer
       tags:
       - customer
+  /customer/verify:
+    post:
+      consumes:
+      - application/json
+      description: This api for verification customer
+      parameters:
+      - description: Data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/models.VerifyRequest'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.CreateCustomerRespons'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Verify customer
+      tags:
+      - auth
   /customers/list:
     get:
       consumes:

@@ -2,6 +2,8 @@ package service
 
 import (
 	"context"
+	"database/sql"
+	"errors"
 
 	pb "github.com/barber_shop/users_service/genproto"
 	l "github.com/barber_shop/users_service/pkg/logger"
@@ -74,7 +76,11 @@ func (c *UsersService) GetCustomerByEmail(ctx context.Context, req *pb.Email) (*
 	customer, err := c.storage.Customer().GetCustomerByEmail(req)
 	if err != nil {
 		c.logger.Error("failed while getting customer by email", l.Error(err))
+		if !errors.Is(err, sql.ErrNoRows) {
+			return nil, status.Error(codes.NotFound, err.Error())
+		}
 		return nil, status.Error(codes.Internal, "failed while getting customer by email")
 	}
+
 	return customer, nil
 }

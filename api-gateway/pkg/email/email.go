@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"html/template"
+	"net/mail"
 	"net/smtp"
 
 	"github.com/barber_shop/api-gateway/config"
@@ -59,4 +60,9 @@ func getTemplatePath(emailType string) string {
 	}
 
 	return ""
+}
+
+func ValidMailAddress(address string) error {
+	_, err := mail.ParseAddress(address)
+	return err
 }

@@ -248,6 +248,8 @@ func (c *customerRepo) GetCustomerByEmail(email *pb.Email) (*pb.Customer, error)
 		updateAT sql.NullTime
 	 	rCustomer pb.Customer
 	)
+
+	fmt.Println(email, "---------------------------")
 	query := `SELECT
 			id,
 			first_name,
@@ -281,6 +283,6 @@ func (c *customerRepo) GetCustomerByEmail(email *pb.Email) (*pb.Customer, error)
 		if updateAT.Valid {
 			rCustomer.UpdatedAt = updateAT.Time.String()
 		}
-	
+		fmt.Println(rCustomer, "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<")
 		return &rCustomer, nil
 }

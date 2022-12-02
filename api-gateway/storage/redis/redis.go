@@ -1,8 +1,6 @@
 package redis
 
 import (
-	"time"
-
 	repo "github.com/barber_shop/api-gateway/storage/repo"
 
 	redis "github.com/gomodule/redigo/redis"
@@ -29,7 +27,7 @@ func (r *redisRepo) Set(key, value string) error {
 
 // SetWithTTL
 
-func (r *redisRepo) SetWithTTL(key, value string, second time.Duration) error {
+func (r *redisRepo) SetWithTTL(key, value string, second int) error {
 	conn := r.rConn.Get()
 	defer conn.Close()
 
@@ -41,6 +39,6 @@ func (r *redisRepo) SetWithTTL(key, value string, second time.Duration) error {
 func (r *redisRepo) Get(key string) (interface{}, error) {
 	conn := r.rConn.Get()
 	defer conn.Close()
-
+	
 	return conn.Do("GET", key)
 }

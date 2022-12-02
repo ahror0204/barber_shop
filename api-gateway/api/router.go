@@ -50,6 +50,8 @@ func New(option Option) *gin.Engine {
 	api.DELETE("/customer/delete/:id", handlerV1.DeleteCustomer)
 
 	api.POST("/customer/register", handlerV1.RegisterCustomer)
+	api.POST("/customer/verify", handlerV1.Verify)
+	api.POST("/customer/login", handlerV1.CustomerLogIn)
 
 	api.POST("/file-upload", handlerV1.UploadFile)
 
