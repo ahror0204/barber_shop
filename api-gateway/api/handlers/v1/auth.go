@@ -188,9 +188,17 @@ func (h *handlerV1) Verify(c *gin.Context) {
 		return
 	}
 
-	// ToDo: create toker
+	//Creating token
+	token, _, err := utils.CreateToken(&h.cfg, &utils.TokenParams{
+		CustomerID: id.Id,
+		Duration: time.Hour*24,
+	})
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
 
-	c.JSON(http.StatusCreated, models.CreateCustomerRespons{ID: id.Id})
+	c.JSON(http.StatusCreated, models.CreateCustomerRespons{ID: id.Id, Token: token})
 }
 
 // @Router /customer/login [post]
@@ -233,8 +241,29 @@ func (h *handlerV1) CustomerLogIn(c *gin.Context) {
 		return
 	}
 
-	// ToDo: create toker
+	// creating token
+	token, _, err := utils.CreateToken(&h.cfg, &utils.TokenParams{
+		CustomerID: result.Id,
+		FirstName: result.FirstName,
+		LastName: result.LastName,
+		PhoneNumber: result.PhoneNumber,
+		Email: result.Email,
+		UserName: result.UserName,
+		Password: result.Password,
+		Gender: result.Gender,
+		ImageURL: result.ImageUrl,
+		CreatedAT: result.CreatedAt,
+		UpdatedAT: result.UpdatedAt,
+		Duration: time.Hour*24,
+	})
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
 
 	resp := models.ParsAuthResponseToPbCustomer(*result)
+
+	resp.Token = token
+
 	c.JSON(http.StatusCreated, resp)
 }

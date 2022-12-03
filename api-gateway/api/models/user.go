@@ -43,6 +43,7 @@ type GetListParams struct {
 
 type CreateCustomerRespons struct {
 	ID string `json:"id"`
+	Token string `json:"token"`
 }
 
 func ParsCustomerToProtoStruct(customer *CustomerRequest) *pb.Customer {

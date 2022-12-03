@@ -21,6 +21,8 @@ type Config struct {
 
 	LogLevel string
 	HTTPPort string
+
+	AuthSecretKey string
 }
 
 type Smtp struct {
@@ -50,6 +52,7 @@ func Load(path string) Config {
 			Sender: conf.GetString("SMTP_SENDER"),
 			Password: conf.GetString("SMTP_PASSWORD"),
 		},
+		AuthSecretKey: conf.GetString("AUTH_SECRET_KEY"),
 	}
 
 	return cfg

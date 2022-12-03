@@ -249,7 +249,6 @@ func (c *customerRepo) GetCustomerByEmail(email *pb.Email) (*pb.Customer, error)
 	 	rCustomer pb.Customer
 	)
 
-	fmt.Println(email, "---------------------------")
 	query := `SELECT
 			id,
 			first_name,
@@ -257,6 +256,7 @@ func (c *customerRepo) GetCustomerByEmail(email *pb.Email) (*pb.Customer, error)
 			phone_number,
 			email,
 			user_name,
+			password,
 			gender,
 			image_url,
 			created_at,
@@ -271,6 +271,7 @@ func (c *customerRepo) GetCustomerByEmail(email *pb.Email) (*pb.Customer, error)
 			&rCustomer.PhoneNumber,
 			&rCustomer.Email,
 			&rCustomer.UserName,
+			&rCustomer.Password,
 			&rCustomer.Gender,
 			&rCustomer.ImageUrl,
 			&rCustomer.CreatedAt,
@@ -283,6 +284,5 @@ func (c *customerRepo) GetCustomerByEmail(email *pb.Email) (*pb.Customer, error)
 		if updateAT.Valid {
 			rCustomer.UpdatedAt = updateAT.Time.String()
 		}
-		fmt.Println(rCustomer, "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<")
 		return &rCustomer, nil
 }
