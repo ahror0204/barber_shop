@@ -13,7 +13,7 @@ import (
 type File struct {
 	File *multipart.FileHeader `form:"file" binding:"required"`
 }
-
+// @Security ApiKeyAuth
 // @Router /file-upload [post]
 // @Summary File upload
 // @Description This API for uploading file

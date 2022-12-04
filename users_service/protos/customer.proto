@@ -9,6 +9,12 @@ service CustomerService {
     rpc GetListCustomers(GetCustomerParams) returns (AllCustomers);
     rpc DeleteCustomer(ID) returns (Empty);
     rpc GetCustomerByEmail(Email) returns (Customer);
+    rpc UpdateCustomerPassword(UpdateCustomerPasswordRequest) returns (Empty);
+}
+
+message UpdateCustomerPasswordRequest{
+    string ID = 1;
+    string Password = 2; 
 }
 
 message Email {

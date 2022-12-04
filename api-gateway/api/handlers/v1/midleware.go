@@ -35,7 +35,7 @@ func (h *handlerV1) AuthMiddleware(c *gin.Context) {
 func (m *handlerV1) GetAuthPayload(c *gin.Context) (*utils.Payload, error) {
 	i, exists := c.Get(authorizationHeaderKey)
 	if !exists {
-		return nil, errors.New("")
+		return nil, errors.New("-<*>_<*>-")
 	}
 
 	payload, ok := i.(*utils.Payload)

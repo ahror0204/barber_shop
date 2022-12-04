@@ -58,8 +58,13 @@ func (h *handlerV1) RegisterCustomer(c *gin.Context) {
 
 	res, err := h.serviceManager.UserService().GetCustomerByEmail(ctx, &pb.Email{Email: req.Email})
 
-	if res != nil {
-		c.JSON(http.StatusBadRequest, errorResponse(ErrEmailExists))
+	if err != nil {
+		if res == nil {
+			c.JSON(http.StatusNotFound, errorResponse(ErrEmailExists))
+			return
+		}
+
+		c.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
 	}
 
@@ -191,7 +196,7 @@ func (h *handlerV1) Verify(c *gin.Context) {
 	//Creating token
 	token, _, err := utils.CreateToken(&h.cfg, &utils.TokenParams{
 		CustomerID: id.Id,
-		Duration: time.Hour*24,
+		Duration:   time.Hour * 24,
 	})
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, errorResponse(err))
@@ -243,27 +248,136 @@ func (h *handlerV1) CustomerLogIn(c *gin.Context) {
 
 	// creating token
 	token, _, err := utils.CreateToken(&h.cfg, &utils.TokenParams{
-		CustomerID: result.Id,
-		FirstName: result.FirstName,
-		LastName: result.LastName,
+		CustomerID:  result.Id,
+		FirstName:   result.FirstName,
+		LastName:    result.LastName,
 		PhoneNumber: result.PhoneNumber,
-		Email: result.Email,
-		UserName: result.UserName,
-		Password: result.Password,
-		Gender: result.Gender,
-		ImageURL: result.ImageUrl,
-		CreatedAT: result.CreatedAt,
-		UpdatedAT: result.UpdatedAt,
-		Duration: time.Hour*24,
+		Email:       result.Email,
+		UserName:    result.UserName,
+		Password:    result.Password,
+		Gender:      result.Gender,
+		ImageURL:    result.ImageUrl,
+		CreatedAT:   result.CreatedAt,
+		UpdatedAT:   result.UpdatedAt,
+		Duration:    time.Hour * 24,
 	})
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
 	}
 
-	resp := models.ParsAuthResponseToPbCustomer(*result)
+	resp := models.ParsAuthResponseToPbCustomer(result)
 
 	resp.Token = token
 
 	c.JSON(http.StatusCreated, resp)
 }
+
+// @Router /customer/forgot_password [post]
+// @Summary forgot password
+// @Description This api for forgot password
+// @Tags auth
+// @Accept json
+// @Produce json
+// @Param data body models.ForgotPasswordRequest true "Data"
+// @Success 200 {object} models.ResponseOK
+// @Failure 500 {object} models.ErrorResponse
+func (h *handlerV1) ForgotPassword(c *gin.Context) {
+	var req models.ForgotPasswordRequest
+
+	err := c.ShouldBindJSON(&req)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, errorResponse(err))
+		return
+	}
+
+	ctx, cencel := context.WithTimeout(context.Background(), time.Second*time.Duration(h.cfg.CtxTimeout))
+	defer cencel()
+
+	resp, err := h.serviceManager.UserService().GetCustomerByEmail(ctx, &pb.Email{Email: req.Email})
+	if err != nil {
+		if resp == nil {
+			c.JSON(http.StatusNotFound, errorResponse(err))
+			return
+		}
+
+		c.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+
+	go func() {
+		err = h.sendVerificationCode(ForgotPasswordKey, req.Email)
+		if err != nil {
+			fmt.Printf("failed to send verification code: %v", err)
+		}
+	}()
+
+	c.JSON(http.StatusCreated, models.ResponseOK{
+		Message: "Verification code has been sent!",
+	})
+}
+
+// @Router /auth/verify_forgot_password [post]
+// @Summary Verify forgot password
+// @Description Verify forgot password
+// @Tags auth
+// @Accept json
+// @Produce json
+// @Param data body models.VerifyRequest true "Data"
+// @Success 200 {object} models.AuthResponse
+// @Failure 500 {object} models.ErrorResponse
+func (h *handlerV1) VerifyForgotPassword(c *gin.Context) {
+	var req models.VerifyRequest
+
+	err := c.ShouldBindJSON(&req)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, errorResponse(err))
+		return
+	}
+
+	data, err := h.redisStorage.Get(ForgotPasswordKey + req.Email)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, errorResponse(ErrCodeExpired))
+		return
+	}
+
+	code := string((data.([]byte))[:]) // required to refactor
+	if req.Code != code {
+		c.JSON(http.StatusForbidden, errorResponse(ErrIncorrectCode))
+		return
+	}
+
+	ctx, cencel := context.WithTimeout(context.Background(), time.Second*time.Duration(h.cfg.CtxTimeout))
+	defer cencel()
+	
+	res, err := h.serviceManager.UserService().GetCustomerByEmail(ctx, &pb.Email{Email: req.Email})
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+
+	token, _, err := utils.CreateToken(&h.cfg, &utils.TokenParams{
+		CustomerID: res.Id,  
+		FirstName: res.FirstName,   
+		LastName: res.LastName,    
+		PhoneNumber: res.PhoneNumber, 
+		Email: res.Email,       
+		UserName: res.UserName,    
+		Password: res.Password,    
+		Gender: res.Gender,      
+		ImageURL: res.ImageUrl,    
+		CreatedAT: res.CreatedAt,   
+		UpdatedAT: res.UpdatedAt,   
+		Duration: time.Minute*30,
+	})
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+
+	response := models.ParsAuthResponseToPbCustomer(res)
+	response.Token = token
+
+	c.JSON(http.StatusCreated, response)
+}
+

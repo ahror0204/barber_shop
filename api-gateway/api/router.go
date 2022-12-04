@@ -26,6 +26,10 @@ type Option struct {
 // @version         1.0
 // @host      localhost:9090
 // @BasePath  /v1
+// @securityDefinitions.apikey ApiKeyAuth
+// @in header
+// @name Authorization
+// @Security ApiKeyAuth
 func New(option Option) *gin.Engine {
 	router := gin.New()
 
@@ -43,17 +47,20 @@ func New(option Option) *gin.Engine {
 
 	api := router.Group("/v1")
 
-	api.POST("/customer/create", handlerV1.CreateCustomer)
-	api.PUT("/customer/update/:id", handlerV1.UpdateCustomer)
+	api.POST("/customer/create", handlerV1.AuthMiddleware, handlerV1.CreateCustomer)
+	api.PUT("/customer/update/:id", handlerV1.AuthMiddleware, handlerV1.UpdateCustomer)
 	api.GET("/customer/get/:id", handlerV1.GetCustomerByID)
 	api.GET("/customers/list", handlerV1.GetListCustomers)
-	api.DELETE("/customer/delete/:id", handlerV1.DeleteCustomer)
+	api.DELETE("/customer/delete/:id", handlerV1.AuthMiddleware, handlerV1.DeleteCustomer)
+	api.GET("/customer/me", handlerV1.AuthMiddleware, handlerV1.GetCustomerProfile)
 
 	api.POST("/customer/register", handlerV1.RegisterCustomer)
 	api.POST("/customer/verify", handlerV1.Verify)
 	api.POST("/customer/login", handlerV1.CustomerLogIn)
+	api.POST("/customer/forgot_password", handlerV1.ForgotPassword)
+	api.POST("/auth/verify_forgot_password", handlerV1.VerifyForgotPassword)
 
-	api.POST("/file-upload", handlerV1.UploadFile)
+	api.POST("/file-upload", handlerV1.AuthMiddleware, handlerV1.UploadFile)
 
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 

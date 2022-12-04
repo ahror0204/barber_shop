@@ -14,7 +14,12 @@ type LogInCustomerRequest struct {
 	Password string `json:"passward"`
 }
 
+type ForgotPasswordRequest struct {
+	Email       string `json:"email"`
+}
+
 type AuthResponse struct {
+	ID          string `json:"id"`
 	FirstName   string `json:"first_name"`
 	LastName    string `json:"last_name"`
 	PhoneNumber string `json:"phone_number"`
@@ -27,16 +32,17 @@ type AuthResponse struct {
 	Token       string `json:"token"`
 }
 
-func ParsAuthResponseToPbCustomer(c pb.Customer) AuthResponse {
-	return AuthResponse{
-		FirstName: c.FirstName, 
-		LastName: c.LastName,
+func ParsAuthResponseToPbCustomer(c *pb.Customer) *AuthResponse {
+	return &AuthResponse{
+		ID:          c.Id,
+		FirstName:   c.FirstName,
+		LastName:    c.LastName,
 		PhoneNumber: c.PhoneNumber,
-		Email: c.Email,
-		UserName: c.UserName,
-		Password: c.Password,
-		Gender: c.Gender,
-		ImageURL: c.ImageUrl,
-		CreatedAT: c.CreatedAt,
+		Email:       c.Email,
+		UserName:    c.UserName,
+		Password:    c.Password,
+		Gender:      c.Gender,
+		ImageURL:    c.ImageUrl,
+		CreatedAT:   c.CreatedAt,
 	}
 }

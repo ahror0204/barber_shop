@@ -10,6 +10,8 @@ definitions:
         type: string
       gender:
         type: string
+      id:
+        type: string
       image_url:
         type: string
       last_name:
@@ -26,6 +28,8 @@ definitions:
   models.CreateCustomerRespons:
     properties:
       id:
+        type: string
+      token:
         type: string
     type: object
   models.Customer:
@@ -79,6 +83,11 @@ definitions:
       error:
         type: string
     type: object
+  models.ForgotPasswordRequest:
+    properties:
+      email:
+        type: string
+    type: object
   models.GetListCustomersResponse:
     properties:
       count:
@@ -113,6 +122,32 @@ info:
   title: Swagger for barber shop api
   version: "1.0"
 paths:
+  /auth/verify_forgot_password:
+    post:
+      consumes:
+      - application/json
+      description: Verify forgot password
+      parameters:
+      - description: Data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/models.VerifyRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.AuthResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Verify forgot password
+      tags:
+      - auth
   /customer/create:
     post:
       consumes:
@@ -136,6 +171,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
       summary: Create a customer
       tags:
       - customer
@@ -161,9 +198,37 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
       summary: Delete customer by id
       tags:
       - customer
+  /customer/forgot_password:
+    post:
+      consumes:
+      - application/json
+      description: This api for forgot password
+      parameters:
+      - description: Data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/models.ForgotPasswordRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.ResponseOK'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: forgot password
+      tags:
+      - auth
   /customer/get/{id}:
     get:
       consumes:
@@ -213,6 +278,27 @@ paths:
       summary: Login customer
       tags:
       - auth
+  /customer/me:
+    get:
+      consumes:
+      - application/json
+      description: This api for getting customer by token
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Customer'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Get customer by token
+      tags:
+      - customer
   /customer/register:
     post:
       consumes:
@@ -267,6 +353,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
       summary: Update a customer
       tags:
       - customer
@@ -349,7 +437,14 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
       summary: File upload
       tags:
       - file-upload
+securityDefinitions:
+  ApiKeyAuth:
+    in: header
+    name: Authorization
+    type: apiKey
 swagger: "2.0"

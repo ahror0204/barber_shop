@@ -9,7 +9,7 @@ import (
 	"github.com/barber_shop/api-gateway/api/models"
 	"github.com/gin-gonic/gin"
 )
-
+// @Security ApiKeyAuth
 // @Router /customer/create [post]
 // @Summary Create a customer
 // @Description This api for creating customer
@@ -43,7 +43,7 @@ func (h *handlerV1) CreateCustomer(c *gin.Context) {
 		ID: ID.Id,
 	})
 }
-
+// @Security ApiKeyAuth
 // @Router /customer/update/{id} [put]
 // @Summary Update a customer
 // @Description This api for updating customer
@@ -74,9 +74,7 @@ func (h *handlerV1) UpdateCustomer(c *gin.Context) {
 		return
 	}
 
-	res := models.ParsCustomerFromProtoStruct(rCustomer)
-
-	c.JSON(http.StatusOK, res)
+	c.JSON(http.StatusOK, models.ParsCustomerFromProtoStruct(rCustomer))
 }
 
 
@@ -101,9 +99,35 @@ func (h *handlerV1) GetCustomerByID(c *gin.Context) {
 		return
 	}
 
-	res := models.ParsCustomerFromProtoStruct(customer)
+	c.JSON(http.StatusOK, models.ParsCustomerFromProtoStruct(customer))
+}
 
-	c.JSON(http.StatusOK, res)
+// @Security ApiKeyAuth
+// @Router /customer/me [get]
+// @Summary Get customer by token
+// @Description This api for getting customer by token
+// @Tags customer
+// @Accept json
+// @Produce json
+// @Success 200 {object} models.Customer
+// @Failure 500 {object} models.ErrorResponse
+func (h *handlerV1) GetCustomerProfile(c *gin.Context) {
+	payload, err := h.GetAuthPayload(c)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+
+	ctx, cencel := context.WithTimeout(context.Background(), time.Second*time.Duration(h.cfg.CtxTimeout))
+	defer cencel()
+
+	resp, err := h.serviceManager.UserService().GetCustomerByID(ctx, &pb.ID{Id: payload.CustomerID})
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+
+	c.JSON(http.StatusOK, models.ParsCustomerFromProtoStruct(resp))
 }
 
 // @Router /customers/list [get]
@@ -135,14 +159,12 @@ func (h *handlerV1) GetListCustomers(c *gin.Context) {
 		return
 	}
 
-	customers := models.ParsListCustomersFromProtoStruct(res.Customers)
-
 	c.JSON(http.StatusOK, models.GetListCustomersResponse{
-		Customers: customers,
+		Customers: models.ParsListCustomersFromProtoStruct(res.Customers),
 		Count: res.Count,
 	})
 }
-
+// @Security ApiKeyAuth
 // @Router /customer/delete/{id} [delete]
 // @Summary Delete customer by id
 // @Description This api for deleting customer by id

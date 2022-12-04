@@ -84,3 +84,12 @@ func (c *UsersService) GetCustomerByEmail(ctx context.Context, req *pb.Email) (*
 
 	return customer, nil
 }
+
+func (c *UsersService) UpdateCustomerPassword(ctx context.Context, req *pb.UpdateCustomerPasswordRequest) (*pb.Empty, error) {
+	err := c.storage.Customer().UpdateCustomerPassword(req)
+	if err != nil {
+		c.logger.Error("failed while updating customer password", l.Error(err))
+		return nil, status.Error(codes.Internal, "failed while updating customer password")
+	}
+	return nil, nil
+}
