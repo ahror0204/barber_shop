@@ -109,6 +109,13 @@ definitions:
       message:
         type: string
     type: object
+  models.UpdatePasswordRequest:
+    properties:
+      password:
+        type: string
+    required:
+    - password
+    type: object
   models.VerifyRequest:
     properties:
       code:
@@ -122,32 +129,6 @@ info:
   title: Swagger for barber shop api
   version: "1.0"
 paths:
-  /auth/verify_forgot_password:
-    post:
-      consumes:
-      - application/json
-      description: Verify forgot password
-      parameters:
-      - description: Data
-        in: body
-        name: data
-        required: true
-        schema:
-          $ref: '#/definitions/models.VerifyRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/models.AuthResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/models.ErrorResponse'
-      summary: Verify forgot password
-      tags:
-      - auth
   /customer/create:
     post:
       consumes:
@@ -203,7 +184,7 @@ paths:
       summary: Delete customer by id
       tags:
       - customer
-  /customer/forgot_password:
+  /customer/forgot-password:
     post:
       consumes:
       - application/json
@@ -325,6 +306,34 @@ paths:
       summary: register a customer
       tags:
       - auth
+  /customer/update-password:
+    post:
+      consumes:
+      - application/json
+      description: This api for updating customer password
+      parameters:
+      - description: Password
+        in: body
+        name: password
+        required: true
+        schema:
+          $ref: '#/definitions/models.UpdatePasswordRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.AuthResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: update password
+      tags:
+      - auth
   /customer/update/{id}:
     put:
       consumes:
@@ -380,6 +389,32 @@ paths:
           schema:
             $ref: '#/definitions/models.ErrorResponse'
       summary: Verify customer
+      tags:
+      - auth
+  /customer/verify-forgot-password:
+    post:
+      consumes:
+      - application/json
+      description: Verify forgot password
+      parameters:
+      - description: Data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/models.VerifyRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.AuthResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Verify forgot password
       tags:
       - auth
   /customers/list:

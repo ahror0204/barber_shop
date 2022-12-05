@@ -91,5 +91,6 @@ func (c *UsersService) UpdateCustomerPassword(ctx context.Context, req *pb.Updat
 		c.logger.Error("failed while updating customer password", l.Error(err))
 		return nil, status.Error(codes.Internal, "failed while updating customer password")
 	}
-	return nil, nil
+
+	return &pb.Empty{}, nil
 }

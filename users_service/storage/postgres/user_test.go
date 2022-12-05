@@ -77,3 +77,11 @@ func TestGetListCustomers(t *testing.T) {
 	require.GreaterOrEqual(t, len(customers.Customers), 1)
 	deleteCustomer(id, t)
 }
+
+func TestUpdateCustomerPassword(t *testing.T) {
+	id := createCustomer(t)
+
+	err := repoCustomer.UpdateCustomerPassword(&pb.UpdateCustomerPasswordRequest{ID: id.Id, Password: faker.Password()})
+	require.NoError(t, err)
+	deleteCustomer(id, t)
+}

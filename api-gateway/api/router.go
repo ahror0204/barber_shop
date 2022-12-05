@@ -57,8 +57,9 @@ func New(option Option) *gin.Engine {
 	api.POST("/customer/register", handlerV1.RegisterCustomer)
 	api.POST("/customer/verify", handlerV1.Verify)
 	api.POST("/customer/login", handlerV1.CustomerLogIn)
-	api.POST("/customer/forgot_password", handlerV1.ForgotPassword)
-	api.POST("/auth/verify_forgot_password", handlerV1.VerifyForgotPassword)
+	api.POST("/customer/forgot-password", handlerV1.ForgotPassword)
+	api.POST("/customer/verify-forgot-password", handlerV1.VerifyForgotPassword)
+	api.POST("/customer/update-password", handlerV1.AuthMiddleware, handlerV1.UpdateCustomerPassword)
 
 	api.POST("/file-upload", handlerV1.AuthMiddleware, handlerV1.UploadFile)
 

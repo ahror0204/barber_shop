@@ -69,7 +69,6 @@ func (h *handlerV1) RegisterCustomer(c *gin.Context) {
 	}
 
 	// verifing password
-	fmt.Println(req.Password)
 	if err := utils.VerifyPassword(req.Password); err != nil {
 		c.JSON(http.StatusBadRequest, errorResponse(err))
 		h.log.Error("password verify error", l.Error(err))
@@ -273,7 +272,7 @@ func (h *handlerV1) CustomerLogIn(c *gin.Context) {
 	c.JSON(http.StatusCreated, resp)
 }
 
-// @Router /customer/forgot_password [post]
+// @Router /customer/forgot-password [post]
 // @Summary forgot password
 // @Description This api for forgot password
 // @Tags auth
@@ -317,7 +316,7 @@ func (h *handlerV1) ForgotPassword(c *gin.Context) {
 	})
 }
 
-// @Router /auth/verify_forgot_password [post]
+// @Router /customer/verify-forgot-password [post]
 // @Summary Verify forgot password
 // @Description Verify forgot password
 // @Tags auth
@@ -381,3 +380,58 @@ func (h *handlerV1) VerifyForgotPassword(c *gin.Context) {
 	c.JSON(http.StatusCreated, response)
 }
 
+// @Security ApiKeyAuth
+// @Router /customer/update-password [post]
+// @Summary update password
+// @Description This api for updating customer password
+// @Tags auth
+// @Accept json
+// @Produce json
+// @Param password body models.UpdatePasswordRequest true "Password"
+// @Success 200 {object} models.AuthResponse
+// @Failure 500 {object} models.ErrorResponse
+func (h *handlerV1) UpdateCustomerPassword(c *gin.Context) {
+	var req models.UpdatePasswordRequest
+
+	err := c.ShouldBindJSON(&req)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, errorResponse(err))
+		return
+	}
+
+	payload, err := h.GetAuthPayload(c)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+
+	// verifing password
+	if err := utils.VerifyPassword(req.Password); err != nil {
+		c.JSON(http.StatusBadRequest, errorResponse(err))
+		h.log.Error("password verify error", l.Error(err))
+		return
+	}
+
+	// hashing password
+	heshedPasword, err := utils.HashPassword(req.Password)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+
+	ctx, cencel := context.WithTimeout(context.Background(), time.Second*time.Duration(h.cfg.CtxTimeout))
+	defer cencel()
+
+	_, err = h.serviceManager.UserService().UpdateCustomerPassword(ctx, &pb.UpdateCustomerPasswordRequest{
+		ID: payload.CustomerID,
+		Password: heshedPasword,
+	})
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+
+	c.JSON(http.StatusCreated, models.ResponseOK{
+		Message: "Password has been updated!",
+	})
+}

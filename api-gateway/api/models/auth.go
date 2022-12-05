@@ -18,6 +18,10 @@ type ForgotPasswordRequest struct {
 	Email       string `json:"email"`
 }
 
+type UpdatePasswordRequest struct {
+	Password       string `json:"password" binding:"required"`
+}
+
 type AuthResponse struct {
 	ID          string `json:"id"`
 	FirstName   string `json:"first_name"`

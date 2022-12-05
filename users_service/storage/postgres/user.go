@@ -287,7 +287,7 @@ func (c *customerRepo) GetCustomerByEmail(email *pb.Email) (*pb.Customer, error)
 		return &rCustomer, nil
 }
 
-func (c *customerRepo) UpdateCustomerPassword(req *pb.UpdateCustomerPasswordRequest) (error) {
+func (c *customerRepo) UpdateCustomerPassword(req *pb.UpdateCustomerPasswordRequest) error {
 	query := `UPDATE customers SET password=$1 WHERE id=$2`
 	_, err := c.db.Exec(query, req.Password, req.ID)
 	return err
