@@ -1,0 +1,18 @@
+version: "3.8"
+
+services:
+  postgres:
+    image: postgres:15.1
+    environment:
+      
+  api-gateway:
+    build: 
+      context: .
+      dockerfile: Donkerfile
+    ports:
+      - "9090:9090"
+    environment: 
+      - USER_SERVICE_HOST=${USER_SERVICE_HOST}
+      - USER_SERVICE_PORT=${USER_SERVICE_PORT}
+      - HTTP_PORT=${HTTP_PORT}
+    
