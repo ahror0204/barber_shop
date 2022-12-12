@@ -3,7 +3,7 @@ package repo
 import pb "github.com/barber_shop/users_service/genproto"
 
 type CustomerStorageI interface {
-	CreateCustomer(*pb.Customer) (*pb.ID, error)
+	CreateCustomer(*pb.Customer) (*pb.Customer, error)
 	UpdateCustomer(*pb.Customer) (*pb.Customer, error)
 	GetCustomerByID(*pb.ID) (*pb.Customer, error)
 	GetListCustomers(*pb.GetCustomerParams) (*pb.AllCustomers, error)

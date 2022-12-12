@@ -3,7 +3,7 @@ syntax = "proto3";
 package protos;
 
 service CustomerService {
-    rpc CreateCustomer(Customer) returns (ID);
+    rpc CreateCustomer(Customer) returns (Customer);
     rpc UpdateCustomer(Customer) returns (Customer);
     rpc GetCustomerByID(ID) returns (Customer);
     rpc GetListCustomers(GetCustomerParams) returns (AllCustomers);

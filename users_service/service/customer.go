@@ -26,14 +26,14 @@ func NewUsersService(db *sqlx.DB, log l.Logger) *UsersService {
 	}
 }
 
-func (c *UsersService) CreateCustomer(ctx context.Context, req *pb.Customer) (*pb.ID, error) {
-	id, err := c.storage.Customer().CreateCustomer(req)
+func (c *UsersService) CreateCustomer(ctx context.Context, req *pb.Customer) (*pb.Customer, error) {
+	customer, err := c.storage.Customer().CreateCustomer(req)
 	if err != nil {
 		c.logger.Error("failed while creating customer", l.Error(err))
 		return nil, status.Error(codes.Internal, "failed while creating customer")
 	}
 
-	return id, nil
+	return customer, nil
 }
 
 func (c *UsersService) UpdateCustomer(ctx context.Context, req *pb.Customer) (*pb.Customer, error) {

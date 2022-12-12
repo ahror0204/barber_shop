@@ -20,7 +20,7 @@ func NewSalonRepo(db *sqlx.DB) repo.SalonStorageI {
 	return &salonRepo{db}
 }
 
-func (s *salonRepo) CreateSalon(salon *pb.Salon) (*pb.ID, error) {
+func (s *salonRepo) CreateSalon(salon *pb.Salon) (*pb.Salon, error) {
 	query := `INSERT INTO salon(
 		id,
 		name,
@@ -34,13 +34,13 @@ func (s *salonRepo) CreateSalon(salon *pb.Salon) (*pb.ID, error) {
 		end_time,
 		image_url)
 	VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11)
-	RETURNING id
+	RETURNING id, created_at
 	`
 	id, err := uuid.NewV4()
-	var ret_id string
 	if err != nil {
 		return nil, err
 	}
+	
 	err = s.db.QueryRow(query,
 		id,
 		salon.Name,
@@ -53,13 +53,11 @@ func (s *salonRepo) CreateSalon(salon *pb.Salon) (*pb.ID, error) {
 		salon.StartTime,
 		salon.EndTime,
 		salon.ImageUrl,
-	).Scan(&ret_id)
+	).Scan(&salon.Id, &salon.CreatedAt)
 	if err != nil {
 		return nil, err
 	}
-	return &pb.ID{
-		Id: ret_id,
-	}, nil
+	return salon, nil
 }
 
 func (s *salonRepo) UpdateSalon(salon *pb.Salon) (*pb.Salon, error) {

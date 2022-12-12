@@ -8,9 +8,9 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func createSalon(t *testing.T) *pb.ID {
+func createSalon(t *testing.T) *pb.Salon {
 
-	id, err := repoSalon.CreateSalon(&pb.Salon{
+	salon, err := repoSalon.CreateSalon(&pb.Salon{
 		Name:        faker.Name(),
 		PhoneNumber: faker.Phonenumber(),
 		Email:       faker.Email(),
@@ -24,25 +24,25 @@ func createSalon(t *testing.T) *pb.ID {
 	})
 
 	require.NoError(t, err)
-	require.NotEmpty(t, id)
+	require.NotEmpty(t, salon)
 
-	return id
+	return salon
 }
 
-func deleteSalon(id *pb.ID, t *testing.T) {
-	err := repoSalon.DeleteSalon(id)
+func deleteSalon(id string, t *testing.T) {
+	err := repoSalon.DeleteSalon(&pb.ID{Id: id})
 	require.NoError(t, err)
 }
 
 func TestCreateSalon(t *testing.T) {
-	id := createSalon(t)
-	deleteSalon(id, t)
+	salon := createSalon(t)
+	deleteSalon(salon.Id, t)
 }
 
 func TestUpdateSalon(t *testing.T) {
-	id := createSalon(t)
+	s := createSalon(t)
 	salon, err := repoSalon.UpdateSalon(&pb.Salon{
-		Id:          id.Id,
+		Id:          s.Id,
 		Name:        faker.Name(),
 		PhoneNumber: faker.Phonenumber(),
 		Email:       faker.Email(),
@@ -58,21 +58,21 @@ func TestUpdateSalon(t *testing.T) {
 	require.NoError(t, err)
 	require.NotEmpty(t, salon)
 
-	deleteSalon(id, t)
+	deleteSalon(s.Id, t)
 }
 
 func TestGetSalonByID(t *testing.T) {
-	id := createSalon(t)
-	salon, err := repoSalon.GetSalonByID(id)
+	s := createSalon(t)
+	salon, err := repoSalon.GetSalonByID(&pb.ID{Id: s.Id})
 
 	require.NoError(t, err)
 	require.NotEmpty(t, salon)
 
-	deleteSalon(id, t)
+	deleteSalon(s.Id, t)
 }
 
 func TestGetListSalons(t *testing.T) {
-	id := createSalon(t)
+	s := createSalon(t)
 	salons, err := repoSalon.GetListSalons(&pb.GetSalonsParams{
 		Page:  1,
 		Limit: 10,
@@ -81,5 +81,5 @@ func TestGetListSalons(t *testing.T) {
 	require.NoError(t, err)
 	require.GreaterOrEqual(t, len(salons.Salons), 1)
 
-	deleteSalon(id, t)
+	deleteSalon(s.Id, t)
 }

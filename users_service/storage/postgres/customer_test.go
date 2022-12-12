@@ -8,8 +8,8 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func createCustomer(t *testing.T) *pb.ID {
-	id, err := repoCustomer.CreateCustomer(&pb.Customer{
+func createCustomer(t *testing.T) *pb.Customer {
+	customer, err := repoCustomer.CreateCustomer(&pb.Customer{
 		FirstName:   faker.FirstName(),
 		LastName:    faker.LastName(),
 		PhoneNumber: faker.Phonenumber(),
@@ -21,26 +21,26 @@ func createCustomer(t *testing.T) *pb.ID {
 	})
 
 	require.NoError(t, err)
-	require.NotEmpty(t, id)
+	require.NotEmpty(t, customer)
 
-	return id
+	return customer
 }
 
-func deleteCustomer(id *pb.ID, t *testing.T) {
-	err := repoCustomer.DeleteCustomer(id)
+func deleteCustomer(id string, t *testing.T) {
+	err := repoCustomer.DeleteCustomer(&pb.ID{Id: id})
 	require.NoError(t, err)
 }
 
 func TestCreateCustomer(t *testing.T) {
-	id := createCustomer(t)
-	deleteCustomer(id, t)
+	customer := createCustomer(t)
+	deleteCustomer(customer.Id, t)
 }
 
 func TestUpdateCustomer(t *testing.T) {
-	id := createCustomer(t)
+	cust := createCustomer(t)
 
 	customer, err := repoCustomer.UpdateCustomer(&pb.Customer{
-		Id:          id.Id,
+		Id:          cust.Id,
 		FirstName:   faker.FirstName(),
 		LastName:    faker.LastName(),
 		PhoneNumber: faker.Phonenumber(),
@@ -53,21 +53,21 @@ func TestUpdateCustomer(t *testing.T) {
 
 	require.NoError(t, err)
 	require.NotEmpty(t, customer)
-	deleteCustomer(id, t)
+	deleteCustomer(customer.Id, t)
 }
 
 func TestGetCustomerByID(t *testing.T) {
-	id := createCustomer(t)
+	cust := createCustomer(t)
 
-	customer, err := repoCustomer.GetCustomerByID(id)
+	customer, err := repoCustomer.GetCustomerByID(&pb.ID{Id: cust.Id})
 
 	require.NoError(t, err)
 	require.NotEmpty(t, customer)
-	deleteCustomer(id, t)
+	deleteCustomer(customer.Id, t)
 }
 
 func TestGetListCustomers(t *testing.T) {
-	id := createCustomer(t)
+	customer := createCustomer(t)
 	customers, err := repoCustomer.GetListCustomers(&pb.GetCustomerParams{
 		Limit: 10,
 		Page:  1,
@@ -75,13 +75,23 @@ func TestGetListCustomers(t *testing.T) {
 
 	require.NoError(t, err)
 	require.GreaterOrEqual(t, len(customers.Customers), 1)
-	deleteCustomer(id, t)
+	deleteCustomer(customer.Id, t)
+}
+
+func TestGetCustomerByEmail(t *testing.T) {
+	cust := createCustomer(t)
+
+	customer, err := repoCustomer.GetCustomerByEmail(&pb.Email{Email: cust.Email})
+	
+	require.NoError(t, err)
+	require.NotEmpty(t, customer)
+	deleteCustomer(customer.Id, t)
 }
 
 func TestUpdateCustomerPassword(t *testing.T) {
-	id := createCustomer(t)
+	customer := createCustomer(t)
 
-	err := repoCustomer.UpdateCustomerPassword(&pb.UpdateCustomerPasswordRequest{ID: id.Id, Password: faker.Password()})
+	err := repoCustomer.UpdateCustomerPassword(&pb.UpdateCustomerPasswordRequest{ID: customer.Id, Password: faker.Password()})
 	require.NoError(t, err)
-	deleteCustomer(id, t)
+	deleteCustomer(customer.Id, t)
 }

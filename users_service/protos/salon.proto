@@ -5,7 +5,7 @@ package protos;
 import "protos/customer.proto";
 
 service SalonService {
-    rpc CreateSalon(Salon) returns (ID);
+    rpc CreateSalon(Salon) returns (Salon);
 }
 
 message Salon {

@@ -19,8 +19,7 @@ func NewCustomer(db *sqlx.DB) repo.CustomerStorageI {
 	return &customerRepo{db}
 }
 
-func (u *customerRepo) CreateCustomer(customer *pb.Customer) (*pb.ID, error) {
-	var id string
+func (u *customerRepo) CreateCustomer(customer *pb.Customer) (*pb.Customer, error) {
 	query := `INSERT INTO customers(
 		id,
 		first_name,
@@ -32,14 +31,13 @@ func (u *customerRepo) CreateCustomer(customer *pb.Customer) (*pb.ID, error) {
 		password,
 		image_url
 	) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9)
-	RETURNING id`
+	RETURNING id, created_at`
 	ID, err := uuid.NewV4()
 	if err != nil {
 		return nil, err
 	}
 
-	err = u.db.QueryRow(
-		query,
+	err = u.db.QueryRow(query,
 		ID,
 		customer.FirstName,
 		customer.LastName,
@@ -49,13 +47,13 @@ func (u *customerRepo) CreateCustomer(customer *pb.Customer) (*pb.ID, error) {
 		customer.Gender,
 		customer.Password,
 		customer.ImageUrl,
-	).Scan(&id)
+	).Scan(&customer.Id, &customer.CreatedAt)
 
 	if err != nil {
 		return nil, err
 	}
 
-	return &pb.ID{Id: id}, nil
+	return customer, nil
 }
 
 func (u *customerRepo) UpdateCustomer(customer *pb.Customer) (*pb.Customer, error) {
