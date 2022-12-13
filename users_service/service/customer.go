@@ -5,7 +5,7 @@ import (
 	"database/sql"
 	"errors"
 
-	pb "github.com/barber_shop/users_service/genproto"
+	pbu "github.com/barber_shop/users_service/genproto/users_service"
 	l "github.com/barber_shop/users_service/pkg/logger"
 	"github.com/barber_shop/users_service/storage"
 	"github.com/jmoiron/sqlx"
@@ -14,19 +14,20 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-type UsersService struct {
+type CustomerService struct {
+	pbu.UnimplementedCustomerServiceServer
 	storage storage.StorageI
 	logger  l.Logger
 }
 
-func NewUsersService(db *sqlx.DB, log l.Logger) *UsersService {
-	return &UsersService{
+func NewCustomerService(db *sqlx.DB, log l.Logger) *CustomerService {
+	return &CustomerService{
 		storage: storage.NewStoragePg(db),
 		logger:  log,
 	}
 }
 
-func (c *UsersService) CreateCustomer(ctx context.Context, req *pb.Customer) (*pb.Customer, error) {
+func (c *CustomerService) CreateCustomer(ctx context.Context, req *pbu.Customer) (*pbu.Customer, error) {
 	customer, err := c.storage.Customer().CreateCustomer(req)
 	if err != nil {
 		c.logger.Error("failed while creating customer", l.Error(err))
@@ -36,7 +37,7 @@ func (c *UsersService) CreateCustomer(ctx context.Context, req *pb.Customer) (*p
 	return customer, nil
 }
 
-func (c *UsersService) UpdateCustomer(ctx context.Context, req *pb.Customer) (*pb.Customer, error) {
+func (c *CustomerService) UpdateCustomer(ctx context.Context, req *pbu.Customer) (*pbu.Customer, error) {
 	customer, err := c.storage.Customer().UpdateCustomer(req)
 	if err != nil {
 		c.logger.Error("failed while updating customer", l.Error(err))
@@ -45,7 +46,7 @@ func (c *UsersService) UpdateCustomer(ctx context.Context, req *pb.Customer) (*p
 	return customer, nil
 }
 
-func (c *UsersService) GetCustomerByID(ctx context.Context, req *pb.ID) (*pb.Customer, error) {
+func (c *CustomerService) GetCustomerByID(ctx context.Context, req *pbu.ID) (*pbu.Customer, error) {
 	customer, err := c.storage.Customer().GetCustomerByID(req)
 	if err != nil {
 		c.logger.Error("failed while getting customer by id", l.Error(err))
@@ -54,7 +55,7 @@ func (c *UsersService) GetCustomerByID(ctx context.Context, req *pb.ID) (*pb.Cus
 	return customer, nil
 }
 
-func (c *UsersService) GetListCustomers(ctx context.Context, req *pb.GetCustomerParams) (*pb.AllCustomers, error) {
+func (c *CustomerService) GetListCustomers(ctx context.Context, req *pbu.GetCustomerParams) (*pbu.AllCustomers, error) {
 	Customers, err := c.storage.Customer().GetListCustomers(req)
 	if err != nil {
 		c.logger.Error("failed while gting customers list", l.Error(err))
@@ -63,7 +64,7 @@ func (c *UsersService) GetListCustomers(ctx context.Context, req *pb.GetCustomer
 	return Customers, nil
 }
 
-func (c *UsersService) DeleteCustomer(ctx context.Context, req *pb.ID) (*pb.Empty, error) {
+func (c *CustomerService) DeleteCustomer(ctx context.Context, req *pbu.ID) (*pbu.Empty, error) {
 	err := c.storage.Customer().DeleteCustomer(req)
 	if err != nil {
 		c.logger.Error("failed while deleting customer", l.Error(err))
@@ -72,7 +73,7 @@ func (c *UsersService) DeleteCustomer(ctx context.Context, req *pb.ID) (*pb.Empt
 	return nil, nil
 }
 
-func (c *UsersService) GetCustomerByEmail(ctx context.Context, req *pb.Email) (*pb.Customer, error) {
+func (c *CustomerService) GetCustomerByEmail(ctx context.Context, req *pbu.Email) (*pbu.Customer, error) {
 	customer, err := c.storage.Customer().GetCustomerByEmail(req)
 	if err != nil {
 		c.logger.Error("failed while getting customer by email", l.Error(err))
@@ -85,12 +86,12 @@ func (c *UsersService) GetCustomerByEmail(ctx context.Context, req *pb.Email) (*
 	return customer, nil
 }
 
-func (c *UsersService) UpdateCustomerPassword(ctx context.Context, req *pb.UpdateCustomerPasswordRequest) (*pb.Empty, error) {
+func (c *CustomerService) UpdateCustomerPassword(ctx context.Context, req *pbu.UpdateCustomerPasswordRequest) (*pbu.Empty, error) {
 	err := c.storage.Customer().UpdateCustomerPassword(req)
 	if err != nil {
 		c.logger.Error("failed while updating customer password", l.Error(err))
 		return nil, status.Error(codes.Internal, "failed while updating customer password")
 	}
 
-	return &pb.Empty{}, nil
+	return &pbu.Empty{}, nil
 }

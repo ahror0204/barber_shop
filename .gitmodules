@@ -1,0 +1,9 @@
+[submodule "users_service/barber_shop_medium_proto"]
+	path = users_service/barber_shop_medium_proto
+	url = git@github.com:ahror0204/barber_shop_medium_proto.git
+[submodule "users_service/barber_protos"]
+	path = users_service/barber_protos
+	url = git@github.com:ahror0204/barber_protos.git
+[submodule "api-gateway/barber_protos"]
+	path = api-gateway/barber_protos
+	url = git@github.com:ahror0204/barber_protos.git

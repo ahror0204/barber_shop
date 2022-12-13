@@ -3,8 +3,8 @@ DB_URL=postgresql://postgres:1@localhost:5432/users_db?sslmode=disable
 CURRENT_DIR=$(shell pwd)
 
 proto-gen:
-	./scripts/gen-proto.sh	${CURRENT_DIR}
-	ls genproto/*.pb.go | xargs -n1 -IX bash -c "sed -e '/bool/ s/,omitempty//' X > X.tmp && mv X{.tmp,}"
+	rm -rf genproto
+	./scripts/gen-proto.sh ${CURRENT_DIR}
 
 swag-init:
 	swag init -g api/server.go -o api/docs

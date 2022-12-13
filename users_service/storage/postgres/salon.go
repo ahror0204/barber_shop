@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"time"
 
-	pb "github.com/barber_shop/users_service/genproto"
+	pbu "github.com/barber_shop/users_service/genproto/users_service"
 	"github.com/gofrs/uuid"
 
 	"github.com/barber_shop/users_service/storage/repo"
@@ -20,7 +20,7 @@ func NewSalonRepo(db *sqlx.DB) repo.SalonStorageI {
 	return &salonRepo{db}
 }
 
-func (s *salonRepo) CreateSalon(salon *pb.Salon) (*pb.Salon, error) {
+func (s *salonRepo) CreateSalon(salon *pbu.Salon) (*pbu.Salon, error) {
 	query := `INSERT INTO salon(
 		id,
 		name,
@@ -60,7 +60,7 @@ func (s *salonRepo) CreateSalon(salon *pb.Salon) (*pb.Salon, error) {
 	return salon, nil
 }
 
-func (s *salonRepo) UpdateSalon(salon *pb.Salon) (*pb.Salon, error) {
+func (s *salonRepo) UpdateSalon(salon *pbu.Salon) (*pbu.Salon, error) {
 	query := `UPDATE salon SET
 		name=$1,
 		phone_number=$2,
@@ -97,9 +97,9 @@ func (s *salonRepo) UpdateSalon(salon *pb.Salon) (*pb.Salon, error) {
 	return salon, nil
 }
 
-func (s *salonRepo) GetSalonByID(ID *pb.ID) (*pb.Salon, error) {
+func (s *salonRepo) GetSalonByID(ID *pbu.ID) (*pbu.Salon, error) {
 	var (
-		salon     pb.Salon
+		salon     pbu.Salon
 		updatedAT sql.NullTime
 	)
 	query := `SELECT 
@@ -144,9 +144,9 @@ func (s *salonRepo) GetSalonByID(ID *pb.ID) (*pb.Salon, error) {
 	return &salon, nil
 }
 
-func (s *salonRepo) GetListSalons(params *pb.GetSalonsParams) (*pb.AllSalons, error) {
+func (s *salonRepo) GetListSalons(params *pbu.GetSalonsParams) (*pbu.AllSalons, error) {
 	var (
-		salons    []*pb.Salon
+		salons    []*pbu.Salon
 		count     int64
 		updatedAT sql.NullTime
 	)
@@ -182,7 +182,7 @@ func (s *salonRepo) GetListSalons(params *pb.GetSalonsParams) (*pb.AllSalons, er
 	}
 	defer rows.Close()
 	for rows.Next() {
-		var salon pb.Salon
+		var salon pbu.Salon
 		err := rows.Scan(
 			&salon.Id,
 			&salon.Name,
@@ -213,13 +213,13 @@ func (s *salonRepo) GetListSalons(params *pb.GetSalonsParams) (*pb.AllSalons, er
 	if err != nil {
 		return nil, err
 	}
-	return &pb.AllSalons{
+	return &pbu.AllSalons{
 		Salons: salons,
 		Count:  count,
 	}, nil
 }
 
-func (s *salonRepo) DeleteSalon(ID *pb.ID) error {
+func (s *salonRepo) DeleteSalon(ID *pbu.ID) error {
 	deletedAT := time.Now()
 	query := "UPDATE salon SET deleted_at = $1 WHERE id = $2"
 	result, err := s.db.Exec(query, deletedAT, ID.Id)

@@ -8,7 +8,7 @@ import (
 	"google.golang.org/grpc/reflection"
 
 	"github.com/barber_shop/users_service/config"
-	pb "github.com/barber_shop/users_service/genproto"
+	pb "github.com/barber_shop/users_service/genproto/users_service"
 	"github.com/barber_shop/users_service/pkg/db"
 	logger "github.com/barber_shop/users_service/pkg/logger"
 )
@@ -24,7 +24,9 @@ func main() {
         log.Fatal("sqlx connection to postgres error", logger.Error(err))
     }
 
-	userService := c.NewUsersService(db, log)
+	customerService := c.NewCustomerService(db, log)
+	salonService := c.NewSalonService(db, log)
+
 
 	lis, err := net.Listen("tcp", cfg.RPCPort)
 	if err != nil {
@@ -32,7 +34,8 @@ func main() {
 	}
 
 	s := grpc.NewServer()
-	pb.RegisterCustomerServiceServer(s, userService)
+	pb.RegisterCustomerServiceServer(s, customerService)
+	pb.RegisterSalonServiceServer(s, salonService)
 
 	log.Info("main: server running",
 		logger.String("port", cfg.RPCPort))

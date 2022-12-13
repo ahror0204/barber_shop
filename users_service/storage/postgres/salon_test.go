@@ -3,14 +3,14 @@ package postgres
 import (
 	"testing"
 
-	pb "github.com/barber_shop/users_service/genproto"
+	pbu "github.com/barber_shop/users_service/genproto/users_service"
 	"github.com/bxcodec/faker/v4"
 	"github.com/stretchr/testify/require"
 )
 
-func createSalon(t *testing.T) *pb.Salon {
+func createSalon(t *testing.T) *pbu.Salon {
 
-	salon, err := repoSalon.CreateSalon(&pb.Salon{
+	salon, err := repoSalon.CreateSalon(&pbu.Salon{
 		Name:        faker.Name(),
 		PhoneNumber: faker.Phonenumber(),
 		Email:       faker.Email(),
@@ -30,7 +30,7 @@ func createSalon(t *testing.T) *pb.Salon {
 }
 
 func deleteSalon(id string, t *testing.T) {
-	err := repoSalon.DeleteSalon(&pb.ID{Id: id})
+	err := repoSalon.DeleteSalon(&pbu.ID{Id: id})
 	require.NoError(t, err)
 }
 
@@ -41,7 +41,7 @@ func TestCreateSalon(t *testing.T) {
 
 func TestUpdateSalon(t *testing.T) {
 	s := createSalon(t)
-	salon, err := repoSalon.UpdateSalon(&pb.Salon{
+	salon, err := repoSalon.UpdateSalon(&pbu.Salon{
 		Id:          s.Id,
 		Name:        faker.Name(),
 		PhoneNumber: faker.Phonenumber(),
@@ -63,7 +63,7 @@ func TestUpdateSalon(t *testing.T) {
 
 func TestGetSalonByID(t *testing.T) {
 	s := createSalon(t)
-	salon, err := repoSalon.GetSalonByID(&pb.ID{Id: s.Id})
+	salon, err := repoSalon.GetSalonByID(&pbu.ID{Id: s.Id})
 
 	require.NoError(t, err)
 	require.NotEmpty(t, salon)
@@ -73,7 +73,7 @@ func TestGetSalonByID(t *testing.T) {
 
 func TestGetListSalons(t *testing.T) {
 	s := createSalon(t)
-	salons, err := repoSalon.GetListSalons(&pb.GetSalonsParams{
+	salons, err := repoSalon.GetListSalons(&pbu.GetSalonsParams{
 		Page:  1,
 		Limit: 10,
 	})

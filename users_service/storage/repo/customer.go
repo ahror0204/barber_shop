@@ -1,13 +1,13 @@
 package repo
 
-import pb "github.com/barber_shop/users_service/genproto"
+import pbu "github.com/barber_shop/users_service/genproto/users_service"
 
 type CustomerStorageI interface {
-	CreateCustomer(*pb.Customer) (*pb.Customer, error)
-	UpdateCustomer(*pb.Customer) (*pb.Customer, error)
-	GetCustomerByID(*pb.ID) (*pb.Customer, error)
-	GetListCustomers(*pb.GetCustomerParams) (*pb.AllCustomers, error)
-	DeleteCustomer(*pb.ID) error
-	GetCustomerByEmail(*pb.Email) (*pb.Customer, error)
-	UpdateCustomerPassword(*pb.UpdateCustomerPasswordRequest) (error)
+	CreateCustomer(*pbu.Customer) (*pbu.Customer, error)
+	UpdateCustomer(*pbu.Customer) (*pbu.Customer, error)
+	GetCustomerByID(*pbu.ID) (*pbu.Customer, error)
+	GetListCustomers(*pbu.GetCustomerParams) (*pbu.AllCustomers, error)
+	DeleteCustomer(*pbu.ID) error
+	GetCustomerByEmail(*pbu.Email) (*pbu.Customer, error)
+	UpdateCustomerPassword(*pbu.UpdateCustomerPasswordRequest) (error)
 }

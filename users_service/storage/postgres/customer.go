@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"time"
 
-	pb "github.com/barber_shop/users_service/genproto"
+	pbu "github.com/barber_shop/users_service/genproto/users_service"
 	"github.com/barber_shop/users_service/storage/repo"
 	"github.com/gofrs/uuid"
 	"github.com/jmoiron/sqlx"
@@ -19,7 +19,7 @@ func NewCustomer(db *sqlx.DB) repo.CustomerStorageI {
 	return &customerRepo{db}
 }
 
-func (u *customerRepo) CreateCustomer(customer *pb.Customer) (*pb.Customer, error) {
+func (u *customerRepo) CreateCustomer(customer *pbu.Customer) (*pbu.Customer, error) {
 	query := `INSERT INTO customers(
 		id,
 		first_name,
@@ -56,8 +56,8 @@ func (u *customerRepo) CreateCustomer(customer *pb.Customer) (*pb.Customer, erro
 	return customer, nil
 }
 
-func (u *customerRepo) UpdateCustomer(customer *pb.Customer) (*pb.Customer, error) {
-	var rCustomer pb.Customer
+func (u *customerRepo) UpdateCustomer(customer *pbu.Customer) (*pbu.Customer, error) {
+	var rCustomer pbu.Customer
 	query := `UPDATE customers SET
 		first_name=$1,
 		last_name=$2,
@@ -103,10 +103,10 @@ func (u *customerRepo) UpdateCustomer(customer *pb.Customer) (*pb.Customer, erro
 	return &rCustomer, nil
 }
 
-func (u *customerRepo) GetCustomerByID(ID *pb.ID) (*pb.Customer, error) {
+func (u *customerRepo) GetCustomerByID(ID *pbu.ID) (*pbu.Customer, error) {
 	var (
 		updateAT sql.NullTime
-	 	rCustomer pb.Customer
+	 	rCustomer pbu.Customer
 	)
 	query := `SELECT
 		id,
@@ -145,9 +145,9 @@ func (u *customerRepo) GetCustomerByID(ID *pb.ID) (*pb.Customer, error) {
 	return &rCustomer, nil
 }
 
-func (u *customerRepo) GetListCustomers(params *pb.GetCustomerParams) (*pb.AllCustomers, error) {
+func (u *customerRepo) GetListCustomers(params *pbu.GetCustomerParams) (*pbu.AllCustomers, error) {
 	var (
-		customers []*pb.Customer
+		customers []*pbu.Customer
 		count     int64
 	)
 	offset := (params.Page - 1) * params.Limit
@@ -182,7 +182,7 @@ func (u *customerRepo) GetListCustomers(params *pb.GetCustomerParams) (*pb.AllCu
 	for rows.Next() {
 		var (
 			updateAT sql.NullTime
-			customer pb.Customer
+			customer pbu.Customer
 		)
 		err = rows.Scan(
 			&customer.Id,
@@ -214,13 +214,13 @@ func (u *customerRepo) GetListCustomers(params *pb.GetCustomerParams) (*pb.AllCu
 		return nil, err
 	}
 
-	return &pb.AllCustomers{
+	return &pbu.AllCustomers{
 		Customers: customers,
 		Count:     count,
 	}, nil
 }
 
-func (u *customerRepo) DeleteCustomer(ID *pb.ID) error {
+func (u *customerRepo) DeleteCustomer(ID *pbu.ID) error {
 	deletedAT := time.Now()
 	query := `UPDATE customers SET deleted_at=$1 WHERE id = $2`
 
@@ -241,10 +241,10 @@ func (u *customerRepo) DeleteCustomer(ID *pb.ID) error {
 	return nil
 }
 
-func (c *customerRepo) GetCustomerByEmail(email *pb.Email) (*pb.Customer, error)  {
+func (c *customerRepo) GetCustomerByEmail(email *pbu.Email) (*pbu.Customer, error)  {
 	var (
 		updateAT sql.NullTime
-	 	rCustomer pb.Customer
+	 	rCustomer pbu.Customer
 	)
 
 	query := `SELECT
@@ -285,7 +285,7 @@ func (c *customerRepo) GetCustomerByEmail(email *pb.Email) (*pb.Customer, error)
 		return &rCustomer, nil
 }
 
-func (c *customerRepo) UpdateCustomerPassword(req *pb.UpdateCustomerPasswordRequest) error {
+func (c *customerRepo) UpdateCustomerPassword(req *pbu.UpdateCustomerPasswordRequest) error {
 	query := `UPDATE customers SET password=$1 WHERE id=$2`
 	_, err := c.db.Exec(query, req.Password, req.ID)
 	return err

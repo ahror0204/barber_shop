@@ -1,11 +1,11 @@
 package repo
 
-import pb "github.com/barber_shop/users_service/genproto"
+import pbu "github.com/barber_shop/users_service/genproto/users_service"
 
 type SalonStorageI interface {
-	CreateSalon(*pb.Salon) (*pb.Salon, error)
-	UpdateSalon(*pb.Salon) (*pb.Salon, error)
-	GetSalonByID(*pb.ID) (*pb.Salon, error)
-	GetListSalons(*pb.GetSalonsParams) (*pb.AllSalons, error)
-	DeleteSalon(*pb.ID) error
+	CreateSalon(*pbu.Salon) (*pbu.Salon, error)
+	UpdateSalon(*pbu.Salon) (*pbu.Salon, error)
+	GetSalonByID(*pbu.ID) (*pbu.Salon, error)
+	GetListSalons(*pbu.GetSalonsParams) (*pbu.AllSalons, error)
+	DeleteSalon(*pbu.ID) error
 }
