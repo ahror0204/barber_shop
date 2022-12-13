@@ -56,15 +56,11 @@ func (h *handlerV1) RegisterCustomer(c *gin.Context) {
 	ctx, cencel := context.WithTimeout(context.Background(), time.Second*time.Duration(h.cfg.CtxTimeout))
 	defer cencel()
 
+
+	//todo reactor get by email err
 	res, err := h.serviceManager.UserService().GetCustomerByEmail(ctx, &pb.Email{Email: req.Email})
-
-	if err != nil {
-		if res == nil {
-			c.JSON(http.StatusNotFound, errorResponse(ErrEmailExists))
-			return
-		}
-
-		c.JSON(http.StatusInternalServerError, errorResponse(err))
+	if res != nil {
+		c.JSON(http.StatusNotFound, errorResponse(ErrEmailExists))
 		return
 	}
 
@@ -340,7 +336,8 @@ func (h *handlerV1) VerifyForgotPassword(c *gin.Context) {
 		return
 	}
 
-	code := string((data.([]byte))[:]) // required to refactor
+	// todo refactor (gave panic when code expired)
+	code := string((data.([]byte))[:])
 	if req.Code != code {
 		c.JSON(http.StatusForbidden, errorResponse(ErrIncorrectCode))
 		return

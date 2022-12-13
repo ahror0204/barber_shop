@@ -1,16 +1,7 @@
 #!/bin/bash
-
-CURRENT_DIR=$(pwd)
-
-protoc -I /usr/local/include \
-       -I $GOPATH/src/github.com/gogo/protobuf/gogoproto \
-       -I $CURRENT_DIR/protos/ \
-        --gofast_out=plugins=grpc:$CURRENT_DIR/genproto/ \
-        $CURRENT_DIR/protos/*.proto;
-
-if [[ "$OSTYPE" == "darwin"* ]]; then
-    sed -i "" -e "s/,omitempty//g" $CURRENT_DIR/genproto/*.go
-  else
-    sed -i -e "s/,omitempty//g" $CURRENT_DIR/genproto/*.go
-fi
+CURRENT_DIR=$1
+for x in $(find ${CURRENT_DIR}/barber_protos/* -type d); do
+  protoc -I=${x} -I=${CURRENT_DIR}/barber_protos -I /usr/local/include --go_out=${CURRENT_DIR} \
+   --go-grpc_out=${CURRENT_DIR} ${x}/*.proto
+done
 
