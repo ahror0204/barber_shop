@@ -4,35 +4,45 @@ import (
 	"fmt"
 
 	config "github.com/barber_shop/api-gateway/config"
-	pb "github.com/barber_shop/api-gateway/genproto"
+	pbu "github.com/barber_shop/api-gateway/genproto/users_service"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/resolver"
 )
 
 type IServiceManager interface {
-	UserService() pb.CustomerServiceClient
+	CustomerService() pbu.CustomerServiceClient
+	SalonService() pbu.SalonServiceClient
 }
 
 type serviceManager struct {
-	userService pb.CustomerServiceClient
-}
-
-func (s *serviceManager) UserService() pb.CustomerServiceClient {
-	return s.userService
+	cfg         config.Config
+	connections map[string]interface{}
 }
 
 func NewServiceManager(conf *config.Config) (IServiceManager, error) {
 	resolver.SetDefaultScheme("dns")
-	connUser, err := grpc.Dial(
+	connUsersService, err := grpc.Dial(
 		fmt.Sprintf("%s:%d", conf.UserServiceHost, conf.UserServicePort),
 		grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		return nil, err
 	}
-	serviceManager := &serviceManager{
-		userService: pb.NewCustomerServiceClient(connUser),
-	}
 
+	serviceManager := &serviceManager{
+		cfg: *conf,
+		connections: map[string]interface{}{
+			"customer_service": pbu.NewCustomerServiceClient(connUsersService),
+			"salon_service":    pbu.NewSalonServiceClient(connUsersService),
+		},
+	}
 	return serviceManager, nil
+}
+
+func (s *serviceManager) CustomerService() pbu.CustomerServiceClient {
+	return s.connections["customer_service"].(pbu.CustomerServiceClient)
+}
+
+func (s *serviceManager) SalonService() pbu.SalonServiceClient {
+	return s.connections["salon_service"].(pbu.SalonServiceClient)
 }

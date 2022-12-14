@@ -37,7 +37,7 @@ func NewPayload(params *TokenParams) (*Payload, error) {
 	}
 
 	return &Payload{
-		ID:         tokenID,
+		ID:          tokenID,
 		CustomerID:  params.CustomerID,
 		FirstName:   params.FirstName,
 		LastName:    params.LastName,
@@ -49,8 +49,8 @@ func NewPayload(params *TokenParams) (*Payload, error) {
 		ImageURL:    params.ImageURL,
 		CreatedAT:   params.CreatedAT,
 		UpdatedAT:   params.UpdatedAT,
-		IssuedAT:   time.Now(),
-		ExpiredAT:  time.Now().Add(params.Duration),
+		IssuedAT:    time.Now(),
+		ExpiredAT:   time.Now().Add(params.Duration),
 	}, nil
 }
 

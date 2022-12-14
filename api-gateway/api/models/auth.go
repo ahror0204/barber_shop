@@ -1,7 +1,7 @@
 package models
 
 import (
-	pb "github.com/barber_shop/api-gateway/genproto"
+	pbu "github.com/barber_shop/api-gateway/genproto/users_service"
 )
 
 type VerifyRequest struct {
@@ -15,11 +15,11 @@ type LogInCustomerRequest struct {
 }
 
 type ForgotPasswordRequest struct {
-	Email       string `json:"email"`
+	Email string `json:"email"`
 }
 
 type UpdatePasswordRequest struct {
-	Password       string `json:"password" binding:"required"`
+	Password string `json:"password" binding:"required"`
 }
 
 type AuthResponse struct {
@@ -36,7 +36,7 @@ type AuthResponse struct {
 	Token       string `json:"token"`
 }
 
-func ParsAuthResponseToPbCustomer(c *pb.Customer) *AuthResponse {
+func ParsAuthResponseToPbCustomer(c *pbu.Customer) *AuthResponse {
 	return &AuthResponse{
 		ID:          c.Id,
 		FirstName:   c.FirstName,

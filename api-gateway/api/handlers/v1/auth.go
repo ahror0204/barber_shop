@@ -9,7 +9,7 @@ import (
 	"time"
 
 	"github.com/barber_shop/api-gateway/api/models"
-	pb "github.com/barber_shop/api-gateway/genproto"
+	pbu "github.com/barber_shop/api-gateway/genproto/users_service"
 	emailPkg "github.com/barber_shop/api-gateway/pkg/email"
 	l "github.com/barber_shop/api-gateway/pkg/logger"
 	"github.com/barber_shop/api-gateway/pkg/utils"
@@ -56,9 +56,8 @@ func (h *handlerV1) RegisterCustomer(c *gin.Context) {
 	ctx, cencel := context.WithTimeout(context.Background(), time.Second*time.Duration(h.cfg.CtxTimeout))
 	defer cencel()
 
-
 	//todo reactor get by email err
-	res, err := h.serviceManager.UserService().GetCustomerByEmail(ctx, &pb.Email{Email: req.Email})
+	res, err := h.serviceManager.CustomerService().GetCustomerByEmail(ctx, &pbu.Email{Email: req.Email})
 	if res != nil {
 		c.JSON(http.StatusNotFound, errorResponse(ErrEmailExists))
 		return
@@ -145,7 +144,7 @@ func (h *handlerV1) sendVerificationCode(key, email string) error {
 func (h *handlerV1) Verify(c *gin.Context) {
 	var (
 		req      models.VerifyRequest
-		customer pb.Customer
+		customer pbu.Customer
 	)
 
 	err := c.ShouldBindJSON(&req)
@@ -182,7 +181,7 @@ func (h *handlerV1) Verify(c *gin.Context) {
 	ctx, cencel := context.WithTimeout(context.Background(), time.Second*time.Duration(h.cfg.CtxTimeout))
 	defer cencel()
 
-	id, err := h.serviceManager.UserService().CreateCustomer(ctx, &customer)
+	id, err := h.serviceManager.CustomerService().CreateCustomer(ctx, &customer)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
@@ -224,7 +223,7 @@ func (h *handlerV1) CustomerLogIn(c *gin.Context) {
 	ctx, cencel := context.WithTimeout(context.Background(), time.Second*time.Duration(h.cfg.CtxTimeout))
 	defer cencel()
 
-	result, err := h.serviceManager.UserService().GetCustomerByEmail(ctx, &pb.Email{Email: req.Email})
+	result, err := h.serviceManager.CustomerService().GetCustomerByEmail(ctx, &pbu.Email{Email: req.Email})
 	if err != nil {
 		if result == nil {
 			c.JSON(http.StatusForbidden, errorResponse(ErrWrongEmailOrPass))
@@ -289,7 +288,7 @@ func (h *handlerV1) ForgotPassword(c *gin.Context) {
 	ctx, cencel := context.WithTimeout(context.Background(), time.Second*time.Duration(h.cfg.CtxTimeout))
 	defer cencel()
 
-	resp, err := h.serviceManager.UserService().GetCustomerByEmail(ctx, &pb.Email{Email: req.Email})
+	resp, err := h.serviceManager.CustomerService().GetCustomerByEmail(ctx, &pbu.Email{Email: req.Email})
 	if err != nil {
 		if resp == nil {
 			c.JSON(http.StatusNotFound, errorResponse(err))
@@ -345,26 +344,26 @@ func (h *handlerV1) VerifyForgotPassword(c *gin.Context) {
 
 	ctx, cencel := context.WithTimeout(context.Background(), time.Second*time.Duration(h.cfg.CtxTimeout))
 	defer cencel()
-	
-	res, err := h.serviceManager.UserService().GetCustomerByEmail(ctx, &pb.Email{Email: req.Email})
+
+	res, err := h.serviceManager.CustomerService().GetCustomerByEmail(ctx, &pbu.Email{Email: req.Email})
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
 	}
 
 	token, _, err := utils.CreateToken(&h.cfg, &utils.TokenParams{
-		CustomerID: res.Id,  
-		FirstName: res.FirstName,   
-		LastName: res.LastName,    
-		PhoneNumber: res.PhoneNumber, 
-		Email: res.Email,       
-		UserName: res.UserName,    
-		Password: res.Password,    
-		Gender: res.Gender,      
-		ImageURL: res.ImageUrl,    
-		CreatedAT: res.CreatedAt,   
-		UpdatedAT: res.UpdatedAt,   
-		Duration: time.Minute*30,
+		CustomerID:  res.Id,
+		FirstName:   res.FirstName,
+		LastName:    res.LastName,
+		PhoneNumber: res.PhoneNumber,
+		Email:       res.Email,
+		UserName:    res.UserName,
+		Password:    res.Password,
+		Gender:      res.Gender,
+		ImageURL:    res.ImageUrl,
+		CreatedAT:   res.CreatedAt,
+		UpdatedAT:   res.UpdatedAt,
+		Duration:    time.Minute * 30,
 	})
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, errorResponse(err))
@@ -419,8 +418,8 @@ func (h *handlerV1) UpdateCustomerPassword(c *gin.Context) {
 	ctx, cencel := context.WithTimeout(context.Background(), time.Second*time.Duration(h.cfg.CtxTimeout))
 	defer cencel()
 
-	_, err = h.serviceManager.UserService().UpdateCustomerPassword(ctx, &pb.UpdateCustomerPasswordRequest{
-		ID: payload.CustomerID,
+	_, err = h.serviceManager.CustomerService().UpdateCustomerPassword(ctx, &pbu.UpdateCustomerPasswordRequest{
+		ID:       payload.CustomerID,
 		Password: heshedPasword,
 	})
 	if err != nil {

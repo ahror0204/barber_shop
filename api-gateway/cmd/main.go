@@ -7,9 +7,8 @@ import (
 	config "github.com/barber_shop/api-gateway/config"
 	"github.com/barber_shop/api-gateway/pkg/logger"
 	services "github.com/barber_shop/api-gateway/services"
-	"github.com/gomodule/redigo/redis"
 	rds "github.com/barber_shop/api-gateway/storage/redis"
-	
+	"github.com/gomodule/redigo/redis"
 )
 
 func main() {

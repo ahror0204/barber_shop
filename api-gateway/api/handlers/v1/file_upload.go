@@ -13,6 +13,7 @@ import (
 type File struct {
 	File *multipart.FileHeader `form:"file" binding:"required"`
 }
+
 // @Security ApiKeyAuth
 // @Router /file-upload [post]
 // @Summary File upload
@@ -37,11 +38,11 @@ func (h *handlerV1) UploadFile(c *gin.Context) {
 	dst, _ := os.Getwd()
 
 	if _, err := os.Stat(dst + "/media"); os.IsNotExist(err) {
-		os.Mkdir(dst + "media", os.ModePerm)
+		os.Mkdir(dst+"media", os.ModePerm)
 	}
 
 	filePath := "/media/" + fileName
-	err = c.SaveUploadedFile(file.File, dst + filePath)
+	err = c.SaveUploadedFile(file.File, dst+filePath)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
@@ -51,4 +52,3 @@ func (h *handlerV1) UploadFile(c *gin.Context) {
 		"filename": filePath,
 	})
 }
-

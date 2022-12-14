@@ -4,11 +4,12 @@ import (
 	"context"
 	"net/http"
 
-	"time"
-	pb "github.com/barber_shop/api-gateway/genproto"
 	"github.com/barber_shop/api-gateway/api/models"
+	pbu "github.com/barber_shop/api-gateway/genproto/users_service"
 	"github.com/gin-gonic/gin"
+	"time"
 )
+
 // @Security ApiKeyAuth
 // @Router /customer/create [post]
 // @Summary Create a customer
@@ -19,9 +20,9 @@ import (
 // @Param customer body models.CustomerRequest true "Customer"
 // @Success 201 {object} models.CreateCustomerRespons
 // @Failure 500 {object} models.ErrorResponse
-func (h *handlerV1) CreateCustomer(c *gin.Context) { 
+func (h *handlerV1) CreateCustomer(c *gin.Context) {
 	var req models.CustomerRequest
-	
+
 	err := c.ShouldBindJSON(&req)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, errorResponse(err))
@@ -33,14 +34,14 @@ func (h *handlerV1) CreateCustomer(c *gin.Context) {
 
 	cstmr := models.ParsCustomerToProtoStruct(&req)
 
-	customer, err := h.serviceManager.UserService().CreateCustomer(ctx, cstmr)
+	customer, err := h.serviceManager.CustomerService().CreateCustomer(ctx, cstmr)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
 
 	ct := models.ParsCustomerFromProtoStruct(customer)
-	
+
 	c.JSON(http.StatusOK, ct)
 }
 
@@ -69,7 +70,7 @@ func (h *handlerV1) UpdateCustomer(c *gin.Context) {
 
 	cstmr := models.ParsCustomerToProtoStruct(&customer)
 	cstmr.Id = id
-	rCustomer, err := h.serviceManager.UserService().UpdateCustomer(ctx, cstmr)
+	rCustomer, err := h.serviceManager.CustomerService().UpdateCustomer(ctx, cstmr)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, errorResponse(err))
 		return
@@ -77,7 +78,6 @@ func (h *handlerV1) UpdateCustomer(c *gin.Context) {
 
 	c.JSON(http.StatusOK, models.ParsCustomerFromProtoStruct(rCustomer))
 }
-
 
 // @Router /customer/get/{id} [get]
 // @Summary Get customer by id
@@ -94,7 +94,7 @@ func (h *handlerV1) GetCustomerByID(c *gin.Context) {
 	ctx, cencel := context.WithTimeout(context.Background(), time.Second*time.Duration(h.cfg.CtxTimeout))
 	defer cencel()
 
-	customer, err := h.serviceManager.UserService().GetCustomerByID(ctx, &pb.ID{Id: id})
+	customer, err := h.serviceManager.CustomerService().GetCustomerByID(ctx, &pbu.ID{Id: id})
 	if err != nil {
 		c.JSON(http.StatusBadRequest, errorResponse(err))
 		return
@@ -122,7 +122,7 @@ func (h *handlerV1) GetCustomerProfile(c *gin.Context) {
 	ctx, cencel := context.WithTimeout(context.Background(), time.Second*time.Duration(h.cfg.CtxTimeout))
 	defer cencel()
 
-	resp, err := h.serviceManager.UserService().GetCustomerByID(ctx, &pb.ID{Id: payload.CustomerID})
+	resp, err := h.serviceManager.CustomerService().GetCustomerByID(ctx, &pbu.ID{Id: payload.CustomerID})
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
@@ -150,9 +150,9 @@ func (h *handlerV1) GetListCustomers(c *gin.Context) {
 	ctx, cencel := context.WithTimeout(context.Background(), time.Second*time.Duration(h.cfg.CtxTimeout))
 	defer cencel()
 
-	res, err := h.serviceManager.UserService().GetListCustomers(ctx, &pb.GetCustomerParams{
-		Page: req.Page,
-		Limit: req.Limit,
+	res, err := h.serviceManager.CustomerService().GetListCustomers(ctx, &pbu.GetCustomerParams{
+		Page:   req.Page,
+		Limit:  req.Limit,
 		Search: req.Search,
 	})
 	if err != nil {
@@ -162,9 +162,10 @@ func (h *handlerV1) GetListCustomers(c *gin.Context) {
 
 	c.JSON(http.StatusOK, models.GetListCustomersResponse{
 		Customers: models.ParsListCustomersFromProtoStruct(res.Customers),
-		Count: res.Count,
+		Count:     res.Count,
 	})
 }
+
 // @Security ApiKeyAuth
 // @Router /customer/delete/{id} [delete]
 // @Summary Delete customer by id
@@ -178,10 +179,10 @@ func (h *handlerV1) GetListCustomers(c *gin.Context) {
 func (h *handlerV1) DeleteCustomer(c *gin.Context) {
 	id := c.Param("id")
 
-	ctx, cencel := context.WithTimeout(context.Background(), time.Second* time.Duration(h.cfg.CtxTimeout))
+	ctx, cencel := context.WithTimeout(context.Background(), time.Second*time.Duration(h.cfg.CtxTimeout))
 	defer cencel()
 
-	_, err := h.serviceManager.UserService().DeleteCustomer(ctx, &pb.ID{Id: id})
+	_, err := h.serviceManager.CustomerService().DeleteCustomer(ctx, &pbu.ID{Id: id})
 	if err != nil {
 		c.JSON(http.StatusBadRequest, errorResponse(err))
 		return

@@ -97,6 +97,15 @@ definitions:
           $ref: '#/definitions/models.Customer'
         type: array
     type: object
+  models.GetListSalonsResponse:
+    properties:
+      count:
+        type: integer
+      salons:
+        items:
+          $ref: '#/definitions/models.Salon'
+        type: array
+    type: object
   models.LogInCustomerRequest:
     properties:
       email:
@@ -107,6 +116,58 @@ definitions:
   models.ResponseOK:
     properties:
       message:
+        type: string
+    type: object
+  models.Salon:
+    properties:
+      address:
+        type: string
+      created_at:
+        type: string
+      email:
+        type: string
+      end_time:
+        type: string
+      id:
+        type: string
+      image_url:
+        type: string
+      latitude:
+        type: string
+      longitude:
+        type: string
+      name:
+        type: string
+      phone_number:
+        type: string
+      rating:
+        type: integer
+      start_time:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  models.SalonRequest:
+    properties:
+      address:
+        type: string
+      email:
+        type: string
+      end_time:
+        type: string
+      image_url:
+        type: string
+      latitude:
+        type: string
+      longitude:
+        type: string
+      name:
+        type: string
+      phone_number:
+        type: string
+      rating:
+        type: integer
+      start_time:
         type: string
     type: object
   models.UpdatePasswordRequest:
@@ -477,6 +538,146 @@ paths:
       summary: File upload
       tags:
       - file-upload
+  /salon/create:
+    post:
+      consumes:
+      - application/json
+      description: This api for creating salon
+      parameters:
+      - description: Salon
+        in: body
+        name: salon
+        required: true
+        schema:
+          $ref: '#/definitions/models.SalonRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.Salon'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Create a salon
+      tags:
+      - salon
+  /salon/delete/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: This api for deleting salon by id
+      parameters:
+      - description: SalonID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.ResponseOK'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Delete salon by id
+      tags:
+      - salon
+  /salon/get/{id}:
+    get:
+      consumes:
+      - application/json
+      description: This api for getting salon by id
+      parameters:
+      - description: SalonID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Salon'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Get salon by id
+      tags:
+      - salon
+  /salon/update/{id}:
+    put:
+      consumes:
+      - application/json
+      description: This api for updating salon
+      parameters:
+      - description: SalonID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Salon
+        in: body
+        name: salon
+        required: true
+        schema:
+          $ref: '#/definitions/models.SalonRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Salon'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Update salon
+      tags:
+      - salon
+  /salons/list:
+    get:
+      consumes:
+      - application/json
+      description: This api for getting list of salons
+      parameters:
+      - default: 10
+        in: query
+        name: limit
+        required: true
+        type: integer
+      - default: 1
+        in: query
+        name: page
+        required: true
+        type: integer
+      - in: query
+        name: search
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.GetListSalonsResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: get list salons
+      tags:
+      - salon
 securityDefinitions:
   ApiKeyAuth:
     in: header

@@ -49,7 +49,7 @@ func Load(path string) Config {
 		RedisPort: conf.GetString("REDIS_PORT"),
 
 		Smtp: Smtp{
-			Sender: conf.GetString("SMTP_SENDER"),
+			Sender:   conf.GetString("SMTP_SENDER"),
 			Password: conf.GetString("SMTP_PASSWORD"),
 		},
 		AuthSecretKey: conf.GetString("AUTH_SECRET_KEY"),

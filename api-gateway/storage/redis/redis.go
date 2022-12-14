@@ -39,6 +39,6 @@ func (r *redisRepo) SetWithTTL(key, value string, second int) error {
 func (r *redisRepo) Get(key string) (interface{}, error) {
 	conn := r.rConn.Get()
 	defer conn.Close()
-	
+
 	return conn.Do("GET", key)
 }

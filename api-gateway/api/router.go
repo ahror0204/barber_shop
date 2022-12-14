@@ -38,7 +38,7 @@ func New(option Option) *gin.Engine {
 
 	handlerV1 := v1.New(&v1.HandlerV1Config{
 		Logger:         option.Logger,
-		Redis:   option.RedisRepo,
+		Redis:          option.RedisRepo,
 		ServiceManager: option.ServiceManager,
 		Cfg:            option.Conf,
 	})
@@ -47,6 +47,8 @@ func New(option Option) *gin.Engine {
 
 	api := router.Group("/v1")
 
+	api.POST("/file-upload", handlerV1.AuthMiddleware, handlerV1.UploadFile)
+	
 	api.POST("/customer/create", handlerV1.AuthMiddleware, handlerV1.CreateCustomer)
 	api.PUT("/customer/update/:id", handlerV1.AuthMiddleware, handlerV1.UpdateCustomer)
 	api.GET("/customer/get/:id", handlerV1.GetCustomerByID)
@@ -61,7 +63,11 @@ func New(option Option) *gin.Engine {
 	api.POST("/customer/verify-forgot-password", handlerV1.VerifyForgotPassword)
 	api.POST("/customer/update-password", handlerV1.AuthMiddleware, handlerV1.UpdateCustomerPassword)
 
-	api.POST("/file-upload", handlerV1.AuthMiddleware, handlerV1.UploadFile)
+	api.POST("/salon/create", handlerV1.CreateSalon)
+	api.PUT("/salon/update/:id", handlerV1.UpdateSalon)
+	api.GET("/salon/get/:id", handlerV1.GetSalonByID)
+	api.GET("/salons/list", handlerV1.GetListSalons)
+	api.DELETE("/salon/delete/:id", handlerV1.DeleteSalon)
 
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 

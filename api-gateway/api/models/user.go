@@ -1,7 +1,7 @@
 package models
 
 import (
-	pb "github.com/barber_shop/api-gateway/genproto"
+	pbu "github.com/barber_shop/api-gateway/genproto/users_service"
 )
 
 type Customer struct {
@@ -32,7 +32,7 @@ type CustomerRequest struct {
 
 type GetListCustomersResponse struct {
 	Customers []*Customer `json:"customers"`
-	Count     int64      `json:"count"`
+	Count     int64       `json:"count"`
 }
 
 type GetListParams struct {
@@ -42,12 +42,12 @@ type GetListParams struct {
 }
 
 type CreateCustomerRespons struct {
-	ID string `json:"id"`
+	ID    string `json:"id"`
 	Token string `json:"token"`
 }
 
-func ParsCustomerToProtoStruct(customer *CustomerRequest) *pb.Customer {
-	return &pb.Customer{
+func ParsCustomerToProtoStruct(customer *CustomerRequest) *pbu.Customer {
+	return &pbu.Customer{
 		FirstName:   customer.FirstName,
 		LastName:    customer.LastName,
 		PhoneNumber: customer.PhoneNumber,
@@ -59,7 +59,7 @@ func ParsCustomerToProtoStruct(customer *CustomerRequest) *pb.Customer {
 	}
 }
 
-func ParsCustomerFromProtoStruct(customer *pb.Customer) *Customer {
+func ParsCustomerFromProtoStruct(customer *pbu.Customer) *Customer {
 	return &Customer{
 		ID:          customer.Id,
 		FirstName:   customer.FirstName,
@@ -75,7 +75,7 @@ func ParsCustomerFromProtoStruct(customer *pb.Customer) *Customer {
 	}
 }
 
-func ParsListCustomersFromProtoStruct(customers []*pb.Customer) (rCustomers []*Customer) {
+func ParsListCustomersFromProtoStruct(customers []*pbu.Customer) (rCustomers []*Customer) {
 	for _, cust := range customers {
 		rCustomer := Customer{
 			ID:          cust.Id,
