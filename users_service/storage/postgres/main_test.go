@@ -14,6 +14,7 @@ import (
 var (
 	repoCustomer repo.CustomerStorageI
 	repoSalon    repo.SalonStorageI
+	repoStaff    repo.StaffStorageI
 )
 
 func TestMain(m *testing.M) {
@@ -24,7 +25,8 @@ func TestMain(m *testing.M) {
 		log.Fatal("sqlx connection to postgres error", logger.Error(err))
 	}
 
-	repoCustomer = NewCustomer(db)
+	repoCustomer = NewCustomerRepo(db)
 	repoSalon = NewSalonRepo(db)
+	repoStaff = NewStaffRepo(db)
 	os.Exit(m.Run())
 }

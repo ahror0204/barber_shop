@@ -68,7 +68,7 @@ func TestGetCustomerByID(t *testing.T) {
 
 func TestGetListCustomers(t *testing.T) {
 	customer := createCustomer(t)
-	customers, err := repoCustomer.GetListCustomers(&pbu.GetCustomerParams{
+	customers, err := repoCustomer.GetListCustomers(&pbu.GetListParams{
 		Limit: 10,
 		Page:  1,
 	})

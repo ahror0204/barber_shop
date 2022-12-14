@@ -55,7 +55,7 @@ func (c *CustomerService) GetCustomerByID(ctx context.Context, req *pbu.ID) (*pb
 	return customer, nil
 }
 
-func (c *CustomerService) GetListCustomers(ctx context.Context, req *pbu.GetCustomerParams) (*pbu.AllCustomers, error) {
+func (c *CustomerService) GetListCustomers(ctx context.Context, req *pbu.GetListParams) (*pbu.AllCustomers, error) {
 	Customers, err := c.storage.Customer().GetListCustomers(req)
 	if err != nil {
 		c.logger.Error("failed while gting customers list", l.Error(err))

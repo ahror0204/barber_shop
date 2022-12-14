@@ -15,7 +15,7 @@ type customerRepo struct {
 	db *sqlx.DB
 }
 
-func NewCustomer(db *sqlx.DB) repo.CustomerStorageI {
+func NewCustomerRepo(db *sqlx.DB) repo.CustomerStorageI {
 	return &customerRepo{db}
 }
 
@@ -105,8 +105,8 @@ func (u *customerRepo) UpdateCustomer(customer *pbu.Customer) (*pbu.Customer, er
 
 func (u *customerRepo) GetCustomerByID(ID *pbu.ID) (*pbu.Customer, error) {
 	var (
-		updateAT sql.NullTime
-	 	rCustomer pbu.Customer
+		updateAT  sql.NullTime
+		rCustomer pbu.Customer
 	)
 	query := `SELECT
 		id,
@@ -145,7 +145,7 @@ func (u *customerRepo) GetCustomerByID(ID *pbu.ID) (*pbu.Customer, error) {
 	return &rCustomer, nil
 }
 
-func (u *customerRepo) GetListCustomers(params *pbu.GetCustomerParams) (*pbu.AllCustomers, error) {
+func (u *customerRepo) GetListCustomers(params *pbu.GetListParams) (*pbu.AllCustomers, error) {
 	var (
 		customers []*pbu.Customer
 		count     int64
@@ -241,10 +241,10 @@ func (u *customerRepo) DeleteCustomer(ID *pbu.ID) error {
 	return nil
 }
 
-func (c *customerRepo) GetCustomerByEmail(email *pbu.Email) (*pbu.Customer, error)  {
+func (c *customerRepo) GetCustomerByEmail(email *pbu.Email) (*pbu.Customer, error) {
 	var (
-		updateAT sql.NullTime
-	 	rCustomer pbu.Customer
+		updateAT  sql.NullTime
+		rCustomer pbu.Customer
 	)
 
 	query := `SELECT
@@ -262,27 +262,27 @@ func (c *customerRepo) GetCustomerByEmail(email *pbu.Email) (*pbu.Customer, erro
 		FROM customers
 		WHERE email = $1 AND deleted_at IS NULL`
 
-		err := c.db.QueryRow(query, email.Email).Scan(
-			&rCustomer.Id,
-			&rCustomer.FirstName,
-			&rCustomer.LastName,
-			&rCustomer.PhoneNumber,
-			&rCustomer.Email,
-			&rCustomer.UserName,
-			&rCustomer.Password,
-			&rCustomer.Gender,
-			&rCustomer.ImageUrl,
-			&rCustomer.CreatedAt,
-			&updateAT,
-		)
-		if err != nil {
-			return nil, err
-		}
-	
-		if updateAT.Valid {
-			rCustomer.UpdatedAt = updateAT.Time.String()
-		}
-		return &rCustomer, nil
+	err := c.db.QueryRow(query, email.Email).Scan(
+		&rCustomer.Id,
+		&rCustomer.FirstName,
+		&rCustomer.LastName,
+		&rCustomer.PhoneNumber,
+		&rCustomer.Email,
+		&rCustomer.UserName,
+		&rCustomer.Password,
+		&rCustomer.Gender,
+		&rCustomer.ImageUrl,
+		&rCustomer.CreatedAt,
+		&updateAT,
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	if updateAT.Valid {
+		rCustomer.UpdatedAt = updateAT.Time.String()
+	}
+	return &rCustomer, nil
 }
 
 func (c *customerRepo) UpdateCustomerPassword(req *pbu.UpdateCustomerPasswordRequest) error {

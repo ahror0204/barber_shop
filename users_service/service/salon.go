@@ -52,7 +52,7 @@ func (s *SalonService) GetSalonByID(ctx context.Context, req *pbu.ID) (*pbu.Salo
 	return salon, nil
 }
 
-func (s *SalonService) GetListSalons(ctx context.Context, req *pbu.GetSalonsParams) (*pbu.AllSalons, error) {
+func (s *SalonService) GetListSalons(ctx context.Context, req *pbu.GetListParams) (*pbu.AllSalons, error) {
 	salons, err := s.storage.Salon().GetListSalons(req)
 	if err != nil {
 		s.logger.Error("failed while gting salons list", l.Error(err))

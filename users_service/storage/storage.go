@@ -9,16 +9,20 @@ import (
 type StorageI interface {
 	Customer() repo.CustomerStorageI
 	Salon() repo.SalonStorageI
+	Staff() repo.StaffStorageI
 }
 
 type storagePg struct {
 	customerRepo repo.CustomerStorageI
 	salonRepo    repo.SalonStorageI
+	staffRepo    repo.StaffStorageI
 }
 
 func NewStoragePg(db *sqlx.DB) StorageI {
 	return &storagePg{
-		customerRepo: postgres.NewCustomer(db),
+		customerRepo: postgres.NewCustomerRepo(db),
+		salonRepo:    postgres.NewSalonRepo(db),
+		staffRepo:    postgres.NewStaffRepo(db),
 	}
 }
 
@@ -28,4 +32,8 @@ func (s *storagePg) Customer() repo.CustomerStorageI {
 
 func (s *storagePg) Salon() repo.SalonStorageI {
 	return s.salonRepo
+}
+
+func (s *storagePg) Staff() repo.StaffStorageI {
+	return s.staffRepo
 }

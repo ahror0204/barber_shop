@@ -6,6 +6,6 @@ type SalonStorageI interface {
 	CreateSalon(*pbu.Salon) (*pbu.Salon, error)
 	UpdateSalon(*pbu.Salon) (*pbu.Salon, error)
 	GetSalonByID(*pbu.ID) (*pbu.Salon, error)
-	GetListSalons(*pbu.GetSalonsParams) (*pbu.AllSalons, error)
+	GetListSalons(*pbu.GetListParams) (*pbu.AllSalons, error)
 	DeleteSalon(*pbu.ID) error
 }

@@ -73,7 +73,7 @@ func TestGetSalonByID(t *testing.T) {
 
 func TestGetListSalons(t *testing.T) {
 	s := createSalon(t)
-	salons, err := repoSalon.GetListSalons(&pbu.GetSalonsParams{
+	salons, err := repoSalon.GetListSalons(&pbu.GetListParams{
 		Page:  1,
 		Limit: 10,
 	})

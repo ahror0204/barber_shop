@@ -26,6 +26,7 @@ func main() {
 
 	customerService := c.NewCustomerService(db, log)
 	salonService := c.NewSalonService(db, log)
+	staffService := c.NewStaffService(db, log)
 
 
 	lis, err := net.Listen("tcp", cfg.RPCPort)
@@ -36,6 +37,7 @@ func main() {
 	s := grpc.NewServer()
 	pb.RegisterCustomerServiceServer(s, customerService)
 	pb.RegisterSalonServiceServer(s, salonService)
+	pb.RegisterStaffServiceServer(s, staffService)
 
 	log.Info("main: server running",
 		logger.String("port", cfg.RPCPort))

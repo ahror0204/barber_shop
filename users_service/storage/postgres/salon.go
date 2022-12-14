@@ -144,7 +144,7 @@ func (s *salonRepo) GetSalonByID(ID *pbu.ID) (*pbu.Salon, error) {
 	return &salon, nil
 }
 
-func (s *salonRepo) GetListSalons(params *pbu.GetSalonsParams) (*pbu.AllSalons, error) {
+func (s *salonRepo) GetListSalons(params *pbu.GetListParams) (*pbu.AllSalons, error) {
 	var (
 		salons    []*pbu.Salon
 		count     int64
@@ -157,8 +157,8 @@ func (s *salonRepo) GetListSalons(params *pbu.GetSalonsParams) (*pbu.AllSalons, 
 		str := "%" + params.Search + "%"
 		filter = fmt.Sprintf(`
 			WHERE name ILIKE '%s' OR rating ILIKE '%s' OR email ILIKE '%s' 
-			OR user_name ILIKE '%s' OR phone_number ILIKE '%s'
-		`, str, str, str, str, str)
+			OR phone_number ILIKE '%s' AND deleted_at IS NULL
+		`, str, str, str, str)
 	}
 	query := `SELECT 
 		id,
