@@ -772,6 +772,219 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/staff/create": {
+            "post": {
+                "description": "This api for creating staff",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "staff"
+                ],
+                "summary": "Create staff",
+                "parameters": [
+                    {
+                        "description": "Staff",
+                        "name": "staff",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.StaffRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/models.Staff"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/staff/delete/{id}": {
+            "delete": {
+                "description": "This api for deleting staff by id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "staff"
+                ],
+                "summary": "Delete staff by id",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "StaffID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseOK"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/staff/get/{id}": {
+            "get": {
+                "description": "This api for getting staff by id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "staff"
+                ],
+                "summary": "Get staff by id",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "StaffID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.Staff"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/staff/list": {
+            "get": {
+                "description": "This api for getting list of staff",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "staff"
+                ],
+                "summary": "get list staff",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "default": 10,
+                        "name": "limit",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "default": 1,
+                        "name": "page",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "name": "search",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.GetListStaffResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/staff/update/{id}": {
+            "put": {
+                "description": "This api for updating staff",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "staff"
+                ],
+                "summary": "Update a staff",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "StaffID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Staff",
+                        "name": "staff",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.UpdateStaffRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.Staff"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -806,6 +1019,9 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "token": {
+                    "type": "string"
+                },
+                "type": {
                     "type": "string"
                 },
                 "user_name": {
@@ -857,6 +1073,9 @@ const docTemplate = `{
                 "phone_number": {
                     "type": "string"
                 },
+                "type": {
+                    "type": "string"
+                },
                 "updated_at": {
                     "type": "string"
                 },
@@ -867,6 +1086,9 @@ const docTemplate = `{
         },
         "models.CustomerRequest": {
             "type": "object",
+            "required": [
+                "type"
+            ],
             "properties": {
                 "email": {
                     "type": "string"
@@ -888,6 +1110,13 @@ const docTemplate = `{
                 },
                 "phone_number": {
                     "type": "string"
+                },
+                "type": {
+                    "type": "string",
+                    "enum": [
+                        "superadmin",
+                        "user"
+                    ]
                 },
                 "user_name": {
                     "type": "string"
@@ -934,6 +1163,20 @@ const docTemplate = `{
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/models.Salon"
+                    }
+                }
+            }
+        },
+        "models.GetListStaffResponse": {
+            "type": "object",
+            "properties": {
+                "count": {
+                    "type": "integer"
+                },
+                "staff": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.Staff"
                     }
                 }
             }
@@ -1036,6 +1279,89 @@ const docTemplate = `{
                 }
             }
         },
+        "models.Staff": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "deleted_at": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "first_name": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "image_url": {
+                    "type": "string"
+                },
+                "last_name": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "phone_number": {
+                    "type": "string"
+                },
+                "salon_id": {
+                    "type": "string"
+                },
+                "type": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                },
+                "user_name": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.StaffRequest": {
+            "type": "object",
+            "required": [
+                "type"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "first_name": {
+                    "type": "string"
+                },
+                "image_url": {
+                    "type": "string"
+                },
+                "last_name": {
+                    "type": "string"
+                },
+                "passward": {
+                    "type": "string"
+                },
+                "phone_number": {
+                    "type": "string"
+                },
+                "salon_id": {
+                    "type": "string"
+                },
+                "type": {
+                    "type": "string",
+                    "enum": [
+                        "superadmin",
+                        "user"
+                    ]
+                },
+                "user_name": {
+                    "type": "string"
+                }
+            }
+        },
         "models.UpdatePasswordRequest": {
             "type": "object",
             "required": [
@@ -1043,6 +1369,32 @@ const docTemplate = `{
             ],
             "properties": {
                 "password": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.UpdateStaffRequest": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "first_name": {
+                    "type": "string"
+                },
+                "image_url": {
+                    "type": "string"
+                },
+                "last_name": {
+                    "type": "string"
+                },
+                "passward": {
+                    "type": "string"
+                },
+                "phone_number": {
+                    "type": "string"
+                },
+                "user_name": {
                     "type": "string"
                 }
             }

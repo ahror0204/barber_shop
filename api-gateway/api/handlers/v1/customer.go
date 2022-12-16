@@ -150,7 +150,7 @@ func (h *handlerV1) GetListCustomers(c *gin.Context) {
 	ctx, cencel := context.WithTimeout(context.Background(), time.Second*time.Duration(h.cfg.CtxTimeout))
 	defer cencel()
 
-	res, err := h.serviceManager.CustomerService().GetListCustomers(ctx, &pbu.GetCustomerParams{
+	res, err := h.serviceManager.CustomerService().GetListCustomers(ctx, &pbu.GetListParams{
 		Page:   req.Page,
 		Limit:  req.Limit,
 		Search: req.Search,

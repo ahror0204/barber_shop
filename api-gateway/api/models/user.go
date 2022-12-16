@@ -13,6 +13,7 @@ type Customer struct {
 	UserName    string `json:"user_name"`
 	Password    string `json:"password"`
 	Gender      string `json:"gender"`
+	Type        string `json:"type"`
 	ImageURL    string `json:"image_url"`
 	CreatedAT   string `json:"created_at"`
 	UpdatedAT   string `json:"updated_at,omitempty"`
@@ -27,6 +28,7 @@ type CustomerRequest struct {
 	UserName    string `json:"user_name"`
 	Password    string `json:"passward"`
 	Gender      string `json:"gender"`
+	Type        string `json:"type" binding:"required,oneof=superadmin user"`
 	ImageURL    string `json:"image_url"`
 }
 
@@ -55,6 +57,7 @@ func ParsCustomerToProtoStruct(customer *CustomerRequest) *pbu.Customer {
 		UserName:    customer.UserName,
 		Password:    customer.Password,
 		Gender:      customer.Gender,
+		Type:        customer.Type,
 		ImageUrl:    customer.ImageURL,
 	}
 }
@@ -69,6 +72,7 @@ func ParsCustomerFromProtoStruct(customer *pbu.Customer) *Customer {
 		UserName:    customer.UserName,
 		Password:    customer.Password,
 		Gender:      customer.Gender,
+		Type:        customer.Type,
 		ImageURL:    customer.ImageUrl,
 		CreatedAT:   customer.CreatedAt,
 		UpdatedAT:   customer.UpdatedAt,
@@ -86,6 +90,7 @@ func ParsListCustomersFromProtoStruct(customers []*pbu.Customer) (rCustomers []*
 			UserName:    cust.UserName,
 			Password:    cust.Password,
 			Gender:      cust.Gender,
+			Type:        cust.Type,
 			ImageURL:    cust.ImageUrl,
 			CreatedAT:   cust.CreatedAt,
 			UpdatedAT:   cust.UpdatedAt,

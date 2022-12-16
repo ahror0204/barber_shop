@@ -22,6 +22,8 @@ definitions:
         type: string
       token:
         type: string
+      type:
+        type: string
       user_name:
         type: string
     type: object
@@ -54,6 +56,8 @@ definitions:
         type: string
       phone_number:
         type: string
+      type:
+        type: string
       updated_at:
         type: string
       user_name:
@@ -75,8 +79,15 @@ definitions:
         type: string
       phone_number:
         type: string
+      type:
+        enum:
+        - superadmin
+        - user
+        type: string
       user_name:
         type: string
+    required:
+    - type
     type: object
   models.ErrorResponse:
     properties:
@@ -104,6 +115,15 @@ definitions:
       salons:
         items:
           $ref: '#/definitions/models.Salon'
+        type: array
+    type: object
+  models.GetListStaffResponse:
+    properties:
+      count:
+        type: integer
+      staff:
+        items:
+          $ref: '#/definitions/models.Staff'
         type: array
     type: object
   models.LogInCustomerRequest:
@@ -170,12 +190,84 @@ definitions:
       start_time:
         type: string
     type: object
+  models.Staff:
+    properties:
+      created_at:
+        type: string
+      deleted_at:
+        type: string
+      email:
+        type: string
+      first_name:
+        type: string
+      id:
+        type: string
+      image_url:
+        type: string
+      last_name:
+        type: string
+      password:
+        type: string
+      phone_number:
+        type: string
+      salon_id:
+        type: string
+      type:
+        type: string
+      updated_at:
+        type: string
+      user_name:
+        type: string
+    type: object
+  models.StaffRequest:
+    properties:
+      email:
+        type: string
+      first_name:
+        type: string
+      image_url:
+        type: string
+      last_name:
+        type: string
+      passward:
+        type: string
+      phone_number:
+        type: string
+      salon_id:
+        type: string
+      type:
+        enum:
+        - superadmin
+        - user
+        type: string
+      user_name:
+        type: string
+    required:
+    - type
+    type: object
   models.UpdatePasswordRequest:
     properties:
       password:
         type: string
     required:
     - password
+    type: object
+  models.UpdateStaffRequest:
+    properties:
+      email:
+        type: string
+      first_name:
+        type: string
+      image_url:
+        type: string
+      last_name:
+        type: string
+      passward:
+        type: string
+      phone_number:
+        type: string
+      user_name:
+        type: string
     type: object
   models.VerifyRequest:
     properties:
@@ -678,6 +770,146 @@ paths:
       summary: get list salons
       tags:
       - salon
+  /staff/create:
+    post:
+      consumes:
+      - application/json
+      description: This api for creating staff
+      parameters:
+      - description: Staff
+        in: body
+        name: staff
+        required: true
+        schema:
+          $ref: '#/definitions/models.StaffRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.Staff'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Create staff
+      tags:
+      - staff
+  /staff/delete/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: This api for deleting staff by id
+      parameters:
+      - description: StaffID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.ResponseOK'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Delete staff by id
+      tags:
+      - staff
+  /staff/get/{id}:
+    get:
+      consumes:
+      - application/json
+      description: This api for getting staff by id
+      parameters:
+      - description: StaffID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Staff'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Get staff by id
+      tags:
+      - staff
+  /staff/list:
+    get:
+      consumes:
+      - application/json
+      description: This api for getting list of staff
+      parameters:
+      - default: 10
+        in: query
+        name: limit
+        required: true
+        type: integer
+      - default: 1
+        in: query
+        name: page
+        required: true
+        type: integer
+      - in: query
+        name: search
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.GetListStaffResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: get list staff
+      tags:
+      - staff
+  /staff/update/{id}:
+    put:
+      consumes:
+      - application/json
+      description: This api for updating staff
+      parameters:
+      - description: StaffID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Staff
+        in: body
+        name: staff
+        required: true
+        schema:
+          $ref: '#/definitions/models.UpdateStaffRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Staff'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Update a staff
+      tags:
+      - staff
 securityDefinitions:
   ApiKeyAuth:
     in: header

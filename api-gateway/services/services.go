@@ -13,6 +13,7 @@ import (
 type IServiceManager interface {
 	CustomerService() pbu.CustomerServiceClient
 	SalonService() pbu.SalonServiceClient
+	StaffService() pbu.StaffServiceClient
 }
 
 type serviceManager struct {
@@ -34,6 +35,7 @@ func NewServiceManager(conf *config.Config) (IServiceManager, error) {
 		connections: map[string]interface{}{
 			"customer_service": pbu.NewCustomerServiceClient(connUsersService),
 			"salon_service":    pbu.NewSalonServiceClient(connUsersService),
+			"staff_service": pbu.NewStaffServiceClient(connUsersService),
 		},
 	}
 	return serviceManager, nil
@@ -45,4 +47,8 @@ func (s *serviceManager) CustomerService() pbu.CustomerServiceClient {
 
 func (s *serviceManager) SalonService() pbu.SalonServiceClient {
 	return s.connections["salon_service"].(pbu.SalonServiceClient)
+}
+
+func (s *serviceManager) StaffService() pbu.StaffServiceClient {
+	return s.connections["staff_service"].(pbu.StaffServiceClient)
 }
