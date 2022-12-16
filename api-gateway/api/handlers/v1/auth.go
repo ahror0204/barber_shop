@@ -56,7 +56,7 @@ func (h *handlerV1) RegisterCustomer(c *gin.Context) {
 	ctx, cencel := context.WithTimeout(context.Background(), time.Second*time.Duration(h.cfg.CtxTimeout))
 	defer cencel()
 
-	//todo reactor get by email err
+	//todo refactor get by email err
 	res, err := h.serviceManager.CustomerService().GetCustomerByEmail(ctx, &pbu.Email{Email: req.Email})
 	if res != nil {
 		c.JSON(http.StatusNotFound, errorResponse(ErrEmailExists))
@@ -181,7 +181,7 @@ func (h *handlerV1) Verify(c *gin.Context) {
 	ctx, cencel := context.WithTimeout(context.Background(), time.Second*time.Duration(h.cfg.CtxTimeout))
 	defer cencel()
 
-	id, err := h.serviceManager.CustomerService().CreateCustomer(ctx, &customer)
+	cust, err := h.serviceManager.CustomerService().CreateCustomer(ctx, &customer)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
@@ -189,7 +189,9 @@ func (h *handlerV1) Verify(c *gin.Context) {
 
 	//Creating token
 	token, _, err := utils.CreateToken(&h.cfg, &utils.TokenParams{
-		CustomerID: id.Id,
+		CustomerID: cust.Id,
+		Email: cust.Email,
+		UserType: cust.Type,
 		Duration:   time.Hour * 24,
 	})
 	if err != nil {
@@ -197,7 +199,7 @@ func (h *handlerV1) Verify(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusCreated, models.CreateCustomerRespons{ID: id.Id, Token: token})
+	c.JSON(http.StatusCreated, models.CreateCustomerRespons{ID: cust.Id, Token: token})
 }
 
 // @Router /customer/login [post]
@@ -243,16 +245,8 @@ func (h *handlerV1) CustomerLogIn(c *gin.Context) {
 	// creating token
 	token, _, err := utils.CreateToken(&h.cfg, &utils.TokenParams{
 		CustomerID:  result.Id,
-		FirstName:   result.FirstName,
-		LastName:    result.LastName,
-		PhoneNumber: result.PhoneNumber,
 		Email:       result.Email,
-		UserName:    result.UserName,
-		Password:    result.Password,
-		Gender:      result.Gender,
-		ImageURL:    result.ImageUrl,
-		CreatedAT:   result.CreatedAt,
-		UpdatedAT:   result.UpdatedAt,
+		UserType: result.Type,
 		Duration:    time.Hour * 24,
 	})
 	if err != nil {
@@ -353,16 +347,7 @@ func (h *handlerV1) VerifyForgotPassword(c *gin.Context) {
 
 	token, _, err := utils.CreateToken(&h.cfg, &utils.TokenParams{
 		CustomerID:  res.Id,
-		FirstName:   res.FirstName,
-		LastName:    res.LastName,
-		PhoneNumber: res.PhoneNumber,
 		Email:       res.Email,
-		UserName:    res.UserName,
-		Password:    res.Password,
-		Gender:      res.Gender,
-		ImageURL:    res.ImageUrl,
-		CreatedAT:   res.CreatedAt,
-		UpdatedAT:   res.UpdatedAt,
 		Duration:    time.Minute * 30,
 	})
 	if err != nil {

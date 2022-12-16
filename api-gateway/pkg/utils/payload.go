@@ -23,6 +23,7 @@ type Payload struct {
 	UserName    string    `json:"user_name"`
 	Password    string    `json:"password"`
 	Gender      string    `json:"gender"`
+	UserType    string    `json:"user_type"`
 	ImageURL    string    `json:"image_url"`
 	CreatedAT   string    `json:"created_at"`
 	UpdatedAT   string    `json:"updated_at"`
@@ -46,6 +47,7 @@ func NewPayload(params *TokenParams) (*Payload, error) {
 		UserName:    params.UserName,
 		Password:    params.Password,
 		Gender:      params.Gender,
+		UserType:    params.UserType,
 		ImageURL:    params.ImageURL,
 		CreatedAT:   params.CreatedAT,
 		UpdatedAT:   params.UpdatedAT,

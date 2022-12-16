@@ -10,17 +10,17 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// @Router /salon/create [post]
-// @Summary Create a salon
-// @Description This api for creating salon
-// @Tags salon
+// @Router /staff/create [post]
+// @Summary Create staff
+// @Description This api for creating staff
+// @Tags staff
 // @Accept json
 // @Produce json
-// @Param salon body models.SalonRequest true "Salon"
-// @Success 201 {object} models.Salon
+// @Param staff body models.StaffRequest true "Staff"
+// @Success 201 {object} models.Staff
 // @Failure 500 {object} models.ErrorResponse
-func (h *handlerV1) CreateSalon(c *gin.Context) {
-	var req models.SalonRequest
+func (h *handlerV1) CreateStaff(c *gin.Context) {
+	var req models.StaffRequest
 
 	err := c.ShouldBindJSON(&req)
 	if err != nil {
@@ -31,30 +31,31 @@ func (h *handlerV1) CreateSalon(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*time.Duration(h.cfg.CtxTimeout))
 	defer cancel()
 
-	salon := models.ParsSalonToProtoStruct(&req)
+	cstmr := models.ParsStaffToProtoStruct(&req)
 
-	resp, err := h.serviceManager.SalonService().CreateSalon(ctx, salon)
+	Staff, err := h.serviceManager.StaffService().CreateStaff(ctx, cstmr)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
 
-	c.JSON(http.StatusOK, models.ParsSalonFromProtoStruct(resp))
+	ct := models.ParsStaffFromProtoStruct(Staff)
+
+	c.JSON(http.StatusOK, ct)
 }
 
-
-// @Router /salon/update/{id} [put]
-// @Summary Update salon
-// @Description This api for updating salon
-// @Tags salon
+// @Router /staff/update/{id} [put]
+// @Summary Update a staff
+// @Description This api for updating staff
+// @Tags staff
 // @Accept json
 // @Produce json
-// @Param id path string true "SalonID"
-// @Param salon body models.SalonRequest true "Salon"
-// @Success 200 {object} models.Salon
+// @Param id path string true "StaffID"
+// @Param staff body models.UpdateStaffRequest true "Staff"
+// @Success 200 {object} models.Staff
 // @Failure 500 {object} models.ErrorResponse
-func (h *handlerV1) UpdateSalon(c *gin.Context) {
-	var req models.SalonRequest
+func (h *handlerV1) UpdateStaff(c *gin.Context) {
+	var req models.UpdateStaffRequest
 	id := c.Param("id")
 	err := c.ShouldBindJSON(&req)
 	if err != nil {
@@ -65,51 +66,52 @@ func (h *handlerV1) UpdateSalon(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*time.Duration(h.cfg.CtxTimeout))
 	defer cancel()
 
-	salon := models.ParsSalonToProtoStruct(&req)
-	salon.Id = id
-	resp, err := h.serviceManager.SalonService().UpdateSalon(ctx, salon)
+	staff := models.ParsUpdateStaffToProtoStruct(&req)
+	staff.Id = id
+
+	resp, err := h.serviceManager.StaffService().UpdateStaff(ctx, staff)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
 
-	c.JSON(http.StatusOK, models.ParsSalonFromProtoStruct(resp))
+	c.JSON(http.StatusOK, models.ParsStaffFromProtoStruct(resp))
 }
 
-// @Router /salon/get/{id} [get]
-// @Summary Get salon by id
-// @Description This api for getting salon by id
-// @Tags salon
+// @Router /staff/get/{id} [get]
+// @Summary Get staff by id
+// @Description This api for getting staff by id
+// @Tags staff
 // @Accept json
 // @Produce json
-// @Param id path string true "SalonID"
-// @Success 200 {object} models.Salon
+// @Param id path string true "StaffID"
+// @Success 200 {object} models.Staff
 // @Failure 500 {object} models.ErrorResponse
-func (h *handlerV1) GetSalonByID(c *gin.Context) {
+func (h *handlerV1) GetStaffByID(c *gin.Context) {
 	id := c.Param("id")
 
 	ctx, cencel := context.WithTimeout(context.Background(), time.Second*time.Duration(h.cfg.CtxTimeout))
 	defer cencel()
 
-	customer, err := h.serviceManager.SalonService().GetSalonByID(ctx, &pbu.ID{Id: id})
+	staff, err := h.serviceManager.StaffService().GetStaffByID(ctx, &pbu.ID{Id: id})
 	if err != nil {
 		c.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
 
-	c.JSON(http.StatusOK, models.ParsSalonFromProtoStruct(customer))
+	c.JSON(http.StatusOK, models.ParsStaffFromProtoStruct(staff))
 }
 
-// @Router /salons/list [get]
-// @Summary get list salons
-// @Description This api for getting list of salons
-// @Tags salon
+// @Router /staff/list [get]
+// @Summary get list staff
+// @Description This api for getting list of staff
+// @Tags staff
 // @Accept json
 // @Produce json
 // @Param filter query models.GetListParams false "Filter"
-// @Success 200 {object} models.GetListSalonsResponse
+// @Success 200 {object} models.GetListStaffResponse
 // @Failure 500 {object} models.ErrorResponse
-func (h *handlerV1) GetListSalons(c *gin.Context) {
+func (h *handlerV1) GetListStaff(c *gin.Context) {
 	req, err := validateGetAllParams(c)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, errorResponse(err))
@@ -119,7 +121,7 @@ func (h *handlerV1) GetListSalons(c *gin.Context) {
 	ctx, cencel := context.WithTimeout(context.Background(), time.Second*time.Duration(h.cfg.CtxTimeout))
 	defer cencel()
 
-	res, err := h.serviceManager.SalonService().GetListSalons(ctx, &pbu.GetListParams{
+	res, err := h.serviceManager.StaffService().GetListStaff(ctx, &pbu.GetListParams{
 		Page:   req.Page,
 		Limit:  req.Limit,
 		Search: req.Search,
@@ -129,28 +131,28 @@ func (h *handlerV1) GetListSalons(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, models.GetListSalonsResponse{
-		Salons: models.ParsListSalonsFromProtoStruct(res.Salons),
-		Count:     res.Count,
+	c.JSON(http.StatusOK, models.GetListStaffResponse{
+		Staff: models.ParsListStaffFromProtoStruct(res.Staff),
+		Count: res.Count,
 	})
 }
 
-// @Router /salon/delete/{id} [delete]
-// @Summary Delete salon by id
-// @Description This api for deleting salon by id
-// @Tags salon
+// @Router /staff/delete/{id} [delete]
+// @Summary Delete staff by id
+// @Description This api for deleting staff by id
+// @Tags staff
 // @Accept json
 // @Produce json
-// @Param id path string true "SalonID"
+// @Param id path string true "StaffID"
 // @Success 200 {object} models.ResponseOK
 // @Failure 500 {object} models.ErrorResponse
-func (h *handlerV1) DeleteSalon(c *gin.Context) {
+func (h *handlerV1) DeleteStaff(c *gin.Context) {
 	id := c.Param("id")
 
 	ctx, cencel := context.WithTimeout(context.Background(), time.Second*time.Duration(h.cfg.CtxTimeout))
 	defer cencel()
 
-	_, err := h.serviceManager.SalonService().DeleteSalon(ctx, &pbu.ID{Id: id})
+	_, err := h.serviceManager.StaffService().DeleteStaff(ctx, &pbu.ID{Id: id})
 	if err != nil {
 		c.JSON(http.StatusBadRequest, errorResponse(err))
 		return
@@ -159,5 +161,4 @@ func (h *handlerV1) DeleteSalon(c *gin.Context) {
 	c.JSON(http.StatusOK, models.ResponseOK{
 		Message: "succesfuly deleted",
 	})
-
 }

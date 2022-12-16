@@ -31,6 +31,7 @@ type AuthResponse struct {
 	UserName    string `json:"user_name"`
 	Password    string `json:"passward"`
 	Gender      string `json:"gender"`
+	Type        string `json:"type"`
 	ImageURL    string `json:"image_url"`
 	CreatedAT   string `json:"created_at"`
 	Token       string `json:"token"`
@@ -46,6 +47,7 @@ func ParsAuthResponseToPbCustomer(c *pbu.Customer) *AuthResponse {
 		UserName:    c.UserName,
 		Password:    c.Password,
 		Gender:      c.Gender,
+		Type:        c.Type,
 		ImageURL:    c.ImageUrl,
 		CreatedAT:   c.CreatedAt,
 	}

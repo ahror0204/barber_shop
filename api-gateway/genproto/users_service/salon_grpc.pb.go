@@ -25,7 +25,7 @@ type SalonServiceClient interface {
 	CreateSalon(ctx context.Context, in *Salon, opts ...grpc.CallOption) (*Salon, error)
 	UpdateSalon(ctx context.Context, in *Salon, opts ...grpc.CallOption) (*Salon, error)
 	GetSalonByID(ctx context.Context, in *ID, opts ...grpc.CallOption) (*Salon, error)
-	GetListSalons(ctx context.Context, in *GetSalonsParams, opts ...grpc.CallOption) (*AllSalons, error)
+	GetListSalons(ctx context.Context, in *GetListParams, opts ...grpc.CallOption) (*AllSalons, error)
 	DeleteSalon(ctx context.Context, in *ID, opts ...grpc.CallOption) (*Empty, error)
 }
 
@@ -64,7 +64,7 @@ func (c *salonServiceClient) GetSalonByID(ctx context.Context, in *ID, opts ...g
 	return out, nil
 }
 
-func (c *salonServiceClient) GetListSalons(ctx context.Context, in *GetSalonsParams, opts ...grpc.CallOption) (*AllSalons, error) {
+func (c *salonServiceClient) GetListSalons(ctx context.Context, in *GetListParams, opts ...grpc.CallOption) (*AllSalons, error) {
 	out := new(AllSalons)
 	err := c.cc.Invoke(ctx, "/protos.SalonService/GetListSalons", in, out, opts...)
 	if err != nil {
@@ -89,7 +89,7 @@ type SalonServiceServer interface {
 	CreateSalon(context.Context, *Salon) (*Salon, error)
 	UpdateSalon(context.Context, *Salon) (*Salon, error)
 	GetSalonByID(context.Context, *ID) (*Salon, error)
-	GetListSalons(context.Context, *GetSalonsParams) (*AllSalons, error)
+	GetListSalons(context.Context, *GetListParams) (*AllSalons, error)
 	DeleteSalon(context.Context, *ID) (*Empty, error)
 	mustEmbedUnimplementedSalonServiceServer()
 }
@@ -107,7 +107,7 @@ func (UnimplementedSalonServiceServer) UpdateSalon(context.Context, *Salon) (*Sa
 func (UnimplementedSalonServiceServer) GetSalonByID(context.Context, *ID) (*Salon, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetSalonByID not implemented")
 }
-func (UnimplementedSalonServiceServer) GetListSalons(context.Context, *GetSalonsParams) (*AllSalons, error) {
+func (UnimplementedSalonServiceServer) GetListSalons(context.Context, *GetListParams) (*AllSalons, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetListSalons not implemented")
 }
 func (UnimplementedSalonServiceServer) DeleteSalon(context.Context, *ID) (*Empty, error) {
@@ -181,7 +181,7 @@ func _SalonService_GetSalonByID_Handler(srv interface{}, ctx context.Context, de
 }
 
 func _SalonService_GetListSalons_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetSalonsParams)
+	in := new(GetListParams)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -193,7 +193,7 @@ func _SalonService_GetListSalons_Handler(srv interface{}, ctx context.Context, d
 		FullMethod: "/protos.SalonService/GetListSalons",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(SalonServiceServer).GetListSalons(ctx, req.(*GetSalonsParams))
+		return srv.(SalonServiceServer).GetListSalons(ctx, req.(*GetListParams))
 	}
 	return interceptor(ctx, in, info, handler)
 }

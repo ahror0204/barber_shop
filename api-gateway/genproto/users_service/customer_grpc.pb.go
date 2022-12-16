@@ -25,7 +25,7 @@ type CustomerServiceClient interface {
 	CreateCustomer(ctx context.Context, in *Customer, opts ...grpc.CallOption) (*Customer, error)
 	UpdateCustomer(ctx context.Context, in *Customer, opts ...grpc.CallOption) (*Customer, error)
 	GetCustomerByID(ctx context.Context, in *ID, opts ...grpc.CallOption) (*Customer, error)
-	GetListCustomers(ctx context.Context, in *GetCustomerParams, opts ...grpc.CallOption) (*AllCustomers, error)
+	GetListCustomers(ctx context.Context, in *GetListParams, opts ...grpc.CallOption) (*AllCustomers, error)
 	DeleteCustomer(ctx context.Context, in *ID, opts ...grpc.CallOption) (*Empty, error)
 	GetCustomerByEmail(ctx context.Context, in *Email, opts ...grpc.CallOption) (*Customer, error)
 	UpdateCustomerPassword(ctx context.Context, in *UpdateCustomerPasswordRequest, opts ...grpc.CallOption) (*Empty, error)
@@ -66,7 +66,7 @@ func (c *customerServiceClient) GetCustomerByID(ctx context.Context, in *ID, opt
 	return out, nil
 }
 
-func (c *customerServiceClient) GetListCustomers(ctx context.Context, in *GetCustomerParams, opts ...grpc.CallOption) (*AllCustomers, error) {
+func (c *customerServiceClient) GetListCustomers(ctx context.Context, in *GetListParams, opts ...grpc.CallOption) (*AllCustomers, error) {
 	out := new(AllCustomers)
 	err := c.cc.Invoke(ctx, "/protos.CustomerService/GetListCustomers", in, out, opts...)
 	if err != nil {
@@ -109,7 +109,7 @@ type CustomerServiceServer interface {
 	CreateCustomer(context.Context, *Customer) (*Customer, error)
 	UpdateCustomer(context.Context, *Customer) (*Customer, error)
 	GetCustomerByID(context.Context, *ID) (*Customer, error)
-	GetListCustomers(context.Context, *GetCustomerParams) (*AllCustomers, error)
+	GetListCustomers(context.Context, *GetListParams) (*AllCustomers, error)
 	DeleteCustomer(context.Context, *ID) (*Empty, error)
 	GetCustomerByEmail(context.Context, *Email) (*Customer, error)
 	UpdateCustomerPassword(context.Context, *UpdateCustomerPasswordRequest) (*Empty, error)
@@ -129,7 +129,7 @@ func (UnimplementedCustomerServiceServer) UpdateCustomer(context.Context, *Custo
 func (UnimplementedCustomerServiceServer) GetCustomerByID(context.Context, *ID) (*Customer, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetCustomerByID not implemented")
 }
-func (UnimplementedCustomerServiceServer) GetListCustomers(context.Context, *GetCustomerParams) (*AllCustomers, error) {
+func (UnimplementedCustomerServiceServer) GetListCustomers(context.Context, *GetListParams) (*AllCustomers, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetListCustomers not implemented")
 }
 func (UnimplementedCustomerServiceServer) DeleteCustomer(context.Context, *ID) (*Empty, error) {
@@ -209,7 +209,7 @@ func _CustomerService_GetCustomerByID_Handler(srv interface{}, ctx context.Conte
 }
 
 func _CustomerService_GetListCustomers_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetCustomerParams)
+	in := new(GetListParams)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -221,7 +221,7 @@ func _CustomerService_GetListCustomers_Handler(srv interface{}, ctx context.Cont
 		FullMethod: "/protos.CustomerService/GetListCustomers",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(CustomerServiceServer).GetListCustomers(ctx, req.(*GetCustomerParams))
+		return srv.(CustomerServiceServer).GetListCustomers(ctx, req.(*GetListParams))
 	}
 	return interceptor(ctx, in, info, handler)
 }

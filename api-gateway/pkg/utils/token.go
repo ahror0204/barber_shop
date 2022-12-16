@@ -8,6 +8,11 @@ import (
 	"github.com/golang-jwt/jwt"
 )
 
+const (
+	UserTypeSuperadmin = "superadmin"
+	UserTypeUser       = "user"
+)
+
 type TokenParams struct {
 	CustomerID  string
 	FirstName   string
@@ -17,6 +22,7 @@ type TokenParams struct {
 	UserName    string
 	Password    string
 	Gender      string
+	UserType    string
 	ImageURL    string
 	CreatedAT   string
 	UpdatedAT   string
