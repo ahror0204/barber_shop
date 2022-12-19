@@ -24,4 +24,11 @@ migratedown:
 migratedown1:
 	migrate -path migrations -database "$(DB_URL)" -verbose down 1
 
+pull-sub-module:
+	git submodule update --init --recursive
+
+update-sub-module:
+	git submodule update --remote --merge
+
+
 .PHONY: start migrateup migratedown

@@ -17,6 +17,7 @@ func createCustomer(t *testing.T) *pbu.Customer {
 		UserName:    faker.Username(),
 		Password:    faker.Password(),
 		Gender:      "male",
+		Type:        "user",
 		ImageUrl:    faker.URL(),
 	})
 
@@ -82,7 +83,7 @@ func TestGetCustomerByEmail(t *testing.T) {
 	cust := createCustomer(t)
 
 	customer, err := repoCustomer.GetCustomerByEmail(&pbu.Email{Email: cust.Email})
-	
+
 	require.NoError(t, err)
 	require.NotEmpty(t, customer)
 	deleteCustomer(customer.Id, t)
@@ -91,7 +92,7 @@ func TestGetCustomerByEmail(t *testing.T) {
 func TestUpdateCustomerPassword(t *testing.T) {
 	customer := createCustomer(t)
 
-	err := repoCustomer.UpdateCustomerPassword(&pbu.UpdateCustomerPasswordRequest{ID: customer.Id, Password: faker.Password()})
+	err := repoCustomer.UpdateCustomerPassword(&pbu.UpdatePasswordRequest{ID: customer.Id, Password: faker.Password()})
 	require.NoError(t, err)
 	deleteCustomer(customer.Id, t)
 }

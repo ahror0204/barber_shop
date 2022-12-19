@@ -28,7 +28,7 @@ type CustomerServiceClient interface {
 	GetListCustomers(ctx context.Context, in *GetListParams, opts ...grpc.CallOption) (*AllCustomers, error)
 	DeleteCustomer(ctx context.Context, in *ID, opts ...grpc.CallOption) (*Empty, error)
 	GetCustomerByEmail(ctx context.Context, in *Email, opts ...grpc.CallOption) (*Customer, error)
-	UpdateCustomerPassword(ctx context.Context, in *UpdateCustomerPasswordRequest, opts ...grpc.CallOption) (*Empty, error)
+	UpdateCustomerPassword(ctx context.Context, in *UpdatePasswordRequest, opts ...grpc.CallOption) (*Empty, error)
 }
 
 type customerServiceClient struct {
@@ -93,7 +93,7 @@ func (c *customerServiceClient) GetCustomerByEmail(ctx context.Context, in *Emai
 	return out, nil
 }
 
-func (c *customerServiceClient) UpdateCustomerPassword(ctx context.Context, in *UpdateCustomerPasswordRequest, opts ...grpc.CallOption) (*Empty, error) {
+func (c *customerServiceClient) UpdateCustomerPassword(ctx context.Context, in *UpdatePasswordRequest, opts ...grpc.CallOption) (*Empty, error) {
 	out := new(Empty)
 	err := c.cc.Invoke(ctx, "/protos.CustomerService/UpdateCustomerPassword", in, out, opts...)
 	if err != nil {
@@ -112,7 +112,7 @@ type CustomerServiceServer interface {
 	GetListCustomers(context.Context, *GetListParams) (*AllCustomers, error)
 	DeleteCustomer(context.Context, *ID) (*Empty, error)
 	GetCustomerByEmail(context.Context, *Email) (*Customer, error)
-	UpdateCustomerPassword(context.Context, *UpdateCustomerPasswordRequest) (*Empty, error)
+	UpdateCustomerPassword(context.Context, *UpdatePasswordRequest) (*Empty, error)
 	mustEmbedUnimplementedCustomerServiceServer()
 }
 
@@ -138,7 +138,7 @@ func (UnimplementedCustomerServiceServer) DeleteCustomer(context.Context, *ID) (
 func (UnimplementedCustomerServiceServer) GetCustomerByEmail(context.Context, *Email) (*Customer, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetCustomerByEmail not implemented")
 }
-func (UnimplementedCustomerServiceServer) UpdateCustomerPassword(context.Context, *UpdateCustomerPasswordRequest) (*Empty, error) {
+func (UnimplementedCustomerServiceServer) UpdateCustomerPassword(context.Context, *UpdatePasswordRequest) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateCustomerPassword not implemented")
 }
 func (UnimplementedCustomerServiceServer) mustEmbedUnimplementedCustomerServiceServer() {}
@@ -263,7 +263,7 @@ func _CustomerService_GetCustomerByEmail_Handler(srv interface{}, ctx context.Co
 }
 
 func _CustomerService_UpdateCustomerPassword_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(UpdateCustomerPasswordRequest)
+	in := new(UpdatePasswordRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -275,7 +275,7 @@ func _CustomerService_UpdateCustomerPassword_Handler(srv interface{}, ctx contex
 		FullMethod: "/protos.CustomerService/UpdateCustomerPassword",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(CustomerServiceServer).UpdateCustomerPassword(ctx, req.(*UpdateCustomerPasswordRequest))
+		return srv.(CustomerServiceServer).UpdateCustomerPassword(ctx, req.(*UpdatePasswordRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }

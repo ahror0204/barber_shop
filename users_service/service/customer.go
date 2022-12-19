@@ -70,7 +70,7 @@ func (c *CustomerService) DeleteCustomer(ctx context.Context, req *pbu.ID) (*pbu
 		c.logger.Error("failed while deleting customer", l.Error(err))
 		return nil, status.Error(codes.Internal, "failed while deleting customer")
 	}
-	return nil, nil
+	return &pbu.Empty{}, nil
 }
 
 func (c *CustomerService) GetCustomerByEmail(ctx context.Context, req *pbu.Email) (*pbu.Customer, error) {
@@ -86,7 +86,7 @@ func (c *CustomerService) GetCustomerByEmail(ctx context.Context, req *pbu.Email
 	return customer, nil
 }
 
-func (c *CustomerService) UpdateCustomerPassword(ctx context.Context, req *pbu.UpdateCustomerPasswordRequest) (*pbu.Empty, error) {
+func (c *CustomerService) UpdateCustomerPassword(ctx context.Context, req *pbu.UpdatePasswordRequest) (*pbu.Empty, error) {
 	err := c.storage.Customer().UpdateCustomerPassword(req)
 	if err != nil {
 		c.logger.Error("failed while updating customer password", l.Error(err))

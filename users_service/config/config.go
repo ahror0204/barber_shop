@@ -9,13 +9,20 @@ type Config struct {
 	HTTPPort string
 	Postgres PostgresConfig
 
+	Redis Redis
+
+	Smtp Smtp
+
 	OrderServiceHost string
 	OrderServicePort string
 
 	RPCPort          string
 	LogLevel         string
 
-
+	AuthSecretKey string
+}
+type Redis struct {
+	Addr string
 }
 
 type PostgresConfig struct {
@@ -25,6 +32,12 @@ type PostgresConfig struct {
 	Password string
 	DataBase string
 }
+
+type Smtp struct {
+	Sender   string
+	Password string
+}
+
 
 func Load(path string) Config {
 	godotenv.Load(path + "/.env") // load .env file if it exists
@@ -41,10 +54,19 @@ func Load(path string) Config {
 			Password: conf.GetString("POSTGRES_PASSWORD"),
 			DataBase: conf.GetString("POSTGRES_DATABASE"),
 		},
+		Redis: Redis{
+			Addr: conf.GetString("REDIS_ADDR"),
+		},
+		Smtp: Smtp{
+			Sender:   conf.GetString("SMTP_SENDER"),
+			Password: conf.GetString("SMTP_PASSWORD"),
+		},
 		OrderServiceHost: conf.GetString("ORDER_SERVICE_HOST"),
 		OrderServicePort: conf.GetString("ORDER_SERVICE_PORT"),
 		RPCPort: conf.GetString("RPC_PORT"),
 		LogLevel: conf.GetString("LOG_LEVEL"),
+
+		AuthSecretKey: conf.GetString("AUTH_SECRET_KEY"),
 	}
 	return cfg
 }

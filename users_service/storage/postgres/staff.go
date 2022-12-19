@@ -28,8 +28,11 @@ func (s *staffRepo) CreateStaff(staff *pbu.Staff) (*pbu.Staff, error) {
 		last_name,
 		phone_number,
 		email,
+		user_name,
+		password,
+		type,
 		image_url
-	) VALUES ($1,$2,$3,$4,$5,$6,$7)
+	) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)
 	RETURNING id, created_at`
 	ID, err := uuid.NewV4()
 	if err != nil {
@@ -43,6 +46,9 @@ func (s *staffRepo) CreateStaff(staff *pbu.Staff) (*pbu.Staff, error) {
 		staff.LastName,
 		staff.PhoneNumber,
 		staff.Email,
+		staff.UserName,
+		staff.Password,
+		staff.Type,
 		staff.ImageUrl,
 	).Scan(&staff.Id, &staff.CreatedAt)
 
@@ -59,11 +65,13 @@ func (u *staffRepo) UpdateStaff(staff *pbu.Staff) (*pbu.Staff, error) {
 	last_name = $2,
 	phone_number = $3,
 	email = $4,
-	image_url = $5,
-	updated_at = $6
-	WHERE id = $7
+	user_name = $5,
+	password = $6,
+	image_url = $7,
+	updated_at = $8
+	WHERE id = $9
 	RETURNING id, salon_id, first_name, last_name, phone_number, 
-	email, image_url, created_at, updated_at`
+	email, user_name, password, type, image_url, created_at, updated_at`
 
 	updateAT := time.Now()
 
@@ -72,6 +80,8 @@ func (u *staffRepo) UpdateStaff(staff *pbu.Staff) (*pbu.Staff, error) {
 		staff.LastName,
 		staff.PhoneNumber,
 		staff.Email,
+		staff.UserName,
+		staff.Password,
 		staff.ImageUrl,
 		updateAT,
 		staff.Id,
@@ -82,6 +92,9 @@ func (u *staffRepo) UpdateStaff(staff *pbu.Staff) (*pbu.Staff, error) {
 		&rstaff.LastName,
 		&rstaff.PhoneNumber,
 		&rstaff.Email,
+		&rstaff.UserName,
+		&rstaff.Password,
+		&rstaff.Type,
 		&rstaff.ImageUrl,
 		&rstaff.CreatedAt,
 		&rstaff.UpdatedAt,
@@ -105,6 +118,9 @@ func (u *staffRepo) GetStaffByID(ID *pbu.ID) (*pbu.Staff, error) {
 		last_name,
 		phone_number,
 		email,
+		user_name,
+		password,
+		type,
 		image_url,
 		created_at,
 		updated_at
@@ -118,6 +134,9 @@ func (u *staffRepo) GetStaffByID(ID *pbu.ID) (*pbu.Staff, error) {
 		&rstaff.LastName,
 		&rstaff.PhoneNumber,
 		&rstaff.Email,
+		&rstaff.UserName,
+		&rstaff.Password,
+		&rstaff.Type,
 		&rstaff.ImageUrl,
 		&rstaff.CreatedAt,
 		&updateAT,
@@ -147,7 +166,7 @@ func (u *staffRepo) GetListStaff(params *pbu.GetListParams) (*pbu.ListStaff, err
 			WHERE first_name ILIKE '%s' OR last_name ILIKE '%s' OR email ILIKE '%s' 
 			OR phone_number ILIKE '%s' AND deleted_at IS NULL
 		`, str, str, str, str)
-	}
+	}else{filter = " WHERE deleted_at IS NULL "}
 	query := `SELECT
 		id,
 		salon_id,
@@ -155,6 +174,9 @@ func (u *staffRepo) GetListStaff(params *pbu.GetListParams) (*pbu.ListStaff, err
 		last_name,
 		phone_number,
 		email,
+		user_name,
+		password,
+		type,
 		image_url,
 		created_at,
 		updated_at
@@ -178,6 +200,9 @@ func (u *staffRepo) GetListStaff(params *pbu.GetListParams) (*pbu.ListStaff, err
 			&st.LastName,
 			&st.PhoneNumber,
 			&st.Email,
+			&st.UserName,
+			&st.Password,
+			&st.Type,
 			&st.ImageUrl,
 			&st.CreatedAt,
 			&updateAT,
@@ -225,4 +250,58 @@ func (s *staffRepo) DeleteStaff(ID *pbu.ID) error {
 	}
 
 	return nil
+}
+
+
+func (c *staffRepo) GetStaffByEmail(email *pbu.Email) (*pbu.Staff, error) {
+	var (
+		updateAT  sql.NullTime
+		rStaff pbu.Staff
+	)
+
+	query := `SELECT
+			id,
+			salon_id,
+			first_name,
+			last_name,
+			phone_number,
+			email,
+			user_name,
+			password,
+			type,
+			image_url,
+			created_at,
+			updated_at
+		FROM staff
+		WHERE email = $1 AND deleted_at IS NULL`
+
+	err := c.db.QueryRow(query, email.Email).Scan(
+		&rStaff.Id,
+		&rStaff.SalonId,
+		&rStaff.FirstName,
+		&rStaff.LastName,
+		&rStaff.PhoneNumber,
+		&rStaff.Email,
+		&rStaff.UserName,
+		&rStaff.Password,
+		&rStaff.Type,
+		&rStaff.ImageUrl,
+		&rStaff.CreatedAt,
+		&updateAT,
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	if updateAT.Valid {
+		rStaff.UpdatedAt = updateAT.Time.String()
+	}
+	return &rStaff, nil
+}
+
+
+func (s *staffRepo) UpdateStaffPassword(req *pbu.UpdatePasswordRequest) error {
+	query := `UPDATE staff SET password=$1 WHERE id=$2`
+	_, err := s.db.Exec(query, req.Password, req.ID)
+	return err
 }

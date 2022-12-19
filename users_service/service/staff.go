@@ -53,11 +53,11 @@ func (c *StaffService) GetStaffByID(ctx context.Context, req *pbu.ID) (*pbu.Staf
 	return staff, nil
 }
 
-func (c *StaffService) GetListStaffs(ctx context.Context, req *pbu.GetListParams) (*pbu.ListStaff, error) {
+func (c *StaffService) GetListStaff(ctx context.Context, req *pbu.GetListParams) (*pbu.ListStaff, error) {
 	staff, err := c.storage.Staff().GetListStaff(req)
 	if err != nil {
-		c.logger.Error("failed while gting staff list", l.Error(err))
-		return nil, status.Error(codes.Internal, "failed while failed while gting staff list")
+		c.logger.Error("failed while geting staff list", l.Error(err))
+		return nil, status.Error(codes.Internal, "failed while getting staff list")
 	}
 	return staff, nil
 }
@@ -68,5 +68,5 @@ func (c *StaffService) DeleteStaff(ctx context.Context, req *pbu.ID) (*pbu.Empty
 		c.logger.Error("failed while deleting staff", l.Error(err))
 		return nil, status.Error(codes.Internal, "failed while deleting staff")
 	}
-	return nil, nil
+	return &pbu.Empty{}, nil
 }

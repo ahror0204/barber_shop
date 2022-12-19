@@ -159,7 +159,7 @@ func (s *salonRepo) GetListSalons(params *pbu.GetListParams) (*pbu.AllSalons, er
 			WHERE name ILIKE '%s' OR rating ILIKE '%s' OR email ILIKE '%s' 
 			OR phone_number ILIKE '%s' AND deleted_at IS NULL
 		`, str, str, str, str)
-	}
+	}else{filter = " WHERE deleted_at IS NULL "}
 	query := `SELECT 
 		id,
 		name,

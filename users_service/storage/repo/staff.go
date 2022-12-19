@@ -8,5 +8,9 @@ type StaffStorageI interface {
 	GetStaffByID(*pbu.ID) (*pbu.Staff, error)
 	GetListStaff(*pbu.GetListParams) (*pbu.ListStaff, error)
 	DeleteStaff(*pbu.ID) error
+	GetStaffByEmail(*pbu.Email) (*pbu.Staff, error)
+	UpdateStaffPassword(*pbu.UpdatePasswordRequest) (error)
+
+
 
 }

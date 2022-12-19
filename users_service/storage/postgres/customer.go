@@ -29,8 +29,9 @@ func (u *customerRepo) CreateCustomer(customer *pbu.Customer) (*pbu.Customer, er
 		user_name,
 		gender,
 		password,
+		type,
 		image_url
-	) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9)
+	) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)
 	RETURNING id, created_at`
 	ID, err := uuid.NewV4()
 	if err != nil {
@@ -46,6 +47,7 @@ func (u *customerRepo) CreateCustomer(customer *pbu.Customer) (*pbu.Customer, er
 		customer.UserName,
 		customer.Gender,
 		customer.Password,
+		customer.Type,
 		customer.ImageUrl,
 	).Scan(&customer.Id, &customer.CreatedAt)
 
@@ -69,7 +71,7 @@ func (u *customerRepo) UpdateCustomer(customer *pbu.Customer) (*pbu.Customer, er
 		updated_at=$8
 	WHERE id = $9
 	RETURNING id, first_name, last_name, phone_number, 
-	email, user_name, gender, image_url, created_at, updated_at`
+	email, user_name, gender, type, image_url, created_at, updated_at`
 
 	updateAT := time.Now()
 
@@ -92,6 +94,7 @@ func (u *customerRepo) UpdateCustomer(customer *pbu.Customer) (*pbu.Customer, er
 		&rCustomer.Email,
 		&rCustomer.UserName,
 		&rCustomer.Gender,
+		&rCustomer.Type,
 		&rCustomer.ImageUrl,
 		&rCustomer.CreatedAt,
 		&rCustomer.UpdatedAt,
@@ -116,6 +119,7 @@ func (u *customerRepo) GetCustomerByID(ID *pbu.ID) (*pbu.Customer, error) {
 		email,
 		user_name,
 		gender,
+		type,
 		image_url,
 		created_at,
 		updated_at
@@ -130,6 +134,7 @@ func (u *customerRepo) GetCustomerByID(ID *pbu.ID) (*pbu.Customer, error) {
 		&rCustomer.Email,
 		&rCustomer.UserName,
 		&rCustomer.Gender,
+		&rCustomer.Type,
 		&rCustomer.ImageUrl,
 		&rCustomer.CreatedAt,
 		&updateAT,
@@ -159,7 +164,7 @@ func (u *customerRepo) GetListCustomers(params *pbu.GetListParams) (*pbu.AllCust
 			WHERE first_name ILIKE '%s' OR last_name ILIKE '%s' OR email ILIKE '%s' 
 			OR user_name ILIKE '%s' OR phone_number ILIKE '%s' AND deleted_at IS NULL
 		`, str, str, str, str, str)
-	}
+	}else{filter = " WHERE deleted_at IS NULL "}
 	query := `SELECT
 		id,
 		first_name,
@@ -168,6 +173,7 @@ func (u *customerRepo) GetListCustomers(params *pbu.GetListParams) (*pbu.AllCust
 		email,
 		user_name,
 		gender,
+		type,
 		image_url,
 		created_at,
 		updated_at
@@ -192,6 +198,7 @@ func (u *customerRepo) GetListCustomers(params *pbu.GetListParams) (*pbu.AllCust
 			&customer.Email,
 			&customer.UserName,
 			&customer.Gender,
+			&customer.Type,
 			&customer.ImageUrl,
 			&customer.CreatedAt,
 			&updateAT,
@@ -256,6 +263,7 @@ func (c *customerRepo) GetCustomerByEmail(email *pbu.Email) (*pbu.Customer, erro
 			user_name,
 			password,
 			gender,
+			type,
 			image_url,
 			created_at,
 			updated_at
@@ -271,6 +279,7 @@ func (c *customerRepo) GetCustomerByEmail(email *pbu.Email) (*pbu.Customer, erro
 		&rCustomer.UserName,
 		&rCustomer.Password,
 		&rCustomer.Gender,
+		&rCustomer.Type,
 		&rCustomer.ImageUrl,
 		&rCustomer.CreatedAt,
 		&updateAT,
@@ -285,7 +294,7 @@ func (c *customerRepo) GetCustomerByEmail(email *pbu.Email) (*pbu.Customer, erro
 	return &rCustomer, nil
 }
 
-func (c *customerRepo) UpdateCustomerPassword(req *pbu.UpdateCustomerPasswordRequest) error {
+func (c *customerRepo) UpdateCustomerPassword(req *pbu.UpdatePasswordRequest) error {
 	query := `UPDATE customers SET password=$1 WHERE id=$2`
 	_, err := c.db.Exec(query, req.Password, req.ID)
 	return err

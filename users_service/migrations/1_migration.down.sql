@@ -1,4 +1,4 @@
-DROP TABLE  customers
-DROP TABLE  personal_work_images
-DROP TABLE  staff
-DROP TABLE  salon
+DROP TABLE IF EXISTS customers;
+DROP TABLE IF EXISTS personal_work_images;
+DROP TABLE IF EXISTS staff;
+DROP TABLE IF EXISTS salon;

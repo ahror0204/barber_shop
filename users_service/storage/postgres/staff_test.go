@@ -11,12 +11,15 @@ import (
 func createStaff(t *testing.T) *pbu.Staff {
 	salon := createSalon(t)
 	staff, err := repoStaff.CreateStaff(&pbu.Staff{
-		SalonId: salon.Id,
-		FirstName: faker.FirstName(),
-		LastName: faker.LastName(),
+		SalonId:     salon.Id,
+		FirstName:   faker.FirstName(),
+		LastName:    faker.LastName(),
 		PhoneNumber: faker.Phonenumber(),
-		Email: faker.Email(),
-		ImageUrl: faker.URL(),
+		Email:       faker.Email(),
+		UserName:    faker.Username(),
+		Password:    faker.Password(),
+		Type:        "user",
+		ImageUrl:    faker.URL(),
 	})
 
 	require.NoError(t, err)
@@ -62,5 +65,24 @@ func TestGetListStaff(t *testing.T) {
 
 	require.NoError(t, err)
 	require.GreaterOrEqual(t, len(s.Staff), 1)
+	deleteStaff(staff.Id, t)
+}
+
+func TestGetStaffByEmail(t *testing.T) {
+	s := createStaff(t)
+
+	staff, err := repoStaff.GetStaffByEmail(&pbu.Email{Email: s.Email})
+
+	require.NoError(t, err)
+	require.NotEmpty(t, staff)
+	deleteStaff(staff.Id, t)
+}
+
+
+func TestUpdateStaffPassword(t *testing.T) {
+	staff := createStaff(t)
+
+	err := repoStaff.UpdateStaffPassword(&pbu.UpdatePasswordRequest{ID: staff.Id, Password: faker.Password()})
+	require.NoError(t, err)
 	deleteStaff(staff.Id, t)
 }
