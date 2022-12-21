@@ -30,5 +30,4 @@ pull-sub-module:
 update-sub-module:
 	git submodule update --remote --merge
 
-
 .PHONY: start migrateup migratedown

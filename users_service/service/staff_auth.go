@@ -19,6 +19,14 @@ import (
 	"google.golang.org/grpc/status"
 )
 
+var (
+	ErrWrongEmailOrPass = errors.New("wrong email or password")
+	ErrEmailExists      = errors.New("email already exists")
+	ErrUserNotVerified  = errors.New("user not verified")
+	ErrIncorrectCode    = errors.New("incorrect verification code")
+	ErrCodeExpired      = errors.New("verification code has been expired")
+)
+
 type StaffAuthService struct {
 	pbu.UnimplementedStaffAuthServiceServer
 	storage  storage.StorageI
@@ -36,7 +44,7 @@ func NewStaffAuthService(s storage.StorageI, i storage.InMemoryStorageI, c *conf
 	}
 }
 
-func (s *StaffAuthService) RegisterStaff(ctx context.Context, req *pbu.StaffRegisterRequest) (*pbu.Empty, error) {
+func (s *StaffAuthService) StaffRegister(ctx context.Context, req *pbu.StaffRegisterRequest) (*pbu.Empty, error) {
 	if err := emailPkg.ValidMailAddress(req.Email); err != nil {
 		s.logger.Error("failed while validating email", l.Error(err))
 		return nil, status.Error(codes.Internal, "failed while validating email")
@@ -84,7 +92,6 @@ func (s *StaffAuthService) sendVerificationCode(key, email string) error {
 	if err != nil {
 		return err
 	}
-
 	err = s.inMemory.Set(key+email, code, time.Minute)
 	if err != nil {
 		return err
@@ -105,7 +112,7 @@ func (s *StaffAuthService) sendVerificationCode(key, email string) error {
 	return nil
 }
 
-func (s *StaffAuthService) VerifyStaff(ctx context.Context, req *pbu.VerifyStaffRegisterRequest) (*pbu.StaffAuthResponse, error) {
+func (s *StaffAuthService) StaffVerify(ctx context.Context, req *pbu.VerifyStaffRegisterRequest) (*pbu.StaffAuthResponse, error) {
 	staffData, err := s.inMemory.Get("staff_" + req.Email)
 	if err != nil {
 		s.logger.Error("failed while getting staff from redis", l.Error(err))
@@ -120,8 +127,8 @@ func (s *StaffAuthService) VerifyStaff(ctx context.Context, req *pbu.VerifyStaff
 
 	code, err := s.inMemory.Get(RegisterCodeKey + req.Email)
 	if err != nil {
-		s.logger.Error("failed while getting code from redis", l.Error(err))
-		return nil, status.Error(codes.Internal, "failed while getting code from redis")
+		s.logger.Error("verification code has been expired", l.Error(err))
+		return nil, status.Error(codes.Internal, "verification code has been expired")
 	}
 
 	if req.Code != code {
@@ -170,13 +177,13 @@ func (s *StaffAuthService) VerifyStaff(ctx context.Context, req *pbu.VerifyStaff
 	}, nil
 }
 
-func (s *StaffAuthService) StaffLogIn(ctx context.Context, req *pbu.StaffLoginRequest) (*pbu.StaffAuthResponse, error) {
+func (s *StaffAuthService) StaffLogin(ctx context.Context, req *pbu.StaffLoginRequest) (*pbu.StaffAuthResponse, error) {
 
 	res, err := s.storage.Staff().GetStaffByEmail(&pbu.Email{Email: req.Email})
 	if err != nil {
 		s.logger.Error("failed to get staff by email", l.Error(err))
 		if errors.Is(err, sql.ErrNoRows) {
-			return nil, status.Errorf(codes.NotFound, "staff not found: %v", err)
+			return nil, status.Errorf(codes.NotFound, "staff not found: %v", ErrWrongEmailOrPass)
 		}
 		return nil, status.Errorf(codes.Internal, "internal server error: %v", err)
 	}
@@ -237,8 +244,8 @@ func (s *StaffAuthService) VerifyStaffForgotPassword(ctx context.Context, req *p
 
 	code, err := s.inMemory.Get(ForgotPasswordKey + req.Email)
 	if err != nil {
-		s.logger.Error("failed while getting code from redis", l.Error(err))
-		return nil, status.Error(codes.Internal, "failed while getting code from redis")
+		s.logger.Error("verification code has been expired", l.Error(err))
+		return nil, status.Error(codes.Internal, "verification code has been expired")
 	}
 
 	if req.Code != code {
