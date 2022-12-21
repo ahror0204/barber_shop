@@ -126,7 +126,7 @@ definitions:
           $ref: '#/definitions/models.Staff'
         type: array
     type: object
-  models.LogInCustomerRequest:
+  models.LogInRequest:
     properties:
       email:
         type: string
@@ -217,6 +217,27 @@ definitions:
       updated_at:
         type: string
       user_name:
+        type: string
+    type: object
+  models.StaffAuthResponse:
+    properties:
+      access_token:
+        type: string
+      created_at:
+        type: string
+      email:
+        type: string
+      first_name:
+        type: string
+      id:
+        type: string
+      last_name:
+        type: string
+      salon_id:
+        type: string
+      type:
+        type: string
+      username:
         type: string
     type: object
   models.StaffRequest:
@@ -399,7 +420,7 @@ paths:
         name: data
         required: true
         schema:
-          $ref: '#/definitions/models.LogInCustomerRequest'
+          $ref: '#/definitions/models.LogInRequest'
       responses:
         "201":
           description: Created
@@ -821,6 +842,32 @@ paths:
       summary: Delete staff by id
       tags:
       - staff
+  /staff/forgot-password:
+    post:
+      consumes:
+      - application/json
+      description: This api for forgot password
+      parameters:
+      - description: Data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/models.ForgotPasswordRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.ResponseOK'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: staff forgot password
+      tags:
+      - staff_auth
   /staff/get/{id}:
     get:
       consumes:
@@ -879,6 +926,84 @@ paths:
       summary: get list staff
       tags:
       - staff
+  /staff/login:
+    post:
+      consumes:
+      - application/json
+      description: This api for login staff
+      parameters:
+      - description: Data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/models.LogInRequest'
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.StaffAuthResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: staff Login
+      tags:
+      - staff_auth
+  /staff/register:
+    post:
+      consumes:
+      - application/json
+      description: This api for registeration staff
+      parameters:
+      - description: Data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/models.StaffRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.ResponseOK'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: staff register
+      tags:
+      - staff_auth
+  /staff/update-password:
+    post:
+      consumes:
+      - application/json
+      description: This api for updating staff password
+      parameters:
+      - description: Password
+        in: body
+        name: password
+        required: true
+        schema:
+          $ref: '#/definitions/models.UpdatePasswordRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.StaffAuthResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: staff update password
+      tags:
+      - staff_auth
   /staff/update/{id}:
     put:
       consumes:
@@ -910,6 +1035,56 @@ paths:
       summary: Update a staff
       tags:
       - staff
+  /staff/verify:
+    post:
+      consumes:
+      - application/json
+      description: This api for verification staff
+      parameters:
+      - description: Data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/models.VerifyRequest'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.StaffAuthResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: staff verify
+      tags:
+      - staff_auth
+  /staff/verify-forgot-password:
+    post:
+      consumes:
+      - application/json
+      description: Verify staff forgot password
+      parameters:
+      - description: Data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/models.VerifyRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.StaffAuthResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: verify staff forgot password
+      tags:
+      - staff_auth
 securityDefinitions:
   ApiKeyAuth:
     in: header

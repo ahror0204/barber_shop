@@ -9,7 +9,7 @@ type VerifyRequest struct {
 	Code  string `json:"code"`
 }
 
-type LogInCustomerRequest struct {
+type LogInRequest struct {
 	Email    string `json:"email"`
 	Password string `json:"passward"`
 }

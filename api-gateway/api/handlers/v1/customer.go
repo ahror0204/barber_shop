@@ -122,7 +122,7 @@ func (h *handlerV1) GetCustomerProfile(c *gin.Context) {
 	ctx, cencel := context.WithTimeout(context.Background(), time.Second*time.Duration(h.cfg.CtxTimeout))
 	defer cencel()
 
-	resp, err := h.serviceManager.CustomerService().GetCustomerByID(ctx, &pbu.ID{Id: payload.CustomerID})
+	resp, err := h.serviceManager.CustomerService().GetCustomerByID(ctx, &pbu.ID{Id: payload.UserID})
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, errorResponse(err))
 		return

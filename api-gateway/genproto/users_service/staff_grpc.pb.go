@@ -27,6 +27,8 @@ type StaffServiceClient interface {
 	GetStaffByID(ctx context.Context, in *ID, opts ...grpc.CallOption) (*Staff, error)
 	GetListStaff(ctx context.Context, in *GetListParams, opts ...grpc.CallOption) (*ListStaff, error)
 	DeleteStaff(ctx context.Context, in *ID, opts ...grpc.CallOption) (*Empty, error)
+	GetStaffByEmail(ctx context.Context, in *Email, opts ...grpc.CallOption) (*Customer, error)
+	UpdateStaffPassword(ctx context.Context, in *UpdatePasswordRequest, opts ...grpc.CallOption) (*Empty, error)
 }
 
 type staffServiceClient struct {
@@ -82,6 +84,24 @@ func (c *staffServiceClient) DeleteStaff(ctx context.Context, in *ID, opts ...gr
 	return out, nil
 }
 
+func (c *staffServiceClient) GetStaffByEmail(ctx context.Context, in *Email, opts ...grpc.CallOption) (*Customer, error) {
+	out := new(Customer)
+	err := c.cc.Invoke(ctx, "/protos.StaffService/GetStaffByEmail", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *staffServiceClient) UpdateStaffPassword(ctx context.Context, in *UpdatePasswordRequest, opts ...grpc.CallOption) (*Empty, error) {
+	out := new(Empty)
+	err := c.cc.Invoke(ctx, "/protos.StaffService/UpdateStaffPassword", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // StaffServiceServer is the server API for StaffService service.
 // All implementations must embed UnimplementedStaffServiceServer
 // for forward compatibility
@@ -91,6 +111,8 @@ type StaffServiceServer interface {
 	GetStaffByID(context.Context, *ID) (*Staff, error)
 	GetListStaff(context.Context, *GetListParams) (*ListStaff, error)
 	DeleteStaff(context.Context, *ID) (*Empty, error)
+	GetStaffByEmail(context.Context, *Email) (*Customer, error)
+	UpdateStaffPassword(context.Context, *UpdatePasswordRequest) (*Empty, error)
 	mustEmbedUnimplementedStaffServiceServer()
 }
 
@@ -112,6 +134,12 @@ func (UnimplementedStaffServiceServer) GetListStaff(context.Context, *GetListPar
 }
 func (UnimplementedStaffServiceServer) DeleteStaff(context.Context, *ID) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteStaff not implemented")
+}
+func (UnimplementedStaffServiceServer) GetStaffByEmail(context.Context, *Email) (*Customer, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetStaffByEmail not implemented")
+}
+func (UnimplementedStaffServiceServer) UpdateStaffPassword(context.Context, *UpdatePasswordRequest) (*Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateStaffPassword not implemented")
 }
 func (UnimplementedStaffServiceServer) mustEmbedUnimplementedStaffServiceServer() {}
 
@@ -216,6 +244,42 @@ func _StaffService_DeleteStaff_Handler(srv interface{}, ctx context.Context, dec
 	return interceptor(ctx, in, info, handler)
 }
 
+func _StaffService_GetStaffByEmail_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Email)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(StaffServiceServer).GetStaffByEmail(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/protos.StaffService/GetStaffByEmail",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(StaffServiceServer).GetStaffByEmail(ctx, req.(*Email))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _StaffService_UpdateStaffPassword_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdatePasswordRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(StaffServiceServer).UpdateStaffPassword(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/protos.StaffService/UpdateStaffPassword",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(StaffServiceServer).UpdateStaffPassword(ctx, req.(*UpdatePasswordRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // StaffService_ServiceDesc is the grpc.ServiceDesc for StaffService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -242,6 +306,14 @@ var StaffService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DeleteStaff",
 			Handler:    _StaffService_DeleteStaff_Handler,
+		},
+		{
+			MethodName: "GetStaffByEmail",
+			Handler:    _StaffService_GetStaffByEmail_Handler,
+		},
+		{
+			MethodName: "UpdateStaffPassword",
+			Handler:    _StaffService_UpdateStaffPassword_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

@@ -69,6 +69,13 @@ func New(option Option) *gin.Engine {
 	api.GET("/staff/list", handlerV1.GetListStaff)
 	api.DELETE("/staff/delete/:id", handlerV1.DeleteStaff)
 
+	api.POST("/staff/register", handlerV1.StaffRegister)
+	api.POST("/staff/verify", handlerV1.StaffVerify)
+	api.POST("/staff/login", handlerV1.StaffLogIn)
+	api.POST("/staff/forgot-password", handlerV1.StaffForgotPassword)
+	api.POST("/staff/verify-forgot-password", handlerV1.VerifyStaffForgotPassword)
+	api.POST("/staff/update-password", handlerV1.AuthMiddleware, handlerV1.UpdateStaffPassword)
+
 	api.POST("/salon/create", handlerV1.CreateSalon)
 	api.PUT("/salon/update/:id", handlerV1.UpdateSalon)
 	api.GET("/salon/get/:id", handlerV1.GetSalonByID)

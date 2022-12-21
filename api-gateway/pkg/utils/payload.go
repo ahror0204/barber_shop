@@ -14,21 +14,15 @@ var (
 )
 
 type Payload struct {
-	ID          uuid.UUID `json:"id"`
-	CustomerID  string    `json:"customer_id"`
-	FirstName   string    `json:"first_name"`
-	LastName    string    `json:"last_name"`
-	PhoneNumber string    `json:"phone_number"`
-	Email       string    `json:"email"`
-	UserName    string    `json:"user_name"`
-	Password    string    `json:"password"`
-	Gender      string    `json:"gender"`
-	UserType    string    `json:"user_type"`
-	ImageURL    string    `json:"image_url"`
-	CreatedAT   string    `json:"created_at"`
-	UpdatedAT   string    `json:"updated_at"`
-	IssuedAT    time.Time `json:"issued_at"`
-	ExpiredAT   time.Time `json:"expired_at"`
+	ID        uuid.UUID `json:"id"`
+	UserID    string    `json:"customer_id"`
+	FirstName string    `json:"first_name"`
+	LastName  string    `json:"last_name"`
+	Email     string    `json:"email"`
+	UserName  string    `json:"user_name"`
+	UserType  string    `json:"user_type"`
+	IssuedAT  time.Time `json:"issued_at"`
+	ExpiredAT time.Time `json:"expired_at"`
 }
 
 func NewPayload(params *TokenParams) (*Payload, error) {
@@ -39,18 +33,12 @@ func NewPayload(params *TokenParams) (*Payload, error) {
 
 	return &Payload{
 		ID:          tokenID,
-		CustomerID:  params.CustomerID,
+		UserID:  params.UserID,
 		FirstName:   params.FirstName,
 		LastName:    params.LastName,
-		PhoneNumber: params.PhoneNumber,
 		Email:       params.Email,
 		UserName:    params.UserName,
-		Password:    params.Password,
-		Gender:      params.Gender,
 		UserType:    params.UserType,
-		ImageURL:    params.ImageURL,
-		CreatedAT:   params.CreatedAT,
-		UpdatedAT:   params.UpdatedAT,
 		IssuedAT:    time.Now(),
 		ExpiredAT:   time.Now().Add(params.Duration),
 	}, nil

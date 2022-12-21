@@ -14,17 +14,12 @@ const (
 )
 
 type TokenParams struct {
-	CustomerID  string
+	UserID  string
 	FirstName   string
 	LastName    string
-	PhoneNumber string
 	Email       string
 	UserName    string
-	Password    string
-	Gender      string
 	UserType    string
-	ImageURL    string
-	CreatedAT   string
 	UpdatedAT   string
 	Duration    time.Duration
 }

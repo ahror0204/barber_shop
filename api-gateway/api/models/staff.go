@@ -45,6 +45,32 @@ type GetListStaffResponse struct {
 	Count     int64       `json:"count"`
 }
 
+type StaffAuthResponse struct {
+	Id          string `json:"id,omitempty"`
+	SalonId     string `json:"salon_id,omitempty"`
+	FirstName   string `json:"first_name,omitempty"`
+	LastName    string `json:"last_name,omitempty"`
+	Email       string `json:"email,omitempty"`
+	Username    string `json:"username,omitempty"`
+	Type        string `json:"type,omitempty"`
+	CreatedAt   string `json:"created_at,omitempty"`
+	AccessToken string `json:"access_token,omitempty"`
+}
+
+func ParsStaffRegisterToProtoStruct(staff *StaffRequest) *pbu.StaffRegisterRequest {
+	return &pbu.StaffRegisterRequest{
+		SalonId:     staff.SalonId,
+		FirstName:   staff.FirstName,
+		LastName:    staff.LastName,
+		PhoneNumber: staff.PhoneNumber,
+		Email:       staff.Email,
+		UserName:    staff.UserName,
+		Password:    staff.Password,
+		Type:        staff.Type,
+		ImageUrl:    staff.ImageURL,
+	}
+}
+
 func ParsStaffToProtoStruct(staff *StaffRequest) *pbu.Staff {
 	return &pbu.Staff{
 		SalonId:     staff.SalonId,

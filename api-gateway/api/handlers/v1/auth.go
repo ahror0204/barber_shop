@@ -103,7 +103,6 @@ func (h *handlerV1) RegisterCustomer(c *gin.Context) {
 	c.JSON(http.StatusCreated, models.ResponseOK{
 		Message: "Verification code has been sent!",
 	})
-
 }
 
 func (h *handlerV1) sendVerificationCode(key, email string) error {
@@ -189,7 +188,7 @@ func (h *handlerV1) Verify(c *gin.Context) {
 
 	//Creating token
 	token, _, err := utils.CreateToken(&h.cfg, &utils.TokenParams{
-		CustomerID: cust.Id,
+		UserID: cust.Id,
 		Email: cust.Email,
 		UserType: cust.Type,
 		Duration:   time.Hour * 24,
@@ -208,12 +207,12 @@ func (h *handlerV1) Verify(c *gin.Context) {
 // @Tags auth
 // @Accept json
 // @Produse json
-// @Param data body models.LogInCustomerRequest true "Data"
+// @Param data body models.LogInRequest true "Data"
 // @Success 201 {object} models.AuthResponse
 // @Failure 500 {object} models.ErrorResponse
 func (h *handlerV1) CustomerLogIn(c *gin.Context) {
 	var (
-		req models.LogInCustomerRequest
+		req models.LogInRequest
 	)
 
 	err := c.ShouldBindJSON(&req)
@@ -244,7 +243,7 @@ func (h *handlerV1) CustomerLogIn(c *gin.Context) {
 
 	// creating token
 	token, _, err := utils.CreateToken(&h.cfg, &utils.TokenParams{
-		CustomerID:  result.Id,
+		UserID:  result.Id,
 		Email:       result.Email,
 		UserType: result.Type,
 		Duration:    time.Hour * 24,
@@ -346,7 +345,7 @@ func (h *handlerV1) VerifyForgotPassword(c *gin.Context) {
 	}
 
 	token, _, err := utils.CreateToken(&h.cfg, &utils.TokenParams{
-		CustomerID:  res.Id,
+		UserID:  res.Id,
 		Email:       res.Email,
 		Duration:    time.Minute * 30,
 	})
@@ -403,8 +402,8 @@ func (h *handlerV1) UpdateCustomerPassword(c *gin.Context) {
 	ctx, cencel := context.WithTimeout(context.Background(), time.Second*time.Duration(h.cfg.CtxTimeout))
 	defer cencel()
 
-	_, err = h.serviceManager.CustomerService().UpdateCustomerPassword(ctx, &pbu.UpdateCustomerPasswordRequest{
-		ID:       payload.CustomerID,
+	_, err = h.serviceManager.CustomerService().UpdateCustomerPassword(ctx, &pbu.UpdatePasswordRequest{
+		ID:       payload.UserID,
 		Password: heshedPasword,
 	})
 	if err != nil {
