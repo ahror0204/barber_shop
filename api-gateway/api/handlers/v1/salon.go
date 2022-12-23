@@ -10,6 +10,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// @Security ApiKeyAuth
 // @Router /salon/create [post]
 // @Summary Create a salon
 // @Description This api for creating salon
@@ -42,7 +43,7 @@ func (h *handlerV1) CreateSalon(c *gin.Context) {
 	c.JSON(http.StatusOK, models.ParsSalonFromProtoStruct(resp))
 }
 
-
+// @Security ApiKeyAuth
 // @Router /salon/update/{id} [put]
 // @Summary Update salon
 // @Description This api for updating salon
@@ -135,6 +136,7 @@ func (h *handlerV1) GetListSalons(c *gin.Context) {
 	})
 }
 
+// @Security ApiKeyAuth
 // @Router /salon/delete/{id} [delete]
 // @Summary Delete salon by id
 // @Description This api for deleting salon by id

@@ -38,12 +38,13 @@ func (h *handlerV1) StaffRegister(c *gin.Context) {
 	res, _ := h.serviceManager.StaffService().GetStaffByEmail(ctx, &pbu.Email{Email: req.Email})
 	if res != nil {
 		c.JSON(http.StatusNotFound, errorResponse(ErrEmailExists))
+		h.log.Error("failed while getting staff by email", l.Error(err))
 		return
 	}
 
-	starReq := models.ParsStaffRegisterToProtoStruct(&req)
+	staffReq := models.ParsStaffRegisterToProtoStruct(&req)
 
-	_, err = h.serviceManager.StaffAuthService().StaffRegister(ctx, starReq)
+	_, err = h.serviceManager.StaffAuthService().StaffRegister(ctx, staffReq)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, errorResponse(err))
 		h.log.Error("staff registration error", l.Error(err))
@@ -122,7 +123,7 @@ func (h *handlerV1) StaffLogIn(c *gin.Context) {
 	ctx, cencel := context.WithTimeout(context.Background(), time.Second*time.Duration(h.cfg.CtxTimeout))
 	defer cencel()
 
-	res, err := h.serviceManager.StaffAuthService().StaffLogin(ctx, &pbu.StaffLoginRequest{Email: req.Email, Password: req.Password})
+	res, err := h.serviceManager.StaffAuthService().StaffLogIn(ctx, &pbu.StaffLoginRequest{Email: req.Email, Password: req.Password})
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, errorResponse(err))
 		h.log.Error("staff login error", l.Error(err))

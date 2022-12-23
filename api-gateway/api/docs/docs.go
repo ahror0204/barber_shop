@@ -114,7 +114,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "auth"
+                    "customer_auth"
                 ],
                 "summary": "forgot password",
                 "parameters": [
@@ -189,7 +189,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "auth"
+                    "customer_auth"
                 ],
                 "summary": "Login customer",
                 "parameters": [
@@ -207,7 +207,7 @@ const docTemplate = `{
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/models.AuthResponse"
+                            "$ref": "#/definitions/models.CustomerAuthResponse"
                         }
                     },
                     "500": {
@@ -263,7 +263,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "auth"
+                    "customer_auth"
                 ],
                 "summary": "register a customer",
                 "parameters": [
@@ -308,7 +308,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "auth"
+                    "customer_auth"
                 ],
                 "summary": "update password",
                 "parameters": [
@@ -397,7 +397,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "auth"
+                    "customer_auth"
                 ],
                 "summary": "Verify customer",
                 "parameters": [
@@ -415,7 +415,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.CreateCustomerRespons"
+                            "$ref": "#/definitions/models.CustomerAuthResponse"
                         }
                     },
                     "500": {
@@ -437,7 +437,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "auth"
+                    "customer_auth"
                 ],
                 "summary": "Verify forgot password",
                 "parameters": [
@@ -455,7 +455,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.AuthResponse"
+                            "$ref": "#/definitions/models.ResponseOK"
                         }
                     },
                     "500": {
@@ -562,6 +562,11 @@ const docTemplate = `{
         },
         "/salon/create": {
             "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "This api for creating salon",
                 "consumes": [
                     "application/json"
@@ -602,6 +607,11 @@ const docTemplate = `{
         },
         "/salon/delete/{id}": {
             "delete": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "This api for deleting salon by id",
                 "consumes": [
                     "application/json"
@@ -678,6 +688,11 @@ const docTemplate = `{
         },
         "/salon/update/{id}": {
             "put": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "This api for updating salon",
                 "consumes": [
                     "application/json"
@@ -775,6 +790,11 @@ const docTemplate = `{
         },
         "/staff/create": {
             "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "This api for creating staff",
                 "consumes": [
                     "application/json"
@@ -815,6 +835,11 @@ const docTemplate = `{
         },
         "/staff/delete/{id}": {
             "delete": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "This api for deleting staff by id",
                 "consumes": [
                     "application/json"
@@ -1103,6 +1128,11 @@ const docTemplate = `{
         },
         "/staff/update/{id}": {
             "put": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "This api for updating staff",
                 "consumes": [
                     "application/json"
@@ -1319,6 +1349,38 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "user_name": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.CustomerAuthResponse": {
+            "type": "object",
+            "properties": {
+                "access_token": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "first_name": {
+                    "type": "string"
+                },
+                "gender": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "last_name": {
+                    "type": "string"
+                },
+                "type": {
+                    "type": "string"
+                },
+                "username": {
                     "type": "string"
                 }
             }

@@ -10,6 +10,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// @Security ApiKeyAuth
 // @Router /staff/create [post]
 // @Summary Create staff
 // @Description This api for creating staff
@@ -44,6 +45,7 @@ func (h *handlerV1) CreateStaff(c *gin.Context) {
 	c.JSON(http.StatusOK, ct)
 }
 
+// @Security ApiKeyAuth
 // @Router /staff/update/{id} [put]
 // @Summary Update a staff
 // @Description This api for updating staff
@@ -137,6 +139,7 @@ func (h *handlerV1) GetListStaff(c *gin.Context) {
 	})
 }
 
+// @Security ApiKeyAuth
 // @Router /staff/delete/{id} [delete]
 // @Summary Delete staff by id
 // @Description This api for deleting staff by id

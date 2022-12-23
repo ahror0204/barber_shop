@@ -63,6 +63,27 @@ definitions:
       user_name:
         type: string
     type: object
+  models.CustomerAuthResponse:
+    properties:
+      access_token:
+        type: string
+      created_at:
+        type: string
+      email:
+        type: string
+      first_name:
+        type: string
+      gender:
+        type: string
+      id:
+        type: string
+      last_name:
+        type: string
+      type:
+        type: string
+      username:
+        type: string
+    type: object
   models.CustomerRequest:
     properties:
       email:
@@ -383,7 +404,7 @@ paths:
             $ref: '#/definitions/models.ErrorResponse'
       summary: forgot password
       tags:
-      - auth
+      - customer_auth
   /customer/get/{id}:
     get:
       consumes:
@@ -425,14 +446,14 @@ paths:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/models.AuthResponse'
+            $ref: '#/definitions/models.CustomerAuthResponse'
         "500":
           description: Internal Server Error
           schema:
             $ref: '#/definitions/models.ErrorResponse'
       summary: Login customer
       tags:
-      - auth
+      - customer_auth
   /customer/me:
     get:
       consumes:
@@ -479,7 +500,7 @@ paths:
             $ref: '#/definitions/models.ErrorResponse'
       summary: register a customer
       tags:
-      - auth
+      - customer_auth
   /customer/update-password:
     post:
       consumes:
@@ -507,7 +528,7 @@ paths:
       - ApiKeyAuth: []
       summary: update password
       tags:
-      - auth
+      - customer_auth
   /customer/update/{id}:
     put:
       consumes:
@@ -557,14 +578,14 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/models.CreateCustomerRespons'
+            $ref: '#/definitions/models.CustomerAuthResponse'
         "500":
           description: Internal Server Error
           schema:
             $ref: '#/definitions/models.ErrorResponse'
       summary: Verify customer
       tags:
-      - auth
+      - customer_auth
   /customer/verify-forgot-password:
     post:
       consumes:
@@ -583,14 +604,14 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/models.AuthResponse'
+            $ref: '#/definitions/models.ResponseOK'
         "500":
           description: Internal Server Error
           schema:
             $ref: '#/definitions/models.ErrorResponse'
       summary: Verify forgot password
       tags:
-      - auth
+      - customer_auth
   /customers/list:
     get:
       consumes:
@@ -674,6 +695,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
       summary: Create a salon
       tags:
       - salon
@@ -699,6 +722,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
       summary: Delete salon by id
       tags:
       - salon
@@ -755,6 +780,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
       summary: Update salon
       tags:
       - salon
@@ -814,6 +841,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
       summary: Create staff
       tags:
       - staff
@@ -839,6 +868,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
       summary: Delete staff by id
       tags:
       - staff
@@ -1032,6 +1063,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
       summary: Update a staff
       tags:
       - staff

@@ -106,7 +106,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "auth"
+                    "customer_auth"
                 ],
                 "summary": "forgot password",
                 "parameters": [
@@ -181,7 +181,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "auth"
+                    "customer_auth"
                 ],
                 "summary": "Login customer",
                 "parameters": [
@@ -199,7 +199,7 @@
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/models.AuthResponse"
+                            "$ref": "#/definitions/models.CustomerAuthResponse"
                         }
                     },
                     "500": {
@@ -255,7 +255,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "auth"
+                    "customer_auth"
                 ],
                 "summary": "register a customer",
                 "parameters": [
@@ -300,7 +300,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "auth"
+                    "customer_auth"
                 ],
                 "summary": "update password",
                 "parameters": [
@@ -389,7 +389,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "auth"
+                    "customer_auth"
                 ],
                 "summary": "Verify customer",
                 "parameters": [
@@ -407,7 +407,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.CreateCustomerRespons"
+                            "$ref": "#/definitions/models.CustomerAuthResponse"
                         }
                     },
                     "500": {
@@ -429,7 +429,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "auth"
+                    "customer_auth"
                 ],
                 "summary": "Verify forgot password",
                 "parameters": [
@@ -447,7 +447,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.AuthResponse"
+                            "$ref": "#/definitions/models.ResponseOK"
                         }
                     },
                     "500": {
@@ -554,6 +554,11 @@
         },
         "/salon/create": {
             "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "This api for creating salon",
                 "consumes": [
                     "application/json"
@@ -594,6 +599,11 @@
         },
         "/salon/delete/{id}": {
             "delete": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "This api for deleting salon by id",
                 "consumes": [
                     "application/json"
@@ -670,6 +680,11 @@
         },
         "/salon/update/{id}": {
             "put": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "This api for updating salon",
                 "consumes": [
                     "application/json"
@@ -767,6 +782,11 @@
         },
         "/staff/create": {
             "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "This api for creating staff",
                 "consumes": [
                     "application/json"
@@ -807,6 +827,11 @@
         },
         "/staff/delete/{id}": {
             "delete": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "This api for deleting staff by id",
                 "consumes": [
                     "application/json"
@@ -1095,6 +1120,11 @@
         },
         "/staff/update/{id}": {
             "put": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "This api for updating staff",
                 "consumes": [
                     "application/json"
@@ -1311,6 +1341,38 @@
                     "type": "string"
                 },
                 "user_name": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.CustomerAuthResponse": {
+            "type": "object",
+            "properties": {
+                "access_token": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "first_name": {
+                    "type": "string"
+                },
+                "gender": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "last_name": {
+                    "type": "string"
+                },
+                "type": {
+                    "type": "string"
+                },
+                "username": {
                     "type": "string"
                 }
             }

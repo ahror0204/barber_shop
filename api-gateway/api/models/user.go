@@ -43,9 +43,35 @@ type GetListParams struct {
 	Search string `json:"search"`
 }
 
+type CustomerAuthResponse struct {
+	Id          string `json:"id,omitempty"`
+	FirstName   string `json:"first_name,omitempty"`
+	LastName    string `json:"last_name,omitempty"`
+	Email       string `json:"email,omitempty"`
+	Username    string `json:"username,omitempty"`
+	Gender      string `json:"gender,omitempty"`
+	Type        string `json:"type,omitempty"`
+	CreatedAt   string `json:"created_at,omitempty"`
+	AccessToken string `json:"access_token,omitempty"`
+}
+
 type CreateCustomerRespons struct {
 	ID    string `json:"id"`
 	Token string `json:"token"`
+}
+
+func ParsCustomerRegisterToProtoStruct(customer *CustomerRequest) *pbu.CustomerRegisterRequest {
+	return &pbu.CustomerRegisterRequest{
+		FirstName:   customer.FirstName,
+		LastName:    customer.LastName,
+		PhoneNumber: customer.PhoneNumber,
+		Email:       customer.Email,
+		UserName:    customer.UserName,
+		Password:    customer.Password,
+		Gender:      customer.Gender,
+		Type:        customer.Type,
+		ImageUrl:    customer.ImageURL,
+	}
 }
 
 func ParsCustomerToProtoStruct(customer *CustomerRequest) *pbu.Customer {

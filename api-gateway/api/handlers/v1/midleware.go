@@ -1,35 +1,69 @@
 package v1
 
 import (
+	"context"
 	"errors"
+	"fmt"
 	"net/http"
 
+	pbu "github.com/barber_shop/api-gateway/genproto/users_service"
+
+	l "github.com/barber_shop/api-gateway/pkg/logger"
 	"github.com/barber_shop/api-gateway/pkg/utils"
 	"github.com/gin-gonic/gin"
 )
+
+type Payload struct {
+	ID        string `json:"id"`
+	UserID    string `json:"user_id"`
+	Email     string `json:"email"`
+	UserType  string `json:"type"`
+	IssuedAt  string `json:"issued_at"`
+	ExpiredAt string `json:"expired_at"`
+}
 
 const (
 	authorizationHeaderKey  = "authorization"
 	authorizationPayloadKey = "authorization_payload"
 )
 
-func (h *handlerV1) AuthMiddleware(c *gin.Context) {
-	accessToken := c.GetHeader(authorizationHeaderKey)
+func (h *handlerV1) AuthMiddleware(resourse, action string) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		accessToken := c.GetHeader(authorizationHeaderKey)
+		fmt.Println(c.Request.URL.Path)
+		if len(accessToken) == 0 {
+			err := errors.New("authorization header is not provided")
+			c.AbortWithStatusJSON(http.StatusUnauthorized, errorResponse(err))
+			return
+		}
 
-	if len(accessToken) == 0 {
-		err := errors.New("authorization header is not provided")
-		c.AbortWithStatusJSON(http.StatusUnauthorized, errorResponse(err))
-		return
+		payload, err := h.serviceManager.StaffAuthService().VerifyToken(context.Background(), &pbu.VerifyTokenRequest{
+			AccessToken: accessToken,
+			Resource:    resourse,
+			Action:      action,
+		})
+		if err != nil {
+			h.log.Error("failed to verify token", l.Error(err))
+			c.AbortWithStatusJSON(http.StatusUnauthorized, errorResponse(err))
+			return
+		}
+
+		if !payload.HasPermission {
+			c.AbortWithStatusJSON(http.StatusForbidden, errorResponse(ErrNotAllowed))
+			return
+		}
+
+		c.Set(authorizationHeaderKey, Payload{
+			ID:        payload.Id,
+			UserID:    payload.UserId,
+			Email:     payload.Email,
+			UserType:  payload.UserType,
+			IssuedAt:  payload.IssuedAt,
+			ExpiredAt: payload.ExpiredAt,
+		})
+		c.Next()
 	}
 
-	payload, err := utils.VerifyToken(h.cfg, accessToken)
-	if err != nil {
-		c.AbortWithStatusJSON(http.StatusUnauthorized, errorResponse(err))
-		return
-	}
-
-	c.Set(authorizationHeaderKey, payload)
-	c.Next()
 }
 
 func (m *handlerV1) GetAuthPayload(c *gin.Context) (*utils.Payload, error) {
