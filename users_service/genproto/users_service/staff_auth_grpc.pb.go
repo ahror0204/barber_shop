@@ -24,8 +24,8 @@ const _ = grpc.SupportPackageIsVersion7
 type StaffAuthServiceClient interface {
 	StaffRegister(ctx context.Context, in *StaffRegisterRequest, opts ...grpc.CallOption) (*Empty, error)
 	StaffVerify(ctx context.Context, in *VerifyStaffRegisterRequest, opts ...grpc.CallOption) (*StaffAuthResponse, error)
-	StaffLogin(ctx context.Context, in *StaffLoginRequest, opts ...grpc.CallOption) (*StaffAuthResponse, error)
-	// rpc VerifyToken(VerifyTokenRequest) returns (AuthPayload) {}
+	StaffLogIn(ctx context.Context, in *StaffLoginRequest, opts ...grpc.CallOption) (*StaffAuthResponse, error)
+	VerifyToken(ctx context.Context, in *VerifyTokenRequest, opts ...grpc.CallOption) (*AuthPayload, error)
 	StaffForgotPassword(ctx context.Context, in *Email, opts ...grpc.CallOption) (*Empty, error)
 	VerifyStaffForgotPassword(ctx context.Context, in *VerifyStaffRegisterRequest, opts ...grpc.CallOption) (*StaffAuthResponse, error)
 	UpdateStaffPassword(ctx context.Context, in *UpdatePasswordRequest, opts ...grpc.CallOption) (*Empty, error)
@@ -57,9 +57,18 @@ func (c *staffAuthServiceClient) StaffVerify(ctx context.Context, in *VerifyStaf
 	return out, nil
 }
 
-func (c *staffAuthServiceClient) StaffLogin(ctx context.Context, in *StaffLoginRequest, opts ...grpc.CallOption) (*StaffAuthResponse, error) {
+func (c *staffAuthServiceClient) StaffLogIn(ctx context.Context, in *StaffLoginRequest, opts ...grpc.CallOption) (*StaffAuthResponse, error) {
 	out := new(StaffAuthResponse)
-	err := c.cc.Invoke(ctx, "/protos.StaffAuthService/StaffLogin", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/protos.StaffAuthService/StaffLogIn", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *staffAuthServiceClient) VerifyToken(ctx context.Context, in *VerifyTokenRequest, opts ...grpc.CallOption) (*AuthPayload, error) {
+	out := new(AuthPayload)
+	err := c.cc.Invoke(ctx, "/protos.StaffAuthService/VerifyToken", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -99,8 +108,8 @@ func (c *staffAuthServiceClient) UpdateStaffPassword(ctx context.Context, in *Up
 type StaffAuthServiceServer interface {
 	StaffRegister(context.Context, *StaffRegisterRequest) (*Empty, error)
 	StaffVerify(context.Context, *VerifyStaffRegisterRequest) (*StaffAuthResponse, error)
-	StaffLogin(context.Context, *StaffLoginRequest) (*StaffAuthResponse, error)
-	// rpc VerifyToken(VerifyTokenRequest) returns (AuthPayload) {}
+	StaffLogIn(context.Context, *StaffLoginRequest) (*StaffAuthResponse, error)
+	VerifyToken(context.Context, *VerifyTokenRequest) (*AuthPayload, error)
 	StaffForgotPassword(context.Context, *Email) (*Empty, error)
 	VerifyStaffForgotPassword(context.Context, *VerifyStaffRegisterRequest) (*StaffAuthResponse, error)
 	UpdateStaffPassword(context.Context, *UpdatePasswordRequest) (*Empty, error)
@@ -117,8 +126,11 @@ func (UnimplementedStaffAuthServiceServer) StaffRegister(context.Context, *Staff
 func (UnimplementedStaffAuthServiceServer) StaffVerify(context.Context, *VerifyStaffRegisterRequest) (*StaffAuthResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method StaffVerify not implemented")
 }
-func (UnimplementedStaffAuthServiceServer) StaffLogin(context.Context, *StaffLoginRequest) (*StaffAuthResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method StaffLogin not implemented")
+func (UnimplementedStaffAuthServiceServer) StaffLogIn(context.Context, *StaffLoginRequest) (*StaffAuthResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method StaffLogIn not implemented")
+}
+func (UnimplementedStaffAuthServiceServer) VerifyToken(context.Context, *VerifyTokenRequest) (*AuthPayload, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method VerifyToken not implemented")
 }
 func (UnimplementedStaffAuthServiceServer) StaffForgotPassword(context.Context, *Email) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method StaffForgotPassword not implemented")
@@ -178,20 +190,38 @@ func _StaffAuthService_StaffVerify_Handler(srv interface{}, ctx context.Context,
 	return interceptor(ctx, in, info, handler)
 }
 
-func _StaffAuthService_StaffLogin_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _StaffAuthService_StaffLogIn_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(StaffLoginRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(StaffAuthServiceServer).StaffLogin(ctx, in)
+		return srv.(StaffAuthServiceServer).StaffLogIn(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/protos.StaffAuthService/StaffLogin",
+		FullMethod: "/protos.StaffAuthService/StaffLogIn",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(StaffAuthServiceServer).StaffLogin(ctx, req.(*StaffLoginRequest))
+		return srv.(StaffAuthServiceServer).StaffLogIn(ctx, req.(*StaffLoginRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _StaffAuthService_VerifyToken_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(VerifyTokenRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(StaffAuthServiceServer).VerifyToken(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/protos.StaffAuthService/VerifyToken",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(StaffAuthServiceServer).VerifyToken(ctx, req.(*VerifyTokenRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -266,8 +296,12 @@ var StaffAuthService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _StaffAuthService_StaffVerify_Handler,
 		},
 		{
-			MethodName: "StaffLogin",
-			Handler:    _StaffAuthService_StaffLogin_Handler,
+			MethodName: "StaffLogIn",
+			Handler:    _StaffAuthService_StaffLogIn_Handler,
+		},
+		{
+			MethodName: "VerifyToken",
+			Handler:    _StaffAuthService_VerifyToken_Handler,
 		},
 		{
 			MethodName: "StaffForgotPassword",

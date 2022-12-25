@@ -10,12 +10,14 @@ type StorageI interface {
 	Customer() repo.CustomerStorageI
 	Salon() repo.SalonStorageI
 	Staff() repo.StaffStorageI
+	Permission() repo.PermissionStorageI
 }
 
 type storagePg struct {
 	customerRepo repo.CustomerStorageI
 	salonRepo    repo.SalonStorageI
 	staffRepo    repo.StaffStorageI
+	permissionRepo repo.PermissionStorageI
 }
 
 func NewStoragePg(db *sqlx.DB) StorageI {
@@ -23,6 +25,7 @@ func NewStoragePg(db *sqlx.DB) StorageI {
 		customerRepo: postgres.NewCustomerRepo(db),
 		salonRepo:    postgres.NewSalonRepo(db),
 		staffRepo:    postgres.NewStaffRepo(db),
+		permissionRepo: postgres.NewPermission(db),
 	}
 }
 
@@ -36,4 +39,8 @@ func (s *storagePg) Salon() repo.SalonStorageI {
 
 func (s *storagePg) Staff() repo.StaffStorageI {
 	return s.staffRepo
+}
+
+func (s *storagePg) Permission() repo.PermissionStorageI {
+	return s.permissionRepo
 }

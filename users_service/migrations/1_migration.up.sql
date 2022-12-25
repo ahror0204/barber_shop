@@ -41,7 +41,7 @@ CREATE TABLE "staff"(
     "email" VARCHAR(255) NOT NULL UNIQUE,
     "user_name" VARCHAR(50) NOT NULL UNIQUE,
     "password" VARCHAR(255) NOT NULL UNIQUE,
-    "type" VARCHAR(255) CHECK ("type" IN('superadmin', 'user')) NOT NULL,
+    "type" VARCHAR(255) CHECK ("type" IN('staff')) NOT NULL,
     "image_url" TEXT NOT NULL,
     "created_at" TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     "updated_at" TIMESTAMP,

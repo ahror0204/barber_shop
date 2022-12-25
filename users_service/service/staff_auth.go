@@ -154,10 +154,10 @@ func (s *StaffAuthService) StaffVerify(ctx context.Context, req *pbu.VerifyStaff
 
 	//Creating token
 	token, _, err := utils.CreateToken(s.cfg, &utils.TokenParams{
-		UserID: res.Id,
-		Email:      res.Email,
-		UserType:   res.Type,
-		Duration:   time.Hour * 24,
+		UserID:   res.Id,
+		Email:    res.Email,
+		UserType: res.Type,
+		Duration: time.Hour * 24,
 	})
 	if err != nil {
 		s.logger.Error("failed while creating token", l.Error(err))
@@ -177,7 +177,7 @@ func (s *StaffAuthService) StaffVerify(ctx context.Context, req *pbu.VerifyStaff
 	}, nil
 }
 
-func (s *StaffAuthService) StaffLogin(ctx context.Context, req *pbu.StaffLoginRequest) (*pbu.StaffAuthResponse, error) {
+func (s *StaffAuthService) StaffLogIn(ctx context.Context, req *pbu.StaffLoginRequest) (*pbu.StaffAuthResponse, error) {
 
 	res, err := s.storage.Staff().GetStaffByEmail(&pbu.Email{Email: req.Email})
 	if err != nil {
@@ -196,10 +196,10 @@ func (s *StaffAuthService) StaffLogin(ctx context.Context, req *pbu.StaffLoginRe
 
 	//Creating token
 	token, _, err := utils.CreateToken(s.cfg, &utils.TokenParams{
-		UserID: res.Id,
-		Email:      res.Email,
-		UserType:   res.Type,
-		Duration:   time.Hour * 24,
+		UserID:   res.Id,
+		Email:    res.Email,
+		UserType: res.Type,
+		Duration: time.Hour * 24,
 	})
 	if err != nil {
 		s.logger.Error("failed while creating token", l.Error(err))
@@ -236,7 +236,7 @@ func (s *StaffAuthService) StaffForgotPassword(ctx context.Context, req *pbu.Ema
 			fmt.Printf("failed to send verification code: %v", err)
 		}
 	}()
-	
+
 	return &pbu.Empty{}, nil
 }
 
@@ -260,9 +260,9 @@ func (s *StaffAuthService) VerifyStaffForgotPassword(ctx context.Context, req *p
 	}
 
 	token, _, err := utils.CreateToken(s.cfg, &utils.TokenParams{
-		UserID:  res.Id,
-		Email:       res.Email,
-		Duration:    time.Minute * 30,
+		UserID:   res.Id,
+		Email:    res.Email,
+		Duration: time.Minute * 30,
 	})
 	if err != nil {
 		s.logger.Error("failed while creating token", l.Error(err))
@@ -270,20 +270,19 @@ func (s *StaffAuthService) VerifyStaffForgotPassword(ctx context.Context, req *p
 	}
 
 	return &pbu.StaffAuthResponse{
-		Id: res.Id,
-		SalonId: res.SalonId,
-		FirstName: res.FirstName,
-		LastName: res.LastName,
-		Email: res.Email,
-		Username: res.UserName,
-		Type: res.Type,
-		CreatedAt: res.CreatedAt,
+		Id:          res.Id,
+		SalonId:     res.SalonId,
+		FirstName:   res.FirstName,
+		LastName:    res.LastName,
+		Email:       res.Email,
+		Username:    res.UserName,
+		Type:        res.Type,
+		CreatedAt:   res.CreatedAt,
 		AccessToken: token,
 	}, nil
 }
 
 func (s *StaffAuthService) UpdateStaffPassword(ctx context.Context, req *pbu.UpdatePasswordRequest) (*pbu.Empty, error) {
-	
 	// verifing password
 	if err := utils.VerifyPassword(req.Password); err != nil {
 		s.logger.Error("verify password error", l.Error(err))
@@ -305,6 +304,6 @@ func (s *StaffAuthService) UpdateStaffPassword(ctx context.Context, req *pbu.Upd
 		s.logger.Error("error while updating staff password", l.Error(err))
 		return nil, status.Error(codes.Internal, "error while updating staff password")
 	}
-	
+
 	return &pbu.Empty{}, nil
 }

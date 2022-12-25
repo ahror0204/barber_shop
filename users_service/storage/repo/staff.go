@@ -10,7 +10,4 @@ type StaffStorageI interface {
 	DeleteStaff(*pbu.ID) error
 	GetStaffByEmail(*pbu.Email) (*pbu.Staff, error)
 	UpdateStaffPassword(*pbu.UpdatePasswordRequest) (error)
-
-
-
 }
