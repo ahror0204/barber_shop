@@ -16,8 +16,8 @@ type Config struct {
 	OrderServiceHost string
 	OrderServicePort string
 
-	RPCPort          string
-	LogLevel         string
+	RPCPort  string
+	LogLevel string
 
 	AuthSecretKey string
 }
@@ -37,7 +37,6 @@ type Smtp struct {
 	Sender   string
 	Password string
 }
-
 
 func Load(path string) Config {
 	godotenv.Load(path + "/.env") // load .env file if it exists
@@ -63,8 +62,8 @@ func Load(path string) Config {
 		},
 		OrderServiceHost: conf.GetString("ORDER_SERVICE_HOST"),
 		OrderServicePort: conf.GetString("ORDER_SERVICE_PORT"),
-		RPCPort: conf.GetString("RPC_PORT"),
-		LogLevel: conf.GetString("LOG_LEVEL"),
+		RPCPort:          conf.GetString("RPC_PORT"),
+		LogLevel:         conf.GetString("LOG_LEVEL"),
 
 		AuthSecretKey: conf.GetString("AUTH_SECRET_KEY"),
 	}

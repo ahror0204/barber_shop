@@ -24,10 +24,10 @@ INSERT INTO permissions(user_type, resource, action) VALUES ('superadmin', 'staf
 INSERT INTO permissions(user_type, resource, action) VALUES ('staff', 'staff', 'create');
 
 INSERT INTO permissions(user_type, resource, action) VALUES ('superadmin', 'staff', 'update');
-INSERT INTO permissions(user_type, resource, action) VALUES ('user', 'staff', 'update');
+INSERT INTO permissions(user_type, resource, action) VALUES ('staff', 'staff', 'update');
 
 INSERT INTO permissions(user_type, resource, action) VALUES ('superadmin', 'staff', 'delete');
-INSERT INTO permissions(user_type, resource, action) VALUES ('user', 'staff', 'delete');
+INSERT INTO permissions(user_type, resource, action) VALUES ('staff', 'staff', 'delete');
 
 INSERT INTO permissions(user_type, resource, action) VALUES ('staff', 'staff', 'update-password');
 

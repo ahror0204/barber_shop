@@ -14,20 +14,20 @@ const (
 )
 
 type TokenParams struct {
-	ID          string
-	UserID      string
-	FirstName   string
-	LastName    string
-	Email       string
-	UserName    string
-	UserType    string
-	Duration    time.Duration
+	ID        string
+	UserID    string
+	FirstName string
+	LastName  string
+	Email     string
+	UserName  string
+	Type      string
+	Duration  time.Duration
 }
 
 func CreateToken(cfg *config.Config, params *TokenParams) (string, *Payload, error) {
 	payload, err := NewPayload(params)
 	if err != nil {
-		return "", payload, err
+		return "", nil, err
 	}
 
 	jwtToken := jwt.NewWithClaims(jwt.SigningMethodHS256, payload)
@@ -35,7 +35,7 @@ func CreateToken(cfg *config.Config, params *TokenParams) (string, *Payload, err
 	return token, payload, err
 }
 
-func VerifyToken(cfg config.Config, token string) (*Payload, error) {
+func VerifyToken(cfg *config.Config, token string) (*Payload, error) {
 	keyFunc := func(token *jwt.Token) (interface{}, error) {
 		_, ok := token.Method.(*jwt.SigningMethodHMAC)
 		if !ok {

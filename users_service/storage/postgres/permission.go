@@ -3,6 +3,7 @@ package postgres
 import (
 	"database/sql"
 	"errors"
+	"fmt"
 
 	"github.com/barber_shop/users_service/storage/repo"
 	"github.com/jmoiron/sqlx"
@@ -18,7 +19,9 @@ func NewPermission(db *sqlx.DB) repo.PermissionStorageI {
 	}
 }
 
-func (p *permissionRepo) CheckPermission(userType, resource, action string) (bool, error)  {
+func (p *permissionRepo) CheckPermission(userType, resource, action string) (bool, error) {
+
+	fmt.Println(userType, "|||", resource, "|||", action, "<<<<<<<<<<<<<<<<<<<<<<<<CheckPermission")
 	query := `
 	SELECT id FROM permissions
 	WHERE user_type = $1 AND resource = $2 AND action = $3
@@ -27,6 +30,7 @@ func (p *permissionRepo) CheckPermission(userType, resource, action string) (boo
 	err := p.db.QueryRow(query, userType, resource, action).Scan(&id)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
+
 			return false, nil
 		}
 		return false, err

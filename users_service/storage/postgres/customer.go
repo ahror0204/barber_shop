@@ -164,7 +164,9 @@ func (u *customerRepo) GetListCustomers(params *pbu.GetListParams) (*pbu.AllCust
 			WHERE first_name ILIKE '%s' OR last_name ILIKE '%s' OR email ILIKE '%s' 
 			OR user_name ILIKE '%s' OR phone_number ILIKE '%s' AND deleted_at IS NULL
 		`, str, str, str, str, str)
-	}else{filter = " WHERE deleted_at IS NULL "}
+	} else {
+		filter = " WHERE deleted_at IS NULL "
+	}
 	query := `SELECT
 		id,
 		first_name,

@@ -166,7 +166,9 @@ func (u *staffRepo) GetListStaff(params *pbu.GetListParams) (*pbu.ListStaff, err
 			WHERE first_name ILIKE '%s' OR last_name ILIKE '%s' OR email ILIKE '%s' 
 			OR phone_number ILIKE '%s' AND deleted_at IS NULL
 		`, str, str, str, str)
-	}else{filter = " WHERE deleted_at IS NULL "}
+	} else {
+		filter = " WHERE deleted_at IS NULL "
+	}
 	query := `SELECT
 		id,
 		salon_id,
@@ -252,11 +254,10 @@ func (s *staffRepo) DeleteStaff(ID *pbu.ID) error {
 	return nil
 }
 
-
 func (c *staffRepo) GetStaffByEmail(email *pbu.Email) (*pbu.Staff, error) {
 	var (
-		updateAT  sql.NullTime
-		rStaff pbu.Staff
+		updateAT sql.NullTime
+		rStaff   pbu.Staff
 	)
 
 	query := `SELECT
@@ -298,7 +299,6 @@ func (c *staffRepo) GetStaffByEmail(email *pbu.Email) (*pbu.Staff, error) {
 	}
 	return &rStaff, nil
 }
-
 
 func (s *staffRepo) UpdateStaffPassword(req *pbu.UpdatePasswordRequest) error {
 	query := `UPDATE staff SET password=$1 WHERE id=$2`

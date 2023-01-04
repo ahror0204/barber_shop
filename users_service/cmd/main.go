@@ -39,7 +39,7 @@ func main() {
 
 	customerAuthService := c.NewCustomerAuthService(strg, inMemory, &cfg, log)
 	staffAuthService := c.NewStaffAuthService(strg, inMemory, &cfg, log)
-	
+
 	lis, err := net.Listen("tcp", cfg.RPCPort)
 	if err != nil {
 		log.Fatal("Error while listening: %v", logger.Error(err))

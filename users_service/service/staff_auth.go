@@ -156,7 +156,7 @@ func (s *StaffAuthService) StaffVerify(ctx context.Context, req *pbu.VerifyStaff
 	token, _, err := utils.CreateToken(s.cfg, &utils.TokenParams{
 		UserID:   res.Id,
 		Email:    res.Email,
-		UserType: res.Type,
+		Type:     res.Type,
 		Duration: time.Hour * 24,
 	})
 	if err != nil {
@@ -198,7 +198,7 @@ func (s *StaffAuthService) StaffLogIn(ctx context.Context, req *pbu.StaffLoginRe
 	token, _, err := utils.CreateToken(s.cfg, &utils.TokenParams{
 		UserID:   res.Id,
 		Email:    res.Email,
-		UserType: res.Type,
+		Type:     res.Type,
 		Duration: time.Hour * 24,
 	})
 	if err != nil {
@@ -262,6 +262,7 @@ func (s *StaffAuthService) VerifyStaffForgotPassword(ctx context.Context, req *p
 	token, _, err := utils.CreateToken(s.cfg, &utils.TokenParams{
 		UserID:   res.Id,
 		Email:    res.Email,
+		Type:     res.Type,
 		Duration: time.Minute * 30,
 	})
 	if err != nil {

@@ -78,7 +78,6 @@ func TestGetStaffByEmail(t *testing.T) {
 	deleteStaff(staff.Id, t)
 }
 
-
 func TestUpdateStaffPassword(t *testing.T) {
 	staff := createStaff(t)
 

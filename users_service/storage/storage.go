@@ -14,17 +14,17 @@ type StorageI interface {
 }
 
 type storagePg struct {
-	customerRepo repo.CustomerStorageI
-	salonRepo    repo.SalonStorageI
-	staffRepo    repo.StaffStorageI
+	customerRepo   repo.CustomerStorageI
+	salonRepo      repo.SalonStorageI
+	staffRepo      repo.StaffStorageI
 	permissionRepo repo.PermissionStorageI
 }
 
 func NewStoragePg(db *sqlx.DB) StorageI {
 	return &storagePg{
-		customerRepo: postgres.NewCustomerRepo(db),
-		salonRepo:    postgres.NewSalonRepo(db),
-		staffRepo:    postgres.NewStaffRepo(db),
+		customerRepo:   postgres.NewCustomerRepo(db),
+		salonRepo:      postgres.NewSalonRepo(db),
+		staffRepo:      postgres.NewStaffRepo(db),
 		permissionRepo: postgres.NewPermission(db),
 	}
 }

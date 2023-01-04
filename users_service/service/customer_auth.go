@@ -152,7 +152,7 @@ func (c *CustomerAuthService) CustomerVerify(ctx context.Context, req *pbu.Verif
 	token, _, err := utils.CreateToken(c.cfg, &utils.TokenParams{
 		UserID:   res.Id,
 		Email:    res.Email,
-		UserType: res.Type,
+		Type:     res.Type,
 		Duration: time.Hour * 24,
 	})
 	if err != nil {
@@ -194,7 +194,7 @@ func (c *CustomerAuthService) CustomerLogin(ctx context.Context, req *pbu.Custom
 	token, _, err := utils.CreateToken(c.cfg, &utils.TokenParams{
 		UserID:   res.Id,
 		Email:    res.Email,
-		UserType: res.Type,
+		Type:     res.Type,
 		Duration: time.Hour * 24,
 	})
 	if err != nil {
@@ -258,6 +258,7 @@ func (c *CustomerAuthService) VerifyCustomerForgotPassword(ctx context.Context, 
 	token, _, err := utils.CreateToken(c.cfg, &utils.TokenParams{
 		UserID:   res.Id,
 		Email:    res.Email,
+		Type:     res.Type,
 		Duration: time.Minute * 30,
 	})
 	if err != nil {

@@ -9,5 +9,5 @@ type CustomerStorageI interface {
 	GetListCustomers(*pbu.GetListParams) (*pbu.AllCustomers, error)
 	DeleteCustomer(*pbu.ID) error
 	GetCustomerByEmail(*pbu.Email) (*pbu.Customer, error)
-	UpdateCustomerPassword(*pbu.UpdatePasswordRequest) (error)
+	UpdateCustomerPassword(*pbu.UpdatePasswordRequest) error
 }
