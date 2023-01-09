@@ -33,7 +33,7 @@ type Salon struct {
 
 type GetListSalonsResponse struct {
 	Salons []*Salon `json:"salons"`
-	Count     int64       `json:"count"`
+	Count  int64    `json:"count"`
 }
 
 func ParsSalonToProtoStruct(salon *SalonRequest) *pbu.Salon {

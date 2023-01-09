@@ -114,7 +114,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "customer_auth"
+                    "customer_auth1"
                 ],
                 "summary": "forgot password",
                 "parameters": [
@@ -308,7 +308,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "customer_auth"
+                    "customer_auth1"
                 ],
                 "summary": "update password",
                 "parameters": [
@@ -437,7 +437,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "customer_auth"
+                    "customer_auth1"
                 ],
                 "summary": "Verify forgot password",
                 "parameters": [
@@ -886,7 +886,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "staff_auth"
+                    "staff_auth1"
                 ],
                 "summary": "staff forgot password",
                 "parameters": [
@@ -1096,7 +1096,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "staff_auth"
+                    "staff_auth1"
                 ],
                 "summary": "staff update password",
                 "parameters": [
@@ -1225,7 +1225,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "staff_auth"
+                    "staff_auth1"
                 ],
                 "summary": "verify staff forgot password",
                 "parameters": [
@@ -1686,8 +1686,7 @@ const docTemplate = `{
                 "type": {
                     "type": "string",
                     "enum": [
-                        "superadmin",
-                        "user"
+                        "staff"
                     ]
                 },
                 "user_name": {

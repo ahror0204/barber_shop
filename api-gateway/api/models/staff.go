@@ -26,7 +26,7 @@ type StaffRequest struct {
 	Email       string `json:"email"`
 	UserName    string `json:"user_name"`
 	Password    string `json:"passward"`
-	Type        string `json:"type" binding:"required,oneof=superadmin user"`
+	Type        string `json:"type" binding:"required,oneof=staff"`
 	ImageURL    string `json:"image_url"`
 }
 
@@ -42,7 +42,7 @@ type UpdateStaffRequest struct {
 
 type GetListStaffResponse struct {
 	Staff []*Staff `json:"staff"`
-	Count     int64       `json:"count"`
+	Count int64    `json:"count"`
 }
 
 type StaffAuthResponse struct {
@@ -114,12 +114,11 @@ func ParsStaffFromProtoStruct(staff *pbu.Staff) *Staff {
 	}
 }
 
-
 func ParsListStaffFromProtoStruct(staff []*pbu.Staff) (resp []*Staff) {
 	for _, s := range staff {
 		st := Staff{
 			Id:          s.Id,
-			SalonId: 	 s.SalonId,
+			SalonId:     s.SalonId,
 			FirstName:   s.FirstName,
 			LastName:    s.LastName,
 			PhoneNumber: s.PhoneNumber,

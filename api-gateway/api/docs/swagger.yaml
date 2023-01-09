@@ -279,8 +279,7 @@ definitions:
         type: string
       type:
         enum:
-        - superadmin
-        - user
+        - staff
         type: string
       user_name:
         type: string
@@ -404,7 +403,7 @@ paths:
             $ref: '#/definitions/models.ErrorResponse'
       summary: forgot password
       tags:
-      - customer_auth
+      - customer_auth1
   /customer/get/{id}:
     get:
       consumes:
@@ -528,7 +527,7 @@ paths:
       - ApiKeyAuth: []
       summary: update password
       tags:
-      - customer_auth
+      - customer_auth1
   /customer/update/{id}:
     put:
       consumes:
@@ -611,7 +610,7 @@ paths:
             $ref: '#/definitions/models.ErrorResponse'
       summary: Verify forgot password
       tags:
-      - customer_auth
+      - customer_auth1
   /customers/list:
     get:
       consumes:
@@ -898,7 +897,7 @@ paths:
             $ref: '#/definitions/models.ErrorResponse'
       summary: staff forgot password
       tags:
-      - staff_auth
+      - staff_auth1
   /staff/get/{id}:
     get:
       consumes:
@@ -1034,7 +1033,7 @@ paths:
       - ApiKeyAuth: []
       summary: staff update password
       tags:
-      - staff_auth
+      - staff_auth1
   /staff/update/{id}:
     put:
       consumes:
@@ -1117,7 +1116,7 @@ paths:
             $ref: '#/definitions/models.ErrorResponse'
       summary: verify staff forgot password
       tags:
-      - staff_auth
+      - staff_auth1
 securityDefinitions:
   ApiKeyAuth:
     in: header

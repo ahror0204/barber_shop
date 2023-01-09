@@ -9,7 +9,7 @@ import (
 	pbu "github.com/barber_shop/api-gateway/genproto/users_service"
 
 	l "github.com/barber_shop/api-gateway/pkg/logger"
-	"github.com/barber_shop/api-gateway/pkg/utils"
+	// "github.com/barber_shop/api-gateway/pkg/utils"
 	"github.com/gin-gonic/gin"
 )
 
@@ -17,7 +17,7 @@ type Payload struct {
 	ID        string `json:"id"`
 	UserID    string `json:"user_id"`
 	Email     string `json:"email"`
-	UserType  string `json:"type"`
+	Type      string `json:"type"`
 	IssuedAt  string `json:"issued_at"`
 	ExpiredAt string `json:"expired_at"`
 }
@@ -36,7 +36,7 @@ func (h *handlerV1) AuthMiddleware(resourse, action string) gin.HandlerFunc {
 			c.AbortWithStatusJSON(http.StatusUnauthorized, errorResponse(err))
 			return
 		}
-
+		
 		payload, err := h.serviceManager.StaffAuthService().VerifyToken(context.Background(), &pbu.VerifyTokenRequest{
 			AccessToken: accessToken,
 			Resource:    resourse,
@@ -57,7 +57,7 @@ func (h *handlerV1) AuthMiddleware(resourse, action string) gin.HandlerFunc {
 			ID:        payload.Id,
 			UserID:    payload.UserId,
 			Email:     payload.Email,
-			UserType:  payload.UserType,
+			Type:      payload.Type,
 			IssuedAt:  payload.IssuedAt,
 			ExpiredAt: payload.ExpiredAt,
 		})
@@ -66,15 +66,19 @@ func (h *handlerV1) AuthMiddleware(resourse, action string) gin.HandlerFunc {
 
 }
 
-func (m *handlerV1) GetAuthPayload(c *gin.Context) (*utils.Payload, error) {
+func (m *handlerV1) GetAuthPayload(c *gin.Context) (*Payload, error) {
 	i, exists := c.Get(authorizationHeaderKey)
 	if !exists {
 		return nil, errors.New("-<*>_<*>-")
 	}
 
-	payload, ok := i.(*utils.Payload)
+	fmt.Println("///////////////////////////////////")
+	fmt.Println(i)
+	fmt.Println("///////////////////////////////////")
+
+	payload, ok := i.(Payload)
 	if !ok {
 		return nil, errors.New("unknown user")
 	}
-	return payload, nil
+	return &payload, nil
 }

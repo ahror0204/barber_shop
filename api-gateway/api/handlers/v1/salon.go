@@ -132,7 +132,7 @@ func (h *handlerV1) GetListSalons(c *gin.Context) {
 
 	c.JSON(http.StatusOK, models.GetListSalonsResponse{
 		Salons: models.ParsListSalonsFromProtoStruct(res.Salons),
-		Count:     res.Count,
+		Count:  res.Count,
 	})
 }
 

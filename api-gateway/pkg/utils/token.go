@@ -14,14 +14,14 @@ const (
 )
 
 type TokenParams struct {
-	UserID  string
-	FirstName   string
-	LastName    string
-	Email       string
-	UserName    string
-	UserType    string
-	UpdatedAT   string
-	Duration    time.Duration
+	UserID    string
+	FirstName string
+	LastName  string
+	Email     string
+	UserName  string
+	Type      string
+	UpdatedAT string
+	Duration  time.Duration
 }
 
 func CreateToken(cfg *config.Config, params *TokenParams) (string, *Payload, error) {

@@ -14,13 +14,10 @@ var (
 )
 
 type Payload struct {
-	ID        uuid.UUID `json:"id"`
+	ID        string `json:"id"`
 	UserID    string    `json:"customer_id"`
-	FirstName string    `json:"first_name"`
-	LastName  string    `json:"last_name"`
 	Email     string    `json:"email"`
-	UserName  string    `json:"user_name"`
-	UserType  string    `json:"user_type"`
+	Type      string    `json:"type"`
 	IssuedAT  time.Time `json:"issued_at"`
 	ExpiredAT time.Time `json:"expired_at"`
 }
@@ -32,15 +29,12 @@ func NewPayload(params *TokenParams) (*Payload, error) {
 	}
 
 	return &Payload{
-		ID:          tokenID,
-		UserID:  params.UserID,
-		FirstName:   params.FirstName,
-		LastName:    params.LastName,
-		Email:       params.Email,
-		UserName:    params.UserName,
-		UserType:    params.UserType,
-		IssuedAT:    time.Now(),
-		ExpiredAT:   time.Now().Add(params.Duration),
+		ID:        tokenID.String(),
+		UserID:    params.UserID,
+		Email:     params.Email,
+		Type:      params.Type,
+		IssuedAT:  time.Now(),
+		ExpiredAT: time.Now().Add(params.Duration),
 	}, nil
 }
 

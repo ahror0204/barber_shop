@@ -146,7 +146,7 @@ func (h *handlerV1) StaffLogIn(c *gin.Context) {
 // @Router /staff/forgot-password [post]
 // @Summary staff forgot password
 // @Description This api for forgot password
-// @Tags staff_auth
+// @Tags staff_auth1
 // @Accept json
 // @Produce json
 // @Param data body models.ForgotPasswordRequest true "Data"
@@ -180,7 +180,7 @@ func (h *handlerV1) StaffForgotPassword(c *gin.Context) {
 // @Router /staff/verify-forgot-password [post]
 // @Summary verify staff forgot password
 // @Description Verify staff forgot password
-// @Tags staff_auth
+// @Tags staff_auth1
 // @Accept json
 // @Produce json
 // @Param data body models.VerifyRequest true "Data"
@@ -225,7 +225,7 @@ func (h *handlerV1) VerifyStaffForgotPassword(c *gin.Context) {
 // @Router /staff/update-password [post]
 // @Summary staff update password
 // @Description This api for updating staff password
-// @Tags staff_auth
+// @Tags staff_auth1
 // @Accept json
 // @Produce json
 // @Param password body models.UpdatePasswordRequest true "Password"
@@ -240,7 +240,6 @@ func (h *handlerV1) UpdateStaffPassword(c *gin.Context) {
 		h.log.Error("failed while binding json", l.Error(err))
 		return
 	}
-
 	payload, err := h.GetAuthPayload(c)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, errorResponse(err))

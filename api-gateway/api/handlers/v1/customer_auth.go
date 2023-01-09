@@ -3,6 +3,7 @@ package v1
 import (
 	"context"
 	"errors"
+	"fmt"
 	"net/http"
 	"time"
 
@@ -164,7 +165,7 @@ func (h *handlerV1) CustomerLogIn(c *gin.Context) {
 // @Router /customer/forgot-password [post]
 // @Summary forgot password
 // @Description This api for forgot password
-// @Tags customer_auth
+// @Tags customer_auth1
 // @Accept json
 // @Produce json
 // @Param data body models.ForgotPasswordRequest true "Data"
@@ -198,7 +199,7 @@ func (h *handlerV1) CustomerForgotPassword(c *gin.Context) {
 // @Router /customer/verify-forgot-password [post]
 // @Summary Verify forgot password
 // @Description Verify forgot password
-// @Tags customer_auth
+// @Tags customer_auth1
 // @Accept json
 // @Produce json
 // @Param data body models.VerifyRequest true "Data"
@@ -244,7 +245,7 @@ func (h *handlerV1) VerifyForgotPassword(c *gin.Context) {
 // @Router /customer/update-password [post]
 // @Summary update password
 // @Description This api for updating customer password
-// @Tags customer_auth
+// @Tags customer_auth1
 // @Accept json
 // @Produce json
 // @Param password body models.UpdatePasswordRequest true "Password"
@@ -252,6 +253,7 @@ func (h *handlerV1) VerifyForgotPassword(c *gin.Context) {
 // @Failure 500 {object} models.ErrorResponse
 func (h *handlerV1) UpdateCustomerPassword(c *gin.Context) {
 	var req models.UpdatePasswordRequest
+	fmt.Println(">>>>>", c, "<<<<<<")
 
 	err := c.ShouldBindJSON(&req)
 	if err != nil {

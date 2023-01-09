@@ -16,7 +16,6 @@ type IServiceManager interface {
 	SalonService() pbu.SalonServiceClient
 	StaffService() pbu.StaffServiceClient
 	StaffAuthService() pbu.StaffAuthServiceClient
-
 }
 
 type serviceManager struct {
@@ -37,10 +36,10 @@ func NewServiceManager(conf *config.Config) (IServiceManager, error) {
 		cfg: *conf,
 		connections: map[string]interface{}{
 			"customer_auth_service": pbu.NewCustomerAuthServiceClient(connUsersService),
-			"customer_service": pbu.NewCustomerServiceClient(connUsersService),
-			"salon_service":    pbu.NewSalonServiceClient(connUsersService),
-			"staff_service": pbu.NewStaffServiceClient(connUsersService),
-			"staff_auth_service": pbu.NewStaffAuthServiceClient(connUsersService),
+			"customer_service":      pbu.NewCustomerServiceClient(connUsersService),
+			"salon_service":         pbu.NewSalonServiceClient(connUsersService),
+			"staff_service":         pbu.NewStaffServiceClient(connUsersService),
+			"staff_auth_service":    pbu.NewStaffAuthServiceClient(connUsersService),
 		},
 	}
 	return serviceManager, nil
@@ -48,7 +47,7 @@ func NewServiceManager(conf *config.Config) (IServiceManager, error) {
 
 func (s *serviceManager) CustomerAuthService() pbu.CustomerAuthServiceClient {
 	return s.connections["customer_auth_service"].(pbu.CustomerAuthServiceClient)
-} 
+}
 
 func (s *serviceManager) CustomerService() pbu.CustomerServiceClient {
 	return s.connections["customer_service"].(pbu.CustomerServiceClient)
